@@ -1,56 +1,130 @@
 import pygame
+import os
+from pygame.math import Vector2
+from pygame.sprite import Sprite, Group
+from config import GRAPHICS_DIR
 
-FRUIT_SIZE = 20
-GREEN = (0, 255, 0)
+
+cell_size = 40
+cell_number = 20
+
+class SnakeSegment(Sprite):
+    def __init__(self, position, segment_type='body'):
+        super().__init__()
+        self.position = position
+        self.segment_type = segment_type
+        self.image = pygame.Surface((cell_size, cell_size))
+        self.image.fill(pygame.Color('white'))  # Color por defecto para el cuerpo
+        self.rect = self.image.get_rect(topleft=(position.x * cell_size, position.y * cell_size))
+
+    def update(self, position):
+        self.rect.topleft = (position.x * cell_size, position.y * cell_size)
 
 class Snake:
+    def __init__(self):
+        self.load_images()
+        self.segments = Group()
+        self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
+        self.direction = Vector2(1, 0)
+        self.new_block = False
+        self.create_snake()
 
-    def __init__(self, x, y):
-        self.body = [(x, y)]
-        self.length = 1
-        self.direction = "RIGHT"
-        self.change_to = self.direction
+    def load_images(self):
+        # Convertimos los Vector2 a tuplas para usarlos como claves
+        self.head_images = {
+            (0, -1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'head_up.png')).convert_alpha(),
+            (0, 1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'head_down.png')).convert_alpha(),
+            (1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'head_right.png')).convert_alpha(),
+            (-1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'head_left.png')).convert_alpha(),
+        }
+        self.tail_images = {
+            (0, -1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'tail_up.png')).convert_alpha(),
+            (0, 1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'tail_down.png')).convert_alpha(),
+            (1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'tail_right.png')).convert_alpha(),
+            (-1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'tail_left.png')).convert_alpha(),
+        }
 
-    def move(self):
-        # Obtener la cabeza de la serpiente
-        head = self.body[0]
+        self.body_vertical = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_vertical.png')).convert_alpha()
+        self.body_horizontal = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_horizontal.png')).convert_alpha()
 
-        # Determinar la dirección del movimiento basada en el cambio solicitado
-        if self.change_to == "UP" and self.direction != "DOWN":
-            self.direction = "UP"
-        if self.change_to == "DOWN" and self.direction != "UP":
-            self.direction = "DOWN"
-        if self.change_to == "LEFT" and self.direction != "RIGHT":
-            self.direction = "LEFT"
-        if self.change_to == "RIGHT" and self.direction != "LEFT":
-            self.direction = "RIGHT"
+        self.body_tr = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_tr.png')).convert_alpha()
+        self.body_tl = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_tl.png')).convert_alpha()
+        self.body_br = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_br.png')).convert_alpha()
+        self.body_bl = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_bl.png')).convert_alpha()
 
-        # Movimiento de la cabeza de la serpiente
-        if self.direction == "UP":
-            new_head = (head[0], head[1] - 10)
-        if self.direction == "DOWN":
-            new_head = (head[0], head[1] + 10)
-        if self.direction == "LEFT":
-            new_head = (head[0] - 10, head[1])
-        if self.direction == "RIGHT":
-            new_head = (head[0] + 10, head[1])
+    # Asegúrate de convertir los Vector2 a tuplas cuando accedas a las imágenes
+    def draw_snake_segments(self):
+        for index, segment in enumerate(self.segments):
+            position = self.body[index]
+            segment.update(position)
+            if index == 0:
+                # Convertimos self.direction a tupla antes de usarlo
+                segment.image = self.head_images[tuple(self.direction)]
+            elif index == len(self.body) - 1:
+                direction = self.body[-1] - self.body[-2]
+                # Convertimos la dirección a tupla antes de usarla
+                segment.image = self.tail_images[tuple(direction)]
+            else:
+                # Determina la orientación y los giros para los segmentos del cuerpo
+                prev_segment = self.body[index - 1]
+                next_segment = self.body[index + 1]
+                if prev_segment.x == next_segment.x:
+                    segment.image = self.body_vertical
+                elif prev_segment.y == next_segment.y:
+                    segment.image = self.body_horizontal
+                else:
+                    # Aquí determinamos los giros
+                    if prev_segment.x < position.x and next_segment.y < position.y or prev_segment.y < position.y and next_segment.x < position.x:
+                        segment.image = self.body_tl
+                    elif prev_segment.x > position.x and next_segment.y < position.y or prev_segment.y < position.y and next_segment.x > position.x:
+                        segment.image = self.body_tr
+                    elif prev_segment.x < position.x and next_segment.y > position.y or prev_segment.y > position.y and next_segment.x < position.x:
+                        segment.image = self.body_bl
+                    elif prev_segment.x > position.x and next_segment.y > position.y or prev_segment.y > position.y and next_segment.x > position.x:
+                        segment.image = self.body_br
 
-        # Agregar nueva cabeza a la serpiente
-        self.body.insert(0, new_head)
+    def create_snake(self):
+        "Creación y pintado inicial de la serpiente, siempre se crea en horizontal"
+        for index, position in enumerate(self.body):
+            if index == 0:
+                segment = SnakeSegment(position, 'head')
+                # Aquí convertimos self.direction a tupla
+                segment.image = self.head_images[tuple(self.direction)]
+            elif index == len(self.body) - 1:
+                segment = SnakeSegment(position, 'tail')
+                # Aquí convertimos la dirección de la cola a tupla
+                direction = self.body[-1] - self.body[-2]
+                segment.image = self.tail_images[tuple(direction)]
+            else:
+                segment = SnakeSegment(position)
+                segment.image = self.body_horizontal
+            self.segments.add(segment)
 
-        # Eliminar la cola si no ha crecido
-        if len(self.body) > self.length:
-            self.body.pop()
-
-    def change_direction(self, direction):
-        self.change_to = direction
+    def update(self):
+        if self.new_block:
+            self.grow()
+            self.new_block = False    
+        if self.direction != Vector2(0, 0):
+            new_body = self.body[:-1]
+            new_body.insert(0, new_body[0] + self.direction)
+            self.body = new_body
+            self.draw_snake_segments()
 
     def grow(self):
-        self.length += 1
+        # Calcula la nueva posición para el segmento basándose en la dirección de crecimiento.
+        tail = self.body[-1]
+        tail_direction = self.body[-1] - self.body[-2] if len(self.body) > 1 else self.direction
+        new_segment_position = tail - tail_direction  # Añade en dirección opuesta a su movimiento.
+        self.body.append(new_segment_position)
 
-    def effect(self, fruit):
-        fruit.effect(self)
+        # Crea y añade el nuevo segmento al grupo de sprites.
+        new_segment = SnakeSegment(new_segment_position, 'body')
+        self.segments.add(new_segment)
 
-    def draw(self, screen):
-        for segment in self.body:
-            pygame.draw.rect(screen, GREEN, (*segment, FRUIT_SIZE, FRUIT_SIZE))
+    def add_block(self):
+        self.new_block = True
+
+    def is_snake_out_of_bounds(self, cell_number):
+    #Comprueba si la serpiente esta en los limites del tablero    
+        head = self.body[0]
+        return not (0 <= head.x < cell_number and 0 <= head.y < cell_number)
