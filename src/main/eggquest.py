@@ -1,5 +1,6 @@
 import pygame
 import sys
+import time
 from assets.RedApple import RedApple
 from assets.Fence import Fence
 from assets.Snake import Snake
@@ -90,7 +91,7 @@ class EggQuest:
             self.screen.fill((0, 0, 0))  # Considera mover esto dentro de cada estado si necesitas fondos diferentes
             self.state.draw(self.screen)
             pygame.display.flip()
-            self.clock.tick(10)
+            self.clock.tick(60)
 
 if __name__ == "__main__":
     game = EggQuest()

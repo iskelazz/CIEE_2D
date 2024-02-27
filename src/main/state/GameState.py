@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import pygame
+import time
 from pygame.math import Vector2
 import sys, os
 from Utils import Utils
@@ -69,7 +70,8 @@ class PlayingState(GameState):
                     self.update_direction(event.key)
 
     def update(self):
-        self.game.snake.update()
+        current_time = time.time()
+        self.game.snake.update(current_time)
         self.game.check_collisions()
         if self.game.snake.is_snake_out_of_bounds(self.game.cell_number):
             self.game.change_state(GameOverState(self.game))
