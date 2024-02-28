@@ -1,5 +1,6 @@
 import pygame
 import os
+import time
 from pygame.math import Vector2
 from pygame.sprite import Sprite, Group
 from config import GRAPHICS_DIR
@@ -28,6 +29,8 @@ class Snake:
         self.direction = Vector2(1, 0)
         self.new_block = False
         self.create_snake()
+        self.last_update_time = time.time()
+        self.speed = 9 # 9 movimientos por segundo
 
     def load_images(self):
         # Convertimos los Vector2 a tuplas para usarlos como claves
@@ -100,15 +103,18 @@ class Snake:
                 segment.image = self.body_horizontal
             self.segments.add(segment)
 
-    def update(self):
-        if self.new_block:
-            self.grow()
-            self.new_block = False    
-        if self.direction != Vector2(0, 0):
-            new_body = self.body[:-1]
-            new_body.insert(0, new_body[0] + self.direction)
-            self.body = new_body
-            self.draw_snake_segments()
+    def update(self, current_time):
+        if current_time - self.last_update_time > 1/self.speed:
+            if self.new_block:
+                self.grow()
+                self.new_block = False
+            if self.direction != Vector2(0, 0):
+                new_body = self.body[:-1]
+                new_body.insert(0, new_body[0] + self.direction)
+                self.body = new_body
+                self.draw_snake_segments()
+            self.last_update_time = current_time
+
 
     def grow(self):
         # Calcula la nueva posición para el segmento basándose en la dirección de crecimiento.
