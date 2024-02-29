@@ -24,6 +24,7 @@ class EggQuest:
         self.screen_height = self.cell_size * self.cell_number
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height)) #800x800
         pygame.display.set_caption('Snake Game')
+        self.FPS = 60
         self.clock = pygame.time.Clock()
 
     def run(self):
@@ -39,7 +40,7 @@ class EggQuest:
             self.screen.fill((0, 0, 0))  # Considera mover esto dentro de cada estado si necesitas fondos diferentes
             self.screen_manager.draw(self.screen)
             pygame.display.flip()
-            self.clock.tick(60)
+            self.clock.tick(self.FPS)
 
 if __name__ == "__main__":
     game = EggQuest()

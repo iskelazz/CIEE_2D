@@ -3,21 +3,24 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.RedApple import RedApple
-from assets.Fence import Fence
+from assets.staticObjects.Fence import Fence
 from assets.Snake import Snake
-from phases.GameBoard import GameBoard
-from metrics.Score import Score
+from phases.LevelManager import LevelManager
+import os
+from config import LEVEL_DIR
 
 class PlayingState(GameState):
     def __init__(self, game):
         super().__init__(game)
-        # Prepara el estado para jugar
+        # Cargar nivel
+        self.level_manager = LevelManager(self.game.screen, game.cell_size, game.cell_number)
+        self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, 'level1.json'))
+        
         self.snake = Snake()
-        self.walls = Fence.create_fences()
-        self.apple = RedApple()
-        self.apple.randomize(self.walls, self.snake.body)
+        self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
+        self.apple.randomize(self.snake.body)
         self.apple_group = pygame.sprite.GroupSingle(self.apple)
-        self.phase = GameBoard(self.game.screen, game.cell_size, game.cell_number)
+        
 
     def handle_events(self, events):
         for event in events:
@@ -38,11 +41,11 @@ class PlayingState(GameState):
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
         screen.fill((175,215,70))
-        self.phase.draw_grass()
+        self.level_manager.draw_level()
+        self.level_manager.draw_objects()
         self.game.score.draw_score()
         self.snake.segments.draw(screen)
         self.apple_group.draw(screen)
-        self.walls.draw(screen)
 
     def update_direction(self, key):
         """Actualiza la dirección de la serpiente basada en la entrada del usuario."""
@@ -61,13 +64,11 @@ class PlayingState(GameState):
         body = pygame.sprite.Group(self.snake.segments.sprites()[1:])
         #Colisión con manzana
         if pygame.sprite.spritecollideany(head, self.apple_group):
-            self.apple.randomize(self.walls, self.snake.body)
+            self.apple.randomize(self.snake.body)
             self.snake.add_block()
             self.game.score.eat_red_apple()
         #Colision de serpiente con su cuerpo    
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
-
-        # Colisión con los muros
-        if pygame.sprite.spritecollideany(head, self.walls):
-            self.game.screen_manager.change_state('GAME_OVER')
+        self.level_manager.check_collisions(head, self.game.screen_manager)
+        
