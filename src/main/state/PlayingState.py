@@ -12,7 +12,7 @@ class PlayingState(GameState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
-        self.load_level(os.path.join(LEVEL_DIR, 'level1_alt.json'))
+        self.load_level(os.path.join(LEVEL_DIR, 'level.json'))
         self.snake = Snake()
         self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
         self.apple.randomize(self.snake.body)
