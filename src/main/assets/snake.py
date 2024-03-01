@@ -3,23 +3,20 @@ import os
 import time
 from pygame.math import Vector2
 from pygame.sprite import Sprite, Group
-from config import GRAPHICS_DIR
+from config import GRAPHICS_DIR, CELL_SIZE
 
-
-cell_size = 40
-cell_number = 20
 
 class SnakeSegment(Sprite):
     def __init__(self, position, segment_type='body'):
         super().__init__()
         self.position = position
         self.segment_type = segment_type
-        self.image = pygame.Surface((cell_size, cell_size))
+        self.image = pygame.Surface((CELL_SIZE, CELL_SIZE))
         self.image.fill(pygame.Color('white'))  # Color por defecto para el cuerpo
-        self.rect = self.image.get_rect(topleft=(position.x * cell_size, position.y * cell_size))
+        self.rect = self.image.get_rect(topleft=(position.x * CELL_SIZE, position.y * CELL_SIZE))
 
     def update(self, position):
-        self.rect.topleft = (position.x * cell_size, position.y * cell_size)
+        self.rect.topleft = (position.x * CELL_SIZE, position.y * CELL_SIZE)
 
 class Snake:
     def __init__(self):
@@ -130,7 +127,7 @@ class Snake:
     def add_block(self):
         self.new_block = True
 
-    def is_snake_out_of_bounds(self, cell_number):
+    def is_snake_out_of_bounds(self, cell_number_x, cell_number_y):
     #Comprueba si la serpiente esta en los limites del tablero    
         head = self.body[0]
-        return not (0 <= head.x < cell_number and 0 <= head.y < cell_number)
+        return not (0 <= head.x < cell_number_x and 0 <= head.y < cell_number_y)

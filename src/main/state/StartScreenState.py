@@ -2,7 +2,7 @@ import pygame
 from state.GameState import GameState
 import sys, os
 from Utils import Utils
-from config import GRAPHICS_DIR, FONTS_DIR 
+from config import GRAPHICS_DIR, FONTS_DIR
 
 class StartScreenState(GameState):
     def __init__(self, game):

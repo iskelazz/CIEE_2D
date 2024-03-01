@@ -1,13 +1,11 @@
 import pygame
 import random
 import os
-from pygame.math import Vector2
 from pygame.sprite import Sprite
-from config import GRAPHICS_DIR
+from config import GRAPHICS_DIR, CELL_SIZE
 
-cell_size = 40
-cell_number = 20
-
+cell_number = 20 #temporal
+ 
 class RedApple(Sprite):
 	def __init__(self, staticPositions):
 		super().__init__()
@@ -27,5 +25,11 @@ class RedApple(Sprite):
 
 		if available_positions:
 			new_position = random.choice(list(available_positions))
-			self.rect.x = new_position[0] * cell_size
-			self.rect.y = new_position[1] * cell_size
+			self.rect.x = new_position[0] * CELL_SIZE
+			self.rect.y = new_position[1] * CELL_SIZE
+
+	def draw(self, screen, camera_offset):
+		# Ajusta la posición de la manzana por el desplazamiento de la cámara
+		adjusted_position = (self.rect.x - camera_offset.x, 
+                             self.rect.y - camera_offset.y)
+		screen.blit(self.image, adjusted_position)

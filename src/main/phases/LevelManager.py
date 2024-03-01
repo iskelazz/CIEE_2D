@@ -1,15 +1,20 @@
 import json
 import os
 import pygame
-from config import GRAPHICS_DIR  
+from config import GRAPHICS_DIR, CELL_SIZE  
 from phases.Tile import Tile  
 from assets.staticObjects.StaticGameObjectFactory import StaticObjectFactory
 
 class LevelManager:
-    def __init__(self, screen, cell_size, cell_number):
+    def __init__(self, screen):
         self.screen = screen
-        self.cell_size = cell_size
-        self.cell_number = cell_number
+        self.cell_number_x = 0  
+        self.cell_number_y = 0
+        self.cell_size = CELL_SIZE
+        self.camera_offset_x = 0
+        self.camera_offset_y = 0 
+        self.width = 0
+        self.height = 0
         self.layers = []  
         self.objects = []
         self.sprite_groups = {}
@@ -51,19 +56,28 @@ class LevelManager:
         """Carga el nivel y sus capas desde un archivo JSON."""
         with open(json_path) as f:
             data = json.load(f)
+            # Establece el tamaño de la fase en casillas
+            self.cell_number_x = len(data['layers'][0]['tiles'][0])  
+            self.cell_number_y = len(data['layers'][0]['tiles'])
+
+            self.width = self.cell_number_x * self.cell_size
+            self.height = self.cell_number_y * self.cell_size
+
             for layer_data in data['layers']:
                 self.load_layer(layer_data)
             for obj_data in data["objects"]:
                 self.load_object(obj_data)
 
-    def draw_level(self):
+
+    def draw_level(self,screen, camera_offset):
         """Dibuja todas las capas del nivel."""
         for layer in self.layers:
             for row_idx, row in enumerate(layer):
                 for col_idx, tile in enumerate(row):
                     if tile:
-                        tile_position = (col_idx * self.cell_size, row_idx * self.cell_size)
-                        tile.draw(self.screen, tile_position)
+                        # Aplica el desplazamiento de la cámara aquí
+                        tile_position = (col_idx * CELL_SIZE - camera_offset.x, row_idx * CELL_SIZE - camera_offset.y)
+                        tile.draw(screen, tile_position)
 
     def update(self):
         """Actualiza el nivel dibujando todas las capas."""
@@ -95,9 +109,11 @@ class LevelManager:
             self.sprite_groups[obj_data["type"]].add(obj)
 
     #Funcion para pintar en pantalla todos los objetos estaticos
-    def draw_objects(self):
+    def draw_objects(self, screen, camera_offset):
         for obj in self.objects:
-            obj.draw(self.screen)
+            # Calcula la nueva posición del objeto basada en el desplazamiento de la cámara
+            obj_position = (obj.rect.x - camera_offset.x, obj.rect.y - camera_offset.y)
+            screen.blit(obj.image, obj_position)
 
     #Esta funcion verifica las colisiones del jugador con los objetos estaticos y las gestiona
     def check_collisions(self, head, manager):

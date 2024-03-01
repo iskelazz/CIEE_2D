@@ -2,9 +2,7 @@ import pygame
 import sys
 from metrics.Score import Score
 from state.StateManager import StateManager
-
-cell_size = 40
-cell_number = 20
+from config import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class EggQuest:
     def __init__(self):
@@ -18,10 +16,8 @@ class EggQuest:
     def initialize_game(self):
         """Configura los parámetros iniciales y los objetos de Pygame."""
         pygame.init()
-        self.cell_size = cell_size
-        self.cell_number = cell_number
-        self.screen_width = self.cell_size * self.cell_number
-        self.screen_height = self.cell_size * self.cell_number
+        self.screen_width = SCREEN_WIDTH
+        self.screen_height = SCREEN_HEIGHT
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height)) #800x800
         pygame.display.set_caption('Snake Game')
         self.FPS = 60
