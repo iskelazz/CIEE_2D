@@ -2,9 +2,9 @@ import pygame
 import time
 from pygame.math import Vector2
 from state.GameState import GameState
-from assets.RedApple import RedApple
+from assets.redapple import RedApple
 from assets.Fence import Fence
-from assets.Snake import Snake
+from assets.snake import Snake
 from phases.GameBoard import GameBoard
 from metrics.Score import Score
 
