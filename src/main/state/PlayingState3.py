@@ -3,6 +3,7 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
+from assets.Hole import Hole
 from assets.snake import Snake
 from phases.LevelManager import LevelManager
 import os
@@ -15,8 +16,10 @@ class PlayingState3(GameState):
         self.load_level(os.path.join(LEVEL_DIR, 'level.json'))
         self.snake = Snake()
         self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
+        self.hole = Hole(40,40)
         self.apple.randomize(self.snake.body)
         self.apple_group = pygame.sprite.GroupSingle(self.apple)
+        self.hole_group = pygame.sprite.GroupSingle(self.hole)
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         
     def calculate_camera_offset(self):
@@ -54,7 +57,8 @@ class PlayingState3(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.game.screen_manager.change_state('PAUSE')
+                    self.next_level()
+                    #.game.screen_manager.change_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
                     self.update_direction(event.key)
@@ -78,7 +82,9 @@ class PlayingState3(GameState):
             screen.blit(segment.image, adjusted_position)
         for apple in self.apple_group:
             apple.draw(screen, self.camera_offset)
-
+        for hole in self.hole_group:
+            hole.draw(screen, self.camera_offset)
+        
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
         self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
@@ -97,16 +103,21 @@ class PlayingState3(GameState):
     def check_collisions(self):
         """Verifica y maneja las colisiones."""
         head = self.snake.segments.sprites()[0]
+        tail= self.snake.segments.sprites()[-1]
         body = pygame.sprite.Group(self.snake.segments.sprites()[1:])
+        snake_group=pygame.sprite.Group(self.snake.segments.sprites()[1:])
         #Colisión con manzana
         if pygame.sprite.spritecollideany(head, self.apple_group):
             self.apple.randomize(self.snake.body)
             self.snake.add_block()
             self.game.score.eat_red_apple()
         #Colision de serpiente con su cuerpo    
+        if pygame.sprite.spritecollideany(head, self.hole_group):
+            self.next_level()
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
-        self.level_manager.check_collisions(head, self.game.screen_manager)
+        
+        self.level_manager.check_collisions(head, tail, self.game.screen_manager)
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')

@@ -13,7 +13,7 @@ class HoleStatic(StaticGameObject):
     def update(self):
         pass  
 
-    def handle_collision(self, screen_manager):
+    def handle_collision(self, screen_manager,tail_collide):
         screen_manager.current_state.next_level()
 
     def occupied_positions(self): 

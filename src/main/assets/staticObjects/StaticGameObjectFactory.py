@@ -1,5 +1,6 @@
 from assets.staticObjects.Fence import Fence
 from assets.staticObjects.HoleStatic import HoleStatic
+from assets.staticObjects.Pit import Pit
 class StaticObjectFactory:
     
     @staticmethod
@@ -8,6 +9,7 @@ class StaticObjectFactory:
         obj_class_map = {
             "Fence": Fence,
             "Hole":HoleStatic,
+            "Pit":Pit,
             # Añadir mas mapeos
         }
 

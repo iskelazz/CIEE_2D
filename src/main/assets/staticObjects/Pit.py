@@ -3,7 +3,7 @@ import pygame
 cell_size = 40
 cell_number = 20
 
-class Fence(StaticGameObject):
+class Pit(StaticGameObject):
     def __init__(self, sprite, position):
         super().__init__(sprite, position)
 
@@ -14,7 +14,9 @@ class Fence(StaticGameObject):
         pass  
 
     def handle_collision(self, screen_manager,tail_collide):
-        screen_manager.change_state('GAME_OVER')
+        if tail_collide!=None:
+            screen_manager.change_state('GAME_OVER')
+        else: pass
 
     def occupied_positions(self): 
         return self.position

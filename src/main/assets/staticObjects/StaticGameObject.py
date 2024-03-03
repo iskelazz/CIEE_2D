@@ -16,7 +16,7 @@ class StaticGameObject(Sprite):
     def update(self):
         pass  
 
-    def handle_collision(self, screen_manager):
+    def handle_collision(self, screen_manager,tail_collide):
         # Implementación base que puede ser sobreescrita
         pass
 

@@ -103,7 +103,9 @@ class PlayingState1(GameState):
     def check_collisions(self):
         """Verifica y maneja las colisiones."""
         head = self.snake.segments.sprites()[0]
+        tail= self.snake.segments.sprites()[-1]
         body = pygame.sprite.Group(self.snake.segments.sprites()[1:])
+        snake_group=pygame.sprite.Group(self.snake.segments.sprites()[1:])
         #Colisión con manzana
         if pygame.sprite.spritecollideany(head, self.apple_group):
             self.apple.randomize(self.snake.body)
@@ -114,9 +116,9 @@ class PlayingState1(GameState):
             self.next_level()
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
-        self.level_manager.check_collisions(head, self.game.screen_manager)
+        
+        self.level_manager.check_collisions(head, tail, self.game.screen_manager)
     
     def next_level(self):
-        print("ah")
         self.game.screen_manager.change_state('PLAYING2')
         self.game.screen_manager.update()
