@@ -71,6 +71,13 @@
       "sprite": "terrain_atlas_1280.png",
       "crop": [1000, 120, 40, 40],
       "rotation": 0
+    },
+    {
+      "type": "Hole",
+      "positions": [[15, 15]],
+      "sprite": "terrain_atlas_1280.png",
+      "crop": [300, 980, 40, 40],
+      "rotation": 0
     }
   ]  
 }

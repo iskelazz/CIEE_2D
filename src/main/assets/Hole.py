@@ -6,7 +6,7 @@ from config import GRAPHICS_DIR, CELL_SIZE
 
 cell_size = 40
 cell_number = 20
-
+#Objeto para el cambio de nivel, Sprite temporal
 class Hole(Sprite):
 	def __init__(self, x,y):
 		super().__init__()
