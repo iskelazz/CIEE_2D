@@ -131,3 +131,10 @@ class Snake:
     #Comprueba si la serpiente esta en los limites del tablero    
         head = self.body[0]
         return not (0 <= head.x < cell_number_x and 0 <= head.y < cell_number_y)
+
+    def reduce_body(self):
+        if len(self.body) > 1:
+            # Eliminamos el último elemento del cuerpo de la serpiente
+            self.body.pop()
+            # Eliminamos también el último segmento del grupo de sprites
+            self.segments.remove(self.segments.sprites()[-1])

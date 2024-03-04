@@ -7,6 +7,7 @@ class Score:
     def __init__(self, screen, screen_width):
         self.score = 0 
         self.SCORE_PER_APPLE = 100
+        self.SCORE_PER_ROTTEN = 1000
         self.screen = screen
         self.screen_width = screen_width
 
@@ -20,3 +21,7 @@ class Score:
     def eat_red_apple(self):
         """Si la serpiente come una manzana roja, aumenta la puntuacion en 100"""
         self.score += self.SCORE_PER_APPLE
+
+    def eat_rotten_apple(self):
+        """Si la serpiente come una manzana podrida, disminuye la puntuacion en 1000"""
+        self.score -= self.SCORE_PER_ROTTEN

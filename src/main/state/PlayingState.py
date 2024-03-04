@@ -3,6 +3,7 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.RedApple import RedApple
+from assets.RottenApple import RottenApple  
 from assets.Snake import Snake
 from phases.LevelManager import LevelManager
 import os
@@ -11,16 +12,16 @@ from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH
 class PlayingState(GameState):
     def __init__(self, game):
         super().__init__(game)
-        # Cargar nivel
         self.load_level(os.path.join(LEVEL_DIR, 'level.json'))
         self.snake = Snake()
-        self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
-        self.apple.randomize(self.snake.body)
-        self.apple_group = pygame.sprite.GroupSingle(self.apple)
+        self.red_apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
+        self.apple_group = pygame.sprite.Group(self.red_apple)  
+        self.rotten_apples = pygame.sprite.Group()  
+        self.last_rotten_apple_time = time.time()  
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
-        
+        self.red_apple.randomize(self.snake.body)
+
     def calculate_camera_offset(self):
-        # Para que la serpiente se encuentre en el centro de la camara
         half_screen_width = SCREEN_WIDTH / 2
         half_screen_height = SCREEN_HEIGHT / 2
 
@@ -31,20 +32,11 @@ class PlayingState(GameState):
         return Vector2(camera_x, camera_y)
 
     def calculate_camera_offset_block(self):
-        # Para que la camara se mueva por bloques
-
-        # Obtener la posición del centro de la cabeza de la serpiente
         snake_head_position = self.snake.segments.sprites()[0].rect.center
-
-        # Calcular en qué "bloque" de la cámara está basado en la posición de la cabeza de la serpiente
         block_x = int(snake_head_position[0] // SCREEN_WIDTH)
         block_y = int(snake_head_position[1] // SCREEN_HEIGHT)
-
-        # Calcular el desplazamiento de la cámara para centrar ese bloque
         camera_x = block_x * SCREEN_WIDTH
         camera_y = block_y * SCREEN_HEIGHT
-
-        # Asegurarse de que la cámara no se desplace fuera de los límites del nivel
         camera_x = min(max(camera_x, 0), self.level_size[0] - SCREEN_WIDTH)
         camera_y = min(max(camera_y, 0), self.level_size[1] - SCREEN_HEIGHT)
 
@@ -56,7 +48,6 @@ class PlayingState(GameState):
                 if event.key == pygame.K_ESCAPE:
                     self.game.screen_manager.change_state('PAUSE')
                 else:
-                    # Actualiza la dirección basada en la tecla presionada
                     self.update_direction(event.key)
 
     def update(self):
@@ -66,9 +57,18 @@ class PlayingState(GameState):
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')
         self.camera_offset = self.calculate_camera_offset_block()
+        # Añadir RottenApple cada 5 segundos hasta un máximo de 5
+        if current_time - self.last_rotten_apple_time > 5 and len(self.rotten_apples) < 5:
+            self.add_rotten_apple()
+            self.last_rotten_apple_time = current_time
+
+    def add_rotten_apple(self):
+        rotten_apple = RottenApple(lambda: self.level_manager.precalculate_static_objects_positions())
+        rotten_apple.randomize(self.snake.body)
+        self.apple_group.add(rotten_apple) 
+        self.rotten_apples.add(rotten_apple)  
 
     def draw(self, screen):
-        """Dibuja todos los elementos del juego en la pantalla."""
         screen.fill((175,215,70))
         self.level_manager.draw_level(screen, self.camera_offset)
         self.level_manager.draw_objects(screen, self.camera_offset)
@@ -76,15 +76,13 @@ class PlayingState(GameState):
         for segment in self.snake.segments:
             adjusted_position = segment.rect.topleft - self.camera_offset
             screen.blit(segment.image, adjusted_position)
-        for apple in self.apple_group:
-            apple.draw(screen, self.camera_offset)
+        self.apple_group.draw(screen)  # Dibuja todas las manzanas en el grupo
 
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
         self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
 
     def update_direction(self, key):
-        """Actualiza la dirección de la serpiente basada en la entrada del usuario."""
         directions = {
             pygame.K_UP: Vector2(0, -1),
             pygame.K_DOWN: Vector2(0, 1),
@@ -95,15 +93,18 @@ class PlayingState(GameState):
             self.snake.direction = directions[key]
     
     def check_collisions(self):
-        """Verifica y maneja las colisiones."""
         head = self.snake.segments.sprites()[0]
         body = pygame.sprite.Group(self.snake.segments.sprites()[1:])
-        #Colisión con manzana
-        if pygame.sprite.spritecollideany(head, self.apple_group):
-            self.apple.randomize(self.snake.body)
-            self.snake.add_block()
-            self.game.score.eat_red_apple()
-        #Colision de serpiente con su cuerpo    
+        collided_apple = pygame.sprite.spritecollideany(head, self.apple_group)
+        if collided_apple:
+            collided_apple.randomize(self.snake.body)
+            if isinstance(collided_apple, RedApple):
+                self.snake.add_block()
+                self.game.score.eat_red_apple()
+            elif isinstance(collided_apple, RottenApple):
+                if len(self.snake.body) > 1:  # Asegurarse de que la serpiente no se reduzca por debajo de un tamaño mínimo
+                    self.snake.reduce_body()
+                    self.game.score.eat_rotten_apple() 
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
         self.level_manager.check_collisions(head, self.game.screen_manager)
