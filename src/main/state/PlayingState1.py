@@ -3,8 +3,9 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
-from assets.Hole import Hole
+from assets.hole import Hole
 from assets.snake import Snake
+from assets.pointsDoor import PointsDoor
 from phases.LevelManager import LevelManager
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH
@@ -16,10 +17,12 @@ class PlayingState1(GameState):
         self.load_level(os.path.join(LEVEL_DIR, 'level.json'))
         self.snake = Snake()
         self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
-        self.hole = Hole(40,40)
         self.apple.randomize(self.snake.body)
+        self.pointsDoor1=PointsDoor(700,360,True)
+        self.pointsDoor2=PointsDoor(700,400,True)
+
+        self.pointsDoor_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2)
         self.apple_group = pygame.sprite.GroupSingle(self.apple)
-        self.hole_group = pygame.sprite.GroupSingle(self.hole)
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         
     def calculate_camera_offset(self):
@@ -57,8 +60,7 @@ class PlayingState1(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.next_level()
-                    #.game.screen_manager.change_state('PAUSE')
+                    self.game.screen_manager.change_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
                     self.update_direction(event.key)
@@ -82,8 +84,9 @@ class PlayingState1(GameState):
             screen.blit(segment.image, adjusted_position)
         for apple in self.apple_group:
             apple.draw(screen, self.camera_offset)
-        for hole in self.hole_group:
-            hole.draw(screen, self.camera_offset)
+        if self.game.score.score<300:
+            for pointsDoor in self.pointsDoor_group:
+                pointsDoor.draw(screen, self.camera_offset)
         
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
@@ -105,17 +108,17 @@ class PlayingState1(GameState):
         head = self.snake.segments.sprites()[0]
         tail= self.snake.segments.sprites()[-1]
         body = pygame.sprite.Group(self.snake.segments.sprites()[1:])
-        snake_group=pygame.sprite.Group(self.snake.segments.sprites()[1:])
         #Colisión con manzana
         if pygame.sprite.spritecollideany(head, self.apple_group):
             self.apple.randomize(self.snake.body)
             self.snake.add_block()
             self.game.score.eat_red_apple()
-        #Colision de serpiente con su cuerpo    
-        if pygame.sprite.spritecollideany(head, self.hole_group):
-            self.next_level()
+        #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
+        if pygame.sprite.spritecollideany(head, self.pointsDoor_group):
+            if self.game.score.score<300:
+                self.game.screen_manager.change_state('GAME_OVER')
         
         self.level_manager.check_collisions(head, tail, self.game.screen_manager)
     

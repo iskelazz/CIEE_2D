@@ -3,7 +3,7 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
-from assets.Hole import Hole
+from assets.hole import Hole
 from assets.snake import Snake
 from phases.LevelManager import LevelManager
 import os
@@ -57,8 +57,7 @@ class PlayingState3(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.next_level()
-                    #.game.screen_manager.change_state('PAUSE')
+                    self.game.screen_manager.change_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
                     self.update_direction(event.key)

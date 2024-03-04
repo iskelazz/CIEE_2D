@@ -3,7 +3,7 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
-from assets.Hole import Hole
+from assets.hole import Hole
 from assets.snake import Snake
 from phases.LevelManager import LevelManager
 import os
@@ -13,7 +13,7 @@ class PlayingState2(GameState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
-        self.load_level(os.path.join(LEVEL_DIR, 'level1.json'))
+        self.load_level(os.path.join(LEVEL_DIR, 'level2.json'))
         self.snake = Snake()
         self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
         self.hole = Hole(40,40)
@@ -57,8 +57,7 @@ class PlayingState2(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.next_level()
-                    #.game.screen_manager.change_state('PAUSE')
+                    self.game.screen_manager.change_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
                     self.update_direction(event.key)
@@ -82,8 +81,8 @@ class PlayingState2(GameState):
             screen.blit(segment.image, adjusted_position)
         for apple in self.apple_group:
             apple.draw(screen, self.camera_offset)
-        for hole in self.hole_group:
-            hole.draw(screen, self.camera_offset)
+        #for hole in self.hole_group:
+        #    hole.draw(screen, self.camera_offset)
         
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
