@@ -1,9 +1,8 @@
 from assets.staticObjects.StaticGameObject import StaticGameObject
-import pygame
-cell_size = 40
-cell_number = 20
-#objeto estatico para el cambio de nivel
-class HoleStatic(StaticGameObject):
+from animations.explosion import Explosion
+from config import CELL_SIZE
+
+class BreakableFence(StaticGameObject):
     def __init__(self, sprite, position):
         super().__init__(sprite, position)
 
@@ -14,7 +13,10 @@ class HoleStatic(StaticGameObject):
         pass  
 
     def handle_collision(self, screen_manager,tail_collide,explosion):
-        screen_manager.current_state.next_level()
+        position_in_pixels = self.rect.center
+        new_explosion = Explosion(position_in_pixels)
+        explosion.add(new_explosion)
+        self.kill()
 
     def occupied_positions(self): 
         return self.position

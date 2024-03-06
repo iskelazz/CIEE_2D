@@ -11,12 +11,9 @@ class LevelManager:
         self.cell_number_x = 0  
         self.cell_number_y = 0
         self.cell_size = CELL_SIZE
-        self.camera_offset_x = 0
-        self.camera_offset_y = 0 
         self.width = 0
         self.height = 0
         self.layers = []  
-        self.objects = []
         self.sprite_groups = {}
 
     def load_sprites(self, sprites_data):
@@ -103,30 +100,32 @@ class LevelManager:
             obj = StaticObjectFactory.create_object(obj_data["type"], sprite, position)
 
             # Añadir el objeto a la lista general y al grupo de sprites correspondiente
-            self.objects.append(obj)
             if obj_data["type"] not in self.sprite_groups:
                 self.sprite_groups[obj_data["type"]] = pygame.sprite.Group()
             self.sprite_groups[obj_data["type"]].add(obj)
 
     #Funcion para pintar en pantalla todos los objetos estaticos
     def draw_objects(self, screen, camera_offset):
-        for obj in self.objects:
-            # Calcula la nueva posición del objeto basada en el desplazamiento de la cámara
-            obj_position = (obj.rect.x - camera_offset.x, obj.rect.y - camera_offset.y)
-            screen.blit(obj.image, obj_position)
+        for group in self.sprite_groups.values():
+            for obj in group:
+                # Calcula la nueva posición del objeto basada en el desplazamiento de la cámara
+                obj_position = (obj.rect.x - camera_offset.x, obj.rect.y - camera_offset.y)
+                screen.blit(obj.image, obj_position)
 
     #Esta funcion verifica las colisiones del jugador con los objetos estaticos y las gestiona
-    def check_collisions(self, head,tail, manager):
+    def check_collisions(self, head,tail, manager, explosion):
         
         for group in self.sprite_groups.values():
             collided_sprites = pygame.sprite.spritecollide(head, group, False)
             tail_collide=pygame.sprite.spritecollideany(tail, group)
             for sprite in collided_sprites:
-                sprite.handle_collision(manager,tail_collide)
+                sprite.handle_collision(manager,tail_collide,explosion)
 
     #Calculamos las posiciones de los objetos estaticos para evitar la aparicion de objetos aleatorios en esas posiciones
     def precalculate_static_objects_positions(self):
         occupied_positions = set()
-        for obj in self.objects:
-            occupied_positions.add(tuple (obj.occupied_positions()))
+        for group in self.sprite_groups.values():
+            for obj in group:
+                # Asume que cada objeto tiene un método occupied_positions() que devuelve las posiciones que ocupa.
+                occupied_positions.add(tuple(obj.occupied_positions()))
         return occupied_positions

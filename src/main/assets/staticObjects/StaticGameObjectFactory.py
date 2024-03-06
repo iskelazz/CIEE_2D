@@ -1,4 +1,5 @@
 from assets.staticObjects.Fence import Fence
+from assets.staticObjects.breakableFence import BreakableFence
 from assets.staticObjects.HoleStatic import HoleStatic
 from assets.staticObjects.Pit import Pit
 class StaticObjectFactory:
@@ -10,6 +11,7 @@ class StaticObjectFactory:
             "Fence": Fence,
             "Hole":HoleStatic,
             "Pit":Pit,
+            "BreakableFence": BreakableFence
             # Añadir mas mapeos
         }
 

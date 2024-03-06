@@ -3,7 +3,7 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
-from assets.hole import Hole
+from animations.explosion import Explosion
 from assets.snake import Snake
 from assets.pointsDoor import PointsDoor
 from phases.LevelManager import LevelManager
@@ -14,13 +14,13 @@ class PlayingState1(GameState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
-        self.load_level(os.path.join(LEVEL_DIR, 'level.json'))
+        self.load_level(os.path.join(LEVEL_DIR, 'level2_alt.json'))
         self.snake = Snake()
         self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
         self.apple.randomize(self.snake.body)
         self.pointsDoor1=PointsDoor(700,360,True)
         self.pointsDoor2=PointsDoor(700,400,True)
-
+        self.explosions_group = pygame.sprite.Group()
         self.pointsDoor_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2)
         self.apple_group = pygame.sprite.GroupSingle(self.apple)
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
@@ -72,6 +72,7 @@ class PlayingState1(GameState):
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')
         self.camera_offset = self.calculate_camera_offset_block()
+        self.explosions_group.update()
 
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
@@ -84,6 +85,8 @@ class PlayingState1(GameState):
             screen.blit(segment.image, adjusted_position)
         for apple in self.apple_group:
             apple.draw(screen, self.camera_offset)
+        for explosion in self.explosions_group.sprites():
+            explosion.draw(screen, self.camera_offset)
         if self.game.score.score<300:
             for pointsDoor in self.pointsDoor_group:
                 pointsDoor.draw(screen, self.camera_offset)
@@ -120,7 +123,7 @@ class PlayingState1(GameState):
             if self.game.score.score<300:
                 self.game.screen_manager.change_state('GAME_OVER')
         
-        self.level_manager.check_collisions(head, tail, self.game.screen_manager)
+        self.level_manager.check_collisions(head, tail, self.game.screen_manager,  self.explosions_group)
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')

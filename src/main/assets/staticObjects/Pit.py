@@ -13,7 +13,7 @@ class Pit(StaticGameObject):
     def update(self):
         pass  
 
-    def handle_collision(self, screen_manager,tail_collide):
+    def handle_collision(self, screen_manager,tail_collide,explosion):
         if tail_collide!=None:
             screen_manager.change_state('GAME_OVER')
         else: pass

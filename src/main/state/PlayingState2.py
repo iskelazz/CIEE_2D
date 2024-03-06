@@ -3,7 +3,7 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
-from assets.hole import Hole
+from assets.Hole import Hole
 from assets.snake import Snake
 from phases.LevelManager import LevelManager
 import os
@@ -116,7 +116,7 @@ class PlayingState2(GameState):
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
         
-        self.level_manager.check_collisions(head, tail, self.game.screen_manager)
+        self.level_manager.check_collisions(head, tail, self.game.screen_manager,  "no work yet")
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING3')
