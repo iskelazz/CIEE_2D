@@ -44,8 +44,11 @@ class FloorTrap(Sprite):
         if self.animation_count // self.ANIMATION_DELAY > len(sprites):
             self.animation_count = 0
             
-    def draw(self, win):
-        win.blit(self.image, (self.rect.x, self.rect.y))
+    def draw(self, win, camera_offset):
+        
+        adjusted_position = (self.rect.x - camera_offset.x, 
+                             self.rect.y - camera_offset.y)
+        win.blit(self.image, adjusted_position)
         
     def is_on(self):
         

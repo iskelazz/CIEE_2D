@@ -121,9 +121,11 @@ class SawTrap(Sprite):
         coordinates = Vector2(self.rect.x, self.rect.y)
         return coordinates
             
-    def draw(self, win):
-        self.trackPiece.draw(win)
-        win.blit(self.image, (self.rect.x, self.rect.y))
+    def draw(self, win, camera_offset):
+        self.trackPiece.draw(win, camera_offset)
+        adjusted_position = (self.rect.x - camera_offset.x, 
+                             self.rect.y - camera_offset.y)
+        win.blit(self.image, adjusted_position)
         
         
         

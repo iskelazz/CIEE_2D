@@ -91,9 +91,9 @@ class PlayingState1(GameState):
         self.level_manager.draw_level(screen, self.camera_offset)
         self.level_manager.draw_objects(screen, self.camera_offset)
         self.game.score.draw_score()
-        self.fireTrap.draw(screen)
-        self.spikeTrap.draw(screen)
-        self.sawTrap.draw(screen)
+        self.fireTrap.draw(screen, self.camera_offset)
+        self.spikeTrap.draw(screen, self.camera_offset)
+        self.sawTrap.draw(screen, self.camera_offset)
         for segment in self.snake.segments:
             adjusted_position = segment.rect.topleft - self.camera_offset
             screen.blit(segment.image, adjusted_position)
