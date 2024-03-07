@@ -3,10 +3,14 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
-from assets.hole import Hole
+from assets.Hole import Hole
 from assets.snake import Snake
 from assets.pointsDoor import PointsDoor
 from phases.LevelManager import LevelManager
+from assets.floorTraps import FireTrap
+from assets.floorTraps import SpikeTrap
+from assets.sawTrap import SawTrap
+
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH
 
@@ -16,10 +20,14 @@ class PlayingState1(GameState):
         # Cargar nivel
         self.load_level(os.path.join(LEVEL_DIR, 'level.json'))
         self.snake = Snake()
+        self.sawTrap = SawTrap(45, 5, 8, 'vertical')
+        self.fireTrap = FireTrap(Vector2(5, 5))
+        self.spikeTrap = SpikeTrap(Vector2(8, 8))
         self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
         self.apple.randomize(self.snake.body)
         self.pointsDoor1=PointsDoor(700,360,True)
         self.pointsDoor2=PointsDoor(700,400,True)
+        
 
         self.pointsDoor_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2)
         self.apple_group = pygame.sprite.GroupSingle(self.apple)
@@ -68,6 +76,10 @@ class PlayingState1(GameState):
     def update(self):
         current_time = time.time()
         self.snake.update(current_time)
+        self.fireTrap.animate_trap()
+        self.spikeTrap.animate_trap()
+        self.sawTrap.animate_saw()
+        self.sawTrap.handle_move()
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')
@@ -79,6 +91,9 @@ class PlayingState1(GameState):
         self.level_manager.draw_level(screen, self.camera_offset)
         self.level_manager.draw_objects(screen, self.camera_offset)
         self.game.score.draw_score()
+        self.fireTrap.draw(screen)
+        self.spikeTrap.draw(screen)
+        self.sawTrap.draw(screen)
         for segment in self.snake.segments:
             adjusted_position = segment.rect.topleft - self.camera_offset
             screen.blit(segment.image, adjusted_position)
@@ -121,6 +136,44 @@ class PlayingState1(GameState):
                 self.game.screen_manager.change_state('GAME_OVER')
         
         self.level_manager.check_collisions(head, tail, self.game.screen_manager)
+
+        #Función de colisión con FloorTraps    
+        def floortrap_collision(floortrap):
+            if pygame.sprite.collide_mask(head, floortrap) or pygame.sprite.spritecollideany(floortrap, body):
+                if floortrap.is_on():
+                    self.snake.reduce_body()
+                    self.game.score.trap_collision()
+                if len(self.snake.body) < 1 or self.game.score.score < 0:
+                    self.game.screen_manager.change_state('GAME_OVER')
+       
+        #Función de colisión con SawTraps            
+        def sawtrap_collision(sawtrap):
+            #Colision con cuchilla de cabeza
+            if pygame.sprite.collide_mask(head, sawtrap):
+                self.game.screen_manager.change_state('GAME_OVER')
+           
+            #Colision con cuchilla de cuerpo
+            if pygame.sprite.spritecollideany(sawtrap, body):
+                index = 0
+                for i, element in enumerate(body):
+                    if pygame.sprite.collide_rect(sawtrap, element):
+                    # Se ha encontrado una colisión
+                        index = i
+                        break
+       
+                reduce_value = len(body) - index
+                for i in range(reduce_value):
+                    self.snake.reduce_body()
+           
+           
+        #Colision con trampas de fuego
+        floortrap_collision(self.fireTrap)    
+   
+        #Colision con trampas de pinchos
+        floortrap_collision(self.spikeTrap)        
+               
+        #Colision con cuchilla
+        sawtrap_collision(self.sawTrap)
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')

@@ -3,7 +3,7 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
-from assets.hole import Hole
+from assets.Hole import Hole
 from assets.snake import Snake
 from phases.LevelManager import LevelManager
 import os
