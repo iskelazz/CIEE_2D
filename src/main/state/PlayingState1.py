@@ -4,7 +4,8 @@ from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
 from animations.explosion import Explosion
-from assets.snake import Snake
+from assets.snake.snake import Snake
+from assets.snake.fastState import FastState
 from assets.pointsDoor import PointsDoor
 from phases.LevelManager import LevelManager
 import os
