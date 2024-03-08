@@ -1,7 +1,5 @@
 from assets.staticObjects.StaticGameObject import StaticGameObject
 import pygame
-cell_size = 40
-cell_number = 20
 
 class Fence(StaticGameObject):
     def __init__(self, sprite, position):
@@ -13,7 +11,7 @@ class Fence(StaticGameObject):
     def update(self):
         pass  
 
-    def handle_collision(self, screen_manager):
+    def handle_collision(self, screen_manager, tail_collide, snake_state, explosion):
         screen_manager.change_state('GAME_OVER')
 
     def occupied_positions(self): 

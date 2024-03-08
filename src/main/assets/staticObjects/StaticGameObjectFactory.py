@@ -1,4 +1,7 @@
 from assets.staticObjects.Fence import Fence
+from assets.staticObjects.breakableFence import BreakableFence
+from assets.staticObjects.HoleStatic import HoleStatic
+from assets.staticObjects.Pit import Pit
 class StaticObjectFactory:
     
     @staticmethod
@@ -6,6 +9,9 @@ class StaticObjectFactory:
         # Diccionario que mapea tipos de objeto a sus clases constructoras
         obj_class_map = {
             "Fence": Fence,
+            "Hole":HoleStatic,
+            "Pit":Pit,
+            "BreakableFence": BreakableFence
             # Añadir mas mapeos
         }
 
