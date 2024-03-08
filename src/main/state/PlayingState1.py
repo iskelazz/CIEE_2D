@@ -3,9 +3,11 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
-from assets.Hole import Hole
+from assets.hole import Hole
+from assets.key import Key
 from assets.snake import Snake
 from assets.pointsDoor import PointsDoor
+from assets.door import Door
 from phases.LevelManager import LevelManager
 from assets.floorTraps import FireTrap
 from assets.floorTraps import SpikeTrap
@@ -25,11 +27,13 @@ class PlayingState1(GameState):
         self.spikeTrap = SpikeTrap(Vector2(8, 8))
         self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
         self.apple.randomize(self.snake.body)
-        self.pointsDoor1=PointsDoor(700,360,True)
-        self.pointsDoor2=PointsDoor(700,400,True)
+        self.pointsDoor1=PointsDoor(700,360,True,self.game.score)
+        self.pointsDoor2=PointsDoor(700,400,True,self.game.score)
+        self.door=Door(300,100,True)
+        self.key=Key(300,200,self.door)
         
-
-        self.pointsDoor_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2)
+        self.key_group=pygame.sprite.Group(self.key)
+        self.door_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2,self.door)
         self.apple_group = pygame.sprite.GroupSingle(self.apple)
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         
@@ -84,6 +88,9 @@ class PlayingState1(GameState):
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')
         self.camera_offset = self.calculate_camera_offset_block()
+        for pointsDoor in self.door_group:
+            pointsDoor.update()
+        
 
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
@@ -99,9 +106,10 @@ class PlayingState1(GameState):
             screen.blit(segment.image, adjusted_position)
         for apple in self.apple_group:
             apple.draw(screen, self.camera_offset)
-        if self.game.score.score<300:
-            for pointsDoor in self.pointsDoor_group:
-                pointsDoor.draw(screen, self.camera_offset)
+        for pointsDoor in self.door_group:
+            pointsDoor.draw(screen, self.camera_offset)
+        for key in self.key_group:
+            key.draw(screen, self.camera_offset)
         
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
@@ -131,10 +139,12 @@ class PlayingState1(GameState):
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
-        if pygame.sprite.spritecollideany(head, self.pointsDoor_group):
-            if self.game.score.score<300:
-                self.game.screen_manager.change_state('GAME_OVER')
-        
+        collided_door=pygame.sprite.spritecollideany(head, self.door_group)
+        if collided_door!=None:
+            collided_door.manage_collisions(self.game)
+        collided_key=pygame.sprite.spritecollideany(head, self.key_group)
+        if collided_key!=None:
+            collided_key.pick_up()
         self.level_manager.check_collisions(head, tail, self.game.screen_manager)
 
         #Función de colisión con FloorTraps    
