@@ -119,12 +119,12 @@ class PlayingState1(GameState):
             self.game.score.eat_red_apple()
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
-            self.game.screen_manager.change_state('GAME_OVER')
+            self.snake.set_state(FastState(self.snake))
         if pygame.sprite.spritecollideany(head, self.pointsDoor_group):
             if self.game.score.score<300:
                 self.game.screen_manager.change_state('GAME_OVER')
         
-        self.level_manager.check_collisions(head, tail, self.game.screen_manager,  self.explosions_group)
+        self.level_manager.check_collisions(head, tail, self.snake.state, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')

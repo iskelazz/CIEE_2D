@@ -2,7 +2,7 @@ import pygame
 import os
 import time
 from assets.snake.normalState import NormalState
-from assets.snake.fastState import FastState
+from assets.snake.pacmanState import PacmanState
 from pygame.math import Vector2
 from pygame.sprite import Sprite, Group
 from config import GRAPHICS_DIR, CELL_SIZE
@@ -28,13 +28,14 @@ class Snake:
         self.new_block = False
         self.create_snake()
         self.last_update_time = time.time()
-        self.estado = NormalState(self)
+        self.state = NormalState(self)
         self.speed = 9 # 9 movimientos por segundo
+        self.draw_segments = self.draw_snake_segments
 
-    def set_estado(self, nuevo_estado_cls):
-        self.estado.on_exit()  # Llama a on_exit del estado actual
-        self.estado = nuevo_estado_cls  # Crea una nueva instancia del nuevo estado
-        self.estado.on_enter()
+    def set_state(self, new_state_cls):
+        self.state.on_exit()  # Llama a on_exit del estado actual
+        self.state = new_state_cls # Crea una nueva instancia del nuevo estado
+        self.state.on_enter()
 
     def load_images(self):
         # Convertimos los Vector2 a tuplas para usarlos como claves
@@ -58,6 +59,28 @@ class Snake:
         self.body_tl = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_tl.png')).convert_alpha()
         self.body_br = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_br.png')).convert_alpha()
         self.body_bl = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_bl.png')).convert_alpha()
+
+        self.head_blink_images = {
+            (0, -1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_head_up.png')).convert_alpha(),
+            (0, 1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_head_down.png')).convert_alpha(),
+            (1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_head_right.png')).convert_alpha(),
+            (-1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_head_left.png')).convert_alpha(),
+        }
+
+        self.tail_blink_images = {
+            (0, -1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_tail_up.png')).convert_alpha(),
+            (0, 1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_tail_down.png')).convert_alpha(),
+            (1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_tail_right.png')).convert_alpha(),
+            (-1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_tail_left.png')).convert_alpha(),
+        }
+        # Suponiendo que tienes sprites de parpadeo para el cuerpo
+        self.body_vertical_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_vertical.png')).convert_alpha()
+        self.body_horizontal_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_horizontal.png')).convert_alpha()
+
+        self.body_tr_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_tr.png')).convert_alpha()
+        self.body_tl_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_tl.png')).convert_alpha()
+        self.body_br_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_br.png')).convert_alpha()
+        self.body_bl_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_bl.png')).convert_alpha()
 
     # Asegúrate de convertir los Vector2 a tuplas cuando accedas a las imágenes
     def draw_snake_segments(self):
@@ -108,7 +131,7 @@ class Snake:
             self.segments.add(segment)
 
     def update(self, current_time):
-        self.estado.update()
+        self.state.update()  # Asegúrate de que el estado actual se actualice
         if current_time - self.last_update_time > 1/self.speed:
             if self.new_block:
                 self.grow()
@@ -117,7 +140,7 @@ class Snake:
                 new_body = self.body[:-1]
                 new_body.insert(0, new_body[0] + self.direction)
                 self.body = new_body
-                self.draw_snake_segments()
+                self.draw_segments()  # Utiliza el método de dibujo actual
             self.last_update_time = current_time
 
 
@@ -141,4 +164,4 @@ class Snake:
         return not (0 <= head.x < cell_number_x and 0 <= head.y < cell_number_y)
 
     def handle_input(self, event):
-        self.estado.handle_input(event)
+        self.state.handle_input(event)

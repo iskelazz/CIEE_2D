@@ -17,4 +17,4 @@ class FastState(SnakeState):
         current_time = time.time()
         if current_time - self.start_time >= self.duration:
             # Tiempo transcurrido, volver al estado normal
-            self.snake.set_estado(NormalState(self.snake))
+            self.snake.set_state(NormalState(self.snake))
