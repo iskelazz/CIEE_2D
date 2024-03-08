@@ -80,21 +80,20 @@ class SawTrap(Sprite):
             
             if self.direction == 'right':
                 self.move_right(self.VEL)
-                if self.rect.x == self.x + self.lenght: self.direction = 'left'     
+                if self.rect.x >= self.x + self.lenght: self.direction = 'left'     
             elif self.direction == 'left':
                 self.move_left(self.VEL)
-                if self.rect.x == self.x : self.direction = 'right'        
+                if self.rect.x <= self.x : self.direction = 'right'        
         
         elif self.orientation == 'vertical':
             
             if self.direction == 'up':
                 self.move_up(self.VEL)
+                if self.rect.y <= self.y : self.direction = 'down'
             elif self.direction == 'down':
                 self.move_down(self.VEL)
-                
-            if self.rect.y >= self.y + self.lenght: self.direction = 'up'
-            if self.rect.y <= self.y : self.direction = 'down'
-            
+                if self.rect.y >= self.y + self.lenght: self.direction = 'up'
+                       
     def load_images(self):
        
        
