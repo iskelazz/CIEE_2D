@@ -48,7 +48,6 @@ class TrackPiece(Sprite):
         return track_piece
     
     def draw(self, win, camera_offset):
-        self.trackPiece.draw(win, camera_offset)
         adjusted_position = (self.rect.x - camera_offset.x, 
                              self.rect.y - camera_offset.y)
         win.blit(self.image, adjusted_position)

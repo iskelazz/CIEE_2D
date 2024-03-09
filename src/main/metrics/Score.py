@@ -7,6 +7,7 @@ class Score:
     def __init__(self, screen, screen_width):
         self.score = 0 
         self.SCORE_PER_APPLE = 100
+        self.SCORE_PER_ROTTEN = 100
         self.SCORE_PER_TRAP_COLLISION = -50
         self.screen = screen
         self.screen_width = screen_width
@@ -24,3 +25,7 @@ class Score:
         
     def trap_collision(self):
         self.score += self.SCORE_PER_TRAP_COLLISION
+    
+    def eat_rotten_apple(self):
+        """Si la serpiente come una manzana podrida, disminuye la puntuacion en 1000"""
+        self.score -= self.SCORE_PER_APPLE

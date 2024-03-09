@@ -3,6 +3,7 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
+from assets.rottenApple import RottenApple
 from assets.hole import Hole
 from assets.key import Key
 from assets.snake import Snake
@@ -29,11 +30,14 @@ class PlayingState1(GameState):
         self.spikeTrap = SpikeTrap(Vector2(8, 8))
         self.apple = RedApple(lambda: self.level_manager.precalculate_static_objects_positions())
         self.apple.randomize(self.snake.body)
+        self.rotten_apples = pygame.sprite.Group()  
+        self.last_rotten_apple_time = time.time()
+        
         self.pointsDoor1=PointsDoor(700,360,True,self.game.score)
         self.pointsDoor2=PointsDoor(700,400,True,self.game.score)
         self.door=Door(300,100,True)
         self.key=Key(300,200,self.door)
-        
+    
         self.key_group=pygame.sprite.Group(self.key)
         self.door_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2,self.door)
         self.apple_group = pygame.sprite.GroupSingle(self.apple)
@@ -94,8 +98,16 @@ class PlayingState1(GameState):
         self.camera_offset = self.calculate_camera_offset_block()
         for pointsDoor in self.door_group:
             pointsDoor.update()
+        # Añadir RottenApple cada 5 segundos hasta un máximo de 5
+        #if current_time - self.last_rotten_apple_time > 5 and len(self.rotten_apples) < 5:
+        #    self.add_rotten_apple()
+        #    self.last_rotten_apple_time = current_time
+    def add_rotten_apple(self):
+        rotten_apple = RottenApple(lambda: self.level_manager.precalculate_static_objects_positions())
+        rotten_apple.randomize(self.snake.body)
+        self.apple_group.add(rotten_apple) 
+        self.rotten_apples.add(rotten_apple)
         
-
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
         screen.fill((175,215,70))
@@ -137,10 +149,16 @@ class PlayingState1(GameState):
         tail= self.snake.segments.sprites()[-1]
         body = pygame.sprite.Group(self.snake.segments.sprites()[1:])
         #Colisión con manzana
-        if pygame.sprite.spritecollideany(head, self.apple_group):
-            self.apple.randomize(self.snake.body)
-            self.snake.add_block()
-            self.game.score.eat_red_apple()
+        collided_apple = pygame.sprite.spritecollideany(head, self.apple_group)
+        if collided_apple:
+            collided_apple.randomize(self.snake.body)
+            if isinstance(collided_apple, RedApple):
+                self.snake.add_block()
+                self.game.score.eat_red_apple()
+            elif isinstance(collided_apple, RottenApple):
+                if len(self.snake.body) > 1:  # Asegurarse de que la serpiente no se reduzca por debajo de un tamaño mínimo
+                    self.snake.reduce_body()
+                    self.game.score.eat_rotten_apple() 
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
