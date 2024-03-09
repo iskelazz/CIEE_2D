@@ -104,7 +104,41 @@ class PlayingState(GameState):
             self.apple.randomize(self.snake.body)
             self.snake.add_block()
             self.game.score.eat_red_apple()
+        
         #Colision de serpiente con su cuerpo    
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.change_state('GAME_OVER')
         self.level_manager.check_collisions(head, self.game.screen_manager)
+        
+        #Colision con trampas de fuego    
+        if pygame.sprite.collide_mask(head, self.fireTrap) or pygame.sprite.spritecollideany(self.fireTrap, body):
+            if self.fireTrap.is_on():
+                self.snake.reduce_body()
+                self.game.score.trap_collision()
+            if len(self.snake.body) < 1 or self.game.score.score < 0:
+                self.game.screen_manager.change_state('GAME_OVER')
+       
+        #Colision con trampas de pinchos        
+        if pygame.sprite.collide_mask(head, self.spikeTrap):
+            if self.spikeTrap.is_on():
+                self.snake.reduce_body()
+                self.game.score.trap_collision()
+            if len(body) < 1 or self.game.score.score < 0:
+                self.game.screen_manager.change_state('GAME_OVER')
+               
+        #Colision con cuchilla de cabeza
+        if pygame.sprite.collide_mask(head, self.sawTrap):
+            self.game.screen_manager.change_state('GAME_OVER')
+           
+        #Colision con cuchilla de cuerpo
+        if pygame.sprite.spritecollideany(self.sawTrap, body):
+            index = 0
+            for i, element in enumerate(body):
+                if pygame.sprite.collide_rect(self.sawTrap, element):
+                # Se ha encontrado una colisión
+                    index = i
+                    break
+       
+            reduce_value = len(body) - index
+            for i in range(reduce_value):
+                self.snake.reduce_body()
