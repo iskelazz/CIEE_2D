@@ -12,7 +12,7 @@ from phases.LevelManager import LevelManager
 from assets.floorTraps import FireTrap
 from assets.floorTraps import SpikeTrap
 from assets.sawTrap import SawTrap
-from assets.enemies import Aguila
+from assets.enemies import Murcielago
 
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH
@@ -23,7 +23,7 @@ class PlayingState1(GameState):
         # Cargar nivel
         self.load_level(os.path.join(LEVEL_DIR, 'level.json'))
         self.snake = Snake()
-        self.eagle = Aguila(3, 3, 3)
+        self.bat = Murcielago(3, 3, 3)
         self.sawTrap = SawTrap(45, 5, 8, 'vertical')
         self.fireTrap = FireTrap(Vector2(5, 5))
         self.spikeTrap = SpikeTrap(Vector2(8, 8))
@@ -82,8 +82,8 @@ class PlayingState1(GameState):
     def update(self):
         current_time = time.time()
         self.snake.update(current_time)
-        self.eagle.update()
-        self.eagle.handle_move()
+        self.bat.update()
+        self.bat.handle_move()
         self.fireTrap.animate_trap()
         self.spikeTrap.animate_trap()
         self.sawTrap.animate_saw()
@@ -102,7 +102,7 @@ class PlayingState1(GameState):
         self.level_manager.draw_level(screen, self.camera_offset)
         self.level_manager.draw_objects(screen, self.camera_offset)
         self.game.score.draw_score()
-        self.eagle.draw(screen, self.camera_offset)
+        self.bat.draw(screen, self.camera_offset)
         self.fireTrap.draw(screen, self.camera_offset)
         self.spikeTrap.draw(screen, self.camera_offset)
         self.sawTrap.draw(screen, self.camera_offset)
@@ -146,7 +146,7 @@ class PlayingState1(GameState):
             self.game.screen_manager.change_state('GAME_OVER')
         collided_door=pygame.sprite.spritecollideany(head, self.door_group)
         if collided_door!=None:
-            collided_door.manage_collisions(self.game)
+            collided_door.handle_collisions(self.game)
         collided_key=pygame.sprite.spritecollideany(head, self.key_group)
         if collided_key!=None:
             collided_key.pick_up()

@@ -96,11 +96,17 @@ class Enemie(Sprite):
                 self.update_path()
                      
             
-    def draw(self, win, camera_offset):
-        pygame.draw.rect(win, self.COLOR, self.rect)
+    def draw(self, screen, camera_offset):
+        adjusted_position = (self.rect.x - camera_offset.x, 
+                            self.rect.y - camera_offset.y)
+        adjusted_rect=self.rect.copy()
+        adjusted_rect.x=adjusted_position[0]
+        adjusted_rect.y=adjusted_position[1]
+        
+        pygame.draw.rect(screen, self.COLOR, adjusted_rect)
         
         
-class Aguila(Enemie):
+class Murcielago(Enemie):
     def __init__(self, x, y, speed):
         fullpath = [(8, 'right'), (8, 'down'), (8, 'left'), (8, 'up')]
         super().__init__(x, y, speed, fullpath)

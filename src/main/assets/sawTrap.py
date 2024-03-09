@@ -119,7 +119,10 @@ class SawTrap(Sprite):
     def get_coordinates(self):
         coordinates = Vector2(self.rect.x, self.rect.y)
         return coordinates
-            
+
+    def handle_collisions(self,snake,game):
+        pass
+
     def draw(self, win, camera_offset):
         self.trackPiece.draw(win, camera_offset)
         adjusted_position = (self.rect.x - camera_offset.x, 
