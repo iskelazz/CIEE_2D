@@ -3,9 +3,9 @@ import time
 from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
+from assets.rottenApple import RottenApple
 from assets.Hole import Hole
 from assets.key import Key
-from assets.snake import Snake
 from animations.explosion import Explosion
 from assets.snake.snake import Snake
 from assets.snake.fastState import FastState
@@ -39,6 +39,7 @@ class PlayingState1(GameState):
         self.pointsDoor2=PointsDoor(700,400,True,self.game.score)
         self.door=Door(300,100,True)
         self.key=Key(300,200,self.door)
+        self.pointsDoor_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2)
         self.explosions_group = pygame.sprite.Group()    
         self.key_group=pygame.sprite.Group(self.key)
         self.door_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2,self.door)
@@ -206,7 +207,7 @@ class PlayingState1(GameState):
         floortrap_collision(self.fireTrap)    
    
         #Colision con trampas de pinchos
-        floortrap_collision(self.spikeTrap, self.explosions_group)        
+        floortrap_collision(self.spikeTrap)        
                
         #Colision con cuchilla
         sawtrap_collision(self.sawTrap)
