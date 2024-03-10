@@ -9,8 +9,9 @@ from config import GRAPHICS_DIR, CELL_SIZE
 
 
 class SnakeSegment(Sprite):
-    def __init__(self, position, segment_type='body'):
+    def __init__(self, position, number,segment_type='body'):
         super().__init__()
+        self.number=number
         self.position = position
         self.segment_type = segment_type
         self.image = pygame.Surface((CELL_SIZE, CELL_SIZE))
@@ -117,16 +118,16 @@ class Snake:
         "Creación y pintado inicial de la serpiente, siempre se crea en horizontal"
         for index, position in enumerate(self.body):
             if index == 0:
-                segment = SnakeSegment(position, 'head')
+                segment = SnakeSegment(position,index, 'head')
                 # Aquí convertimos self.direction a tupla
                 segment.image = self.head_images[tuple(self.direction)]
             elif index == len(self.body) - 1:
-                segment = SnakeSegment(position, 'tail')
+                segment = SnakeSegment(position,index, 'tail')
                 # Aquí convertimos la dirección de la cola a tupla
                 direction = self.body[-1] - self.body[-2]
                 segment.image = self.tail_images[tuple(direction)]
             else:
-                segment = SnakeSegment(position)
+                segment = SnakeSegment(position,index)
                 segment.image = self.body_horizontal
             self.segments.add(segment)
 
@@ -152,7 +153,7 @@ class Snake:
         self.body.append(new_segment_position)
 
         # Crea y añade el nuevo segmento al grupo de sprites.
-        new_segment = SnakeSegment(new_segment_position, 'body')
+        new_segment = SnakeSegment(new_segment_position, self.segments.__len__(), 'body')
         self.segments.add(new_segment)
 
     def add_block(self):

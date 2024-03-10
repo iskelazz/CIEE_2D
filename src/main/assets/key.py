@@ -28,3 +28,6 @@ class Key(Sprite):
 	def pick_up(self):
 		self.picked=True
 		self.door.open()
+	
+	def handle_collision(self,segment,snake,game):
+		self.pick_up()

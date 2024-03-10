@@ -32,7 +32,7 @@ class Door(Sprite):
 	def close(self):
 		self.closed=True
 	
-	def handle_collisions(self,game):
+	def handle_collision(self,segment,snake,game):
 		if self.closed==True:
 			game.screen_manager.change_state('GAME_OVER')
 		else: pass

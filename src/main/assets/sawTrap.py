@@ -120,8 +120,13 @@ class SawTrap(Sprite):
         coordinates = Vector2(self.rect.x, self.rect.y)
         return coordinates
 
-    def handle_collisions(self,snake,game):
-        pass
+    def handle_collision(self,segment,snake,game):
+        if segment.number==0:
+            game.screen_manager.change_state('GAME_OVER')
+        else:
+            reduce_value = len(snake.segments.sprites()[1:]) - segment.number
+            for i in range(reduce_value):
+                snake.state, snake.reduce_body()
 
     def draw(self, win, camera_offset):
         self.trackPiece.draw(win, camera_offset)

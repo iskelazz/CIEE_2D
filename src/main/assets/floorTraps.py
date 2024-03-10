@@ -58,7 +58,13 @@ class FloorTrap(Sprite):
         else:
             print('OFF')
             return False
-            
+    
+    def handle_collision(self,segment,snake,game):
+            if self.is_on():
+                snake.reduce_body()
+                game.score.trap_collision()
+            if len(snake.body) < 1 or game.score.score < 0:
+                game.screen_manager.change_state('GAME_OVER')  
    
     
 class FireTrap(FloorTrap):
