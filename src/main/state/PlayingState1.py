@@ -16,9 +16,10 @@ from assets.floorTraps import FireTrap
 from assets.floorTraps import SpikeTrap
 from assets.sawTrap import SawTrap
 from assets.enemies import Murcielago
+from resources.text.TextCollection import TextColection
 
 import os
-from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH
+from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
 
 class PlayingState1(GameState):
     def __init__(self, game):
@@ -50,6 +51,15 @@ class PlayingState1(GameState):
 
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         
+        # Textos 
+        self.messages = TextColection.get_tutorial_playing_1()
+        self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 32)
+        self.counter = 0
+        self.speed = 6
+        self.active_message = 0
+        self.message = self.messages[self.active_message]
+        self.done = False
+
     def calculate_camera_offset(self):
         # Para que la serpiente se encuentre en el centro de la camara
         half_screen_width = SCREEN_WIDTH / 2
@@ -136,6 +146,20 @@ class PlayingState1(GameState):
             pointsDoor.draw(screen, self.camera_offset)
         for key in self.key_group:
             key.draw(screen, self.camera_offset)
+
+        if self.counter < self.speed * len(self.message):
+            self.counter += 1
+        elif self.counter >= self.speed * len(self.message):
+            self.done = True
+        
+        if self.active_message < len(self.messages)-1 and self.done:
+            self.active_message +=1
+            self.done = False
+            self.message = self.messages[self.active_message]
+            self.counter = 0
+        
+        self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'Black')
+        screen.blit(self.snip, (100, 600))
         
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)

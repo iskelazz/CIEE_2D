@@ -79,6 +79,7 @@ class PlayingState(GameState):
             screen.blit(segment.image, adjusted_position)
         for apple in self.apple_group:
             apple.draw(screen, self.camera_offset)
+        
 
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)

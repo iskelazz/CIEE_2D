@@ -6,6 +6,7 @@ from state.FinalScreenState import FinalScreenState
 from state.PauseState import PauseState
 from state.MenuState import MenuState 
 from state.GameOverState import GameOverState
+from state.IntroductionState import IntroductionState
 
 
 class StateFactory:
@@ -27,5 +28,7 @@ class StateFactory:
             return MenuState(game)
         elif state_id == 'GAME_OVER':
             return GameOverState(game)
+        elif state_id == 'INTRO':
+            return IntroductionState(game)
         else:
             raise ValueError(f"Unknown state ID: {state_id}")
