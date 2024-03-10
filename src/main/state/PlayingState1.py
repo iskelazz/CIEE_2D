@@ -239,11 +239,10 @@ class PlayingState1(GameState):
                 collided_asset[0].handle_collision(segment,self.snake,self.game)
             
 
-        #colisiones con el cuerpo
-         
+      
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
-            self.screen_manager.change_state('GAME_OVER')
+            self.game.screen_manager.change_state('GAME_OVER')
         
         
         self.level_manager.check_collisions(head, tail, self.snake.state, self.game.screen_manager, self.explosions_group)
