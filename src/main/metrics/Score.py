@@ -7,6 +7,7 @@ class Score:
     def __init__(self, screen, screen_width):
         self.score = 0 
         self.SCORE_PER_APPLE = 100
+        self.SCORE_GOLDEN_APPLE = 5000
         self.SCORE_PER_ROTTEN = 100
         self.SCORE_PER_TRAP_COLLISION = -50
         self.screen = screen
@@ -22,6 +23,10 @@ class Score:
     def eat_red_apple(self):
         """Si la serpiente come una manzana roja, aumenta la puntuacion en 100"""
         self.score += self.SCORE_PER_APPLE
+
+    def eat_golden_apple(self):
+        """Si la serpiente come una manzana roja, aumenta la puntuacion en 100"""
+        self.score += self.SCORE_GOLDEN_APPLE
         
     def trap_collision(self):
         self.score += self.SCORE_PER_TRAP_COLLISION

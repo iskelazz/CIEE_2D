@@ -20,6 +20,7 @@ from resources.text.TextCollection import TextColection
 from phases.Area import Area
 from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
+from assets.goldenapple import GoldenApple
 
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
@@ -46,6 +47,7 @@ class PlayingState1(GameState):
         self.rotten_apple_group = pygame.sprite.Group()  
         self.last_rotten_apple_time = time.time()
         self.gemstone = Gemstone(26,12)
+        self.golden_apple = GoldenApple(37,29)
 
         self.pointsDoor1=PointsDoor(700,360,True,self.game.score)
         self.pointsDoor2=PointsDoor(700,400,True,self.game.score)
@@ -58,8 +60,9 @@ class PlayingState1(GameState):
         self.apple_group = pygame.sprite.Group()
         self.trap_group=pygame.sprite.Group(self.fireTrap,self.spikeTrap,self.sawTrap)
         self.gemstone_group = pygame.sprite.Group(self.gemstone)
+        self.golden_apple_group = pygame.sprite.Group(self.golden_apple)
 
-        self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.trap_group, self.gemstone_group)
+        self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.trap_group, self.gemstone_group, self.golden_apple_group)
 
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         
@@ -193,6 +196,8 @@ class PlayingState1(GameState):
             explosion.draw(screen, self.camera_offset)
         for gem in self.gemstone_group:
             gem.draw(screen, self.camera_offset)
+        for golden in self.golden_apple_group:
+            golden.draw(screen, self.camera_offset)
         if self.counter < self.speed * len(self.message):
             self.counter += 1
         elif self.counter >= self.speed * len(self.message):
@@ -223,9 +228,6 @@ class PlayingState1(GameState):
             self.snake.direction = directions[key]
     
     def check_collisions(self):
-
-       
-
         """Verifica y maneja las colisiones."""
         head = self.snake.segments.sprites()[0]
         tail= self.snake.segments.sprites()[-1]
@@ -237,22 +239,12 @@ class PlayingState1(GameState):
             collision_dict=pygame.sprite.groupcollide(head_body, group,False, False,)
             for segment,collided_asset in collision_dict.items():
                 collided_asset[0].handle_collision(segment,self.snake,self.game)
-            
-
-        #colisiones con el cuerpo
-         
+              
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
-            self.screen_manager.change_state('GAME_OVER')
-        
+            self.game.screen_manager.change_state('GAME_OVER')      
         
         self.level_manager.check_collisions(head, tail, self.snake.state, self.game.screen_manager, self.explosions_group)
-
-
-        
-
-           
-           
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')
