@@ -1,5 +1,4 @@
-import pygame
-import random
+from phases.AreaManager import AreaManager
 import os
 from assets.consumable import Consumable 
 from config import GRAPHICS_DIR, CELL_SIZE
@@ -11,6 +10,7 @@ class RedApple(Consumable):
 		super().__init__(os.path.join(GRAPHICS_DIR, 'apple.png'), staticPositions)
 	
 	def handle_collision(self,segment,snake,game):
-		self.randomize(snake.body)
+		area_manager = AreaManager()
+		self.randomize(snake.body,area_manager.coords(area_manager.get_area_tag_by_object(self)))
 		snake.add_block()
 		game.score.eat_red_apple()
