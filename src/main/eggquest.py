@@ -41,3 +41,4 @@ class EggQuest:
 if __name__ == "__main__":
     game = EggQuest()
     game.run()
+
