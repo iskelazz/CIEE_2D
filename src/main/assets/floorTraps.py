@@ -2,6 +2,7 @@ import pygame, os
 from pygame.sprite import Sprite
 from config import GRAPHICS_DIR
 from pygame.math import Vector2
+from resources.gestorRecursos import GestorRecursos
 
 cell_size = 40
 cell_number = 20

@@ -61,8 +61,8 @@ class PlayingState1(GameState):
         self.trap_group=pygame.sprite.Group(self.fireTrap,self.spikeTrap,self.sawTrap)
         self.gemstone_group = pygame.sprite.Group(self.gemstone)
         self.golden_apple_group = pygame.sprite.Group(self.golden_apple)
-
-        self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.trap_group, self.gemstone_group, self.golden_apple_group)
+        self.enemie_group=pygame.sprite.Group(self.bat)
+        self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.trap_group, self.gemstone_group, self.golden_apple_group,self.enemie_group)
 
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         
