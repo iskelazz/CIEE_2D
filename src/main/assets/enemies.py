@@ -3,6 +3,7 @@ from pygame.sprite import Sprite
 from pygame.math import Vector2
 from config import GRAPHICS_DIR
 from resources.gestorRecursos import GestorRecursos
+from assets.snake.pacmanState import PacmanState
 
 cell_size = 40
 cell_number = 20
@@ -16,7 +17,6 @@ class Enemie(Sprite):
         super().__init__()
         self.x = x*cell_size
         self.y = y*cell_size
-        
 
         self.image = None
         self.sheet = GestorRecursos.CargarImagen(imageFile,-1)
@@ -67,6 +67,8 @@ class Murcielago(Enemie):
         self.speed = speed
         self.velx = 0
         self.vely = 0
+        
+        self.dead=False
         #self.rect = pygame.Rect(x*cell_size, y*cell_size, cell_size, cell_size)
         
 
@@ -149,16 +151,23 @@ class Murcielago(Enemie):
      
 
     def handle_collision(self,segment,snake,game):
-        snake.reduce_body()
-        game.score.trap_collision()
-        if len(snake.body) < 1 or game.score.score < 0:
-            game.screen_manager.change_state('GAME_OVER') 
+        if isinstance(snake.state, PacmanState):
+            game.score.eat_red_apple()
+            self.dead=True
+        else:
+            snake.reduce_body()
+            game.score.trap_collision()
+            if len(snake.body) < 1 or game.score.score < 0:
+                game.screen_manager.change_state('GAME_OVER') 
 
     def update(self):
-        super().update()
-        self.move(self.velx, self.vely)
-         
-        
+        if self.dead==False:
+            super().update()
+            self.move(self.velx, self.vely)
+    
+    def draw(self,screen,offset):
+        if self.dead==False:
+            super().draw(screen,offset)
     
     
         

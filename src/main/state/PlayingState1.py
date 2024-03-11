@@ -21,6 +21,7 @@ from phases.Area import Area
 from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
 from assets.goldenapple import GoldenApple
+from assets.pacmanFruit import PacmanFruit
 
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
@@ -48,6 +49,8 @@ class PlayingState1(GameState):
         self.last_rotten_apple_time = time.time()
         self.gemstone = Gemstone(26,12)
         self.golden_apple = GoldenApple(37,29)
+        self.pacmanFruit=PacmanFruit(5,25)
+        
 
         self.pointsDoor1=PointsDoor(700,360,True,self.game.score)
         self.pointsDoor2=PointsDoor(700,400,True,self.game.score)
@@ -62,7 +65,8 @@ class PlayingState1(GameState):
         self.gemstone_group = pygame.sprite.Group(self.gemstone)
         self.golden_apple_group = pygame.sprite.Group(self.golden_apple)
         self.enemie_group=pygame.sprite.Group(self.bat)
-        self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.trap_group, self.gemstone_group, self.golden_apple_group,self.enemie_group)
+        self.fruit_group=pygame.sprite.Group(self.pacmanFruit)
+        self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.trap_group, self.gemstone_group, self.golden_apple_group,self.enemie_group,self.fruit_group)
 
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         
@@ -198,6 +202,8 @@ class PlayingState1(GameState):
             gem.draw(screen, self.camera_offset)
         for golden in self.golden_apple_group:
             golden.draw(screen, self.camera_offset)
+        for fruit in self.fruit_group:
+            fruit.draw(screen, self.camera_offset)
         if self.counter < self.speed * len(self.message):
             self.counter += 1
         elif self.counter >= self.speed * len(self.message):
