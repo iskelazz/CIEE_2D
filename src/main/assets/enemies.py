@@ -1,4 +1,6 @@
 import pygame, os
+
+import random
 from pygame.sprite import Sprite
 from pygame.math import Vector2
 from config import GRAPHICS_DIR
@@ -23,15 +25,21 @@ class Enemie(Sprite):
         self.sheet = self.sheet.convert_alpha()
         data = GestorRecursos.CargarArchivoCoordenadas(coordFile)
         data = data.split()
+        
+        self.animationNum = 0
         self.spriteNum = 0
         cont = 0
-        self.spriteList = []
-        for postura in range(1, numImages+1):
-            self.spriteList.append(pygame.Rect((int(data[cont]), int(data[cont+1])), (int(data[cont+2]), int(data[cont+3]))))
-            cont += 4
+        self.animationList = []
+        for line in range(0, len(numImages)):
+            self.animationList.append([])
+            tmp = self.animationList[line]
+            for animation in range(1, numImages[line]+1):
+                tmp.append(pygame.Rect((int(data[cont]), int(data[cont+1])), (int(data[cont+2]), int(data[cont+3]))))
+                cont += 4
+
         self.animDelay = 5
         self.animTime = 0
-        self.rect = pygame.Rect(self.x,self.y,self.spriteList[self.spriteNum][2],self.spriteList[self.spriteNum][3])
+        self.rect = pygame.Rect(self.x,self.y,self.animationList[self.animationNum][self.spriteNum][2],self.animationList[self.animationNum][self.spriteNum][3])
         self.updateAnim()
 
     def updateAnim(self):
@@ -41,11 +49,11 @@ class Enemie(Sprite):
             self.animTime = self.animDelay
             # Si ha pasado, actualizamos la postura
             self.spriteNum += 1
-            if self.spriteNum >= len(self.spriteList):
+            if self.spriteNum >= len(self.animationList[self.animationNum]):
                 self.spriteNum = 0
             if self.spriteNum < 0:
-                self.spriteNum = len(self.spriteList)-1
-            self.image = self.sheet.subsurface(self.spriteList[self.spriteNum])
+                self.spriteNum = len(self.animationList[self.animationNum])-1
+            self.image = self.sheet.subsurface(self.animationList[self.animationNum][self.spriteNum])
 
      
     def update(self):
@@ -79,7 +87,7 @@ class Murcielago(Enemie):
         self.direction = self.path[1]
         self.animation_cont = 0
 
-        super().__init__(x, y,'bat.png','batCoord.txt',5)
+        super().__init__(x, y,'bat.png','batCoord.txt',[5])
        
     def update_path(self): 
         self.path_cont += 1
@@ -169,7 +177,33 @@ class Murcielago(Enemie):
         if self.dead==False:
             super().draw(screen,offset)
     
+class Eagle(Enemie):
+    def __init__(self):
+        super().__init__(78, 20, 'eagle.png', 'eagleCoord.txt', [4])    
+        self.last_attack_time=0
+    def update(self,snake, retrieved_eggs,current_time):
+        attack=random.randint(0,retrieved_eggs)
+        if attack==0:
+            self.rotten_attack(snake)
+        elif attack==1:
+            self.trap_attack(snake)
+        elif attack==2:
+            self.fly_attack(snake)
+        else:
+            self.rotten_attack(snake)
+            self.trap_attack(snake)
+            self.fly_attack(snake)
+
+
+    def trap_attack(self,snake):
+        pass
     
+    def rotten_attack(self,snake):
+        pass
+
+    def fly_attack(self, snake):
+        pass
+
         
         
         

@@ -9,7 +9,6 @@ class EggQuest:
         self.initialize_game()
         # Valorar la creacion de una clase repositorio para compartir info entre estados
         self.score = Score(self.screen, self.screen_width)
-        
         self.screen_manager = StateManager(self)
         self.screen_manager.change_state('START')
 
