@@ -183,27 +183,16 @@ class PlayingState1(GameState):
         self.level_manager.draw_level(screen, self.camera_offset)
         self.level_manager.draw_objects(screen, self.camera_offset)
         self.game.score.draw_score()
-        self.bat.draw(screen, self.camera_offset)
-        self.fireTrap.draw(screen, self.camera_offset)
-        self.spikeTrap.draw(screen, self.camera_offset)
-        self.sawTrap.draw(screen, self.camera_offset)
+        
         for segment in self.snake.segments:
             adjusted_position = segment.rect.topleft - self.camera_offset
             screen.blit(segment.image, adjusted_position)
-        for apple in self.apple_group:
-            apple.draw(screen, self.camera_offset)
-        for pointsDoor in self.door_group:
-            pointsDoor.draw(screen, self.camera_offset)
-        for key in self.key_group:
-            key.draw(screen, self.camera_offset)
-        for explosion in self.explosions_group:
-            explosion.draw(screen, self.camera_offset)
-        for gem in self.gemstone_group:
-            gem.draw(screen, self.camera_offset)
-        for golden in self.golden_apple_group:
-            golden.draw(screen, self.camera_offset)
-        for fruit in self.fruit_group:
-            fruit.draw(screen, self.camera_offset)
+        
+        for group in self.group_list:
+            for asset in group:
+                asset.draw(screen, self.camera_offset)
+
+        
         if self.counter < self.speed * len(self.message):
             self.counter += 1
         elif self.counter >= self.speed * len(self.message):
