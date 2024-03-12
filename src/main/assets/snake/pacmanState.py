@@ -24,9 +24,9 @@ class PacmanState(SnakeState):
             self.use_blink_images = not self.use_blink_images
             # Se decide dinámicamente cuál función de dibujo usar
             if self.use_blink_images:
-                self.snake.draw_segments = self.draw_blink_segments
+                self.snake.mode_image = "white"
             else:
-                self.snake.draw_segments = self.snake.draw_snake_segments
+                self.snake.mode_image = "normal"
         self.check_time_limit()
     
 
@@ -38,34 +38,4 @@ class PacmanState(SnakeState):
 
 
     def on_exit(self):
-        self.snake.draw_segments = self.snake.draw_snake_segments
-
-    def draw_blink_segments(self):
-        for index, segment in enumerate(self.snake.segments):
-            position = self.snake.body[index]
-            segment.update(position)
-            if index == 0:
-                # Convertimos self.direction a tupla antes de usarlo
-                segment.image = self.snake.head_blink_images[tuple(self.snake.direction)]
-            elif index == len(self.snake.body) - 1:
-                direction = self.snake.body[-1] - self.snake.body[-2]
-                # Convertimos la dirección a tupla antes de usarla
-                segment.image = self.snake.tail_blink_images[tuple(direction)]
-            else:
-                # Determina la orientación y los giros para los segmentos del cuerpo
-                prev_segment = self.snake.body[index - 1]
-                next_segment = self.snake.body[index + 1]
-                if prev_segment.x == next_segment.x:
-                    segment.image = self.snake.body_vertical_blink
-                elif prev_segment.y == next_segment.y:
-                    segment.image = self.snake.body_horizontal_blink
-                else:
-                    # Aquí determinamos los giros
-                    if prev_segment.x < position.x and next_segment.y < position.y or prev_segment.y < position.y and next_segment.x < position.x:
-                        segment.image = self.snake.body_tl_blink
-                    elif prev_segment.x > position.x and next_segment.y < position.y or prev_segment.y < position.y and next_segment.x > position.x:
-                        segment.image = self.snake.body_tr_blink
-                    elif prev_segment.x < position.x and next_segment.y > position.y or prev_segment.y > position.y and next_segment.x < position.x:
-                        segment.image = self.snake.body_bl_blink
-                    elif prev_segment.x > position.x and next_segment.y > position.y or prev_segment.y > position.y and next_segment.x > position.x:
-                        segment.image = self.snake.body_br_blink
+        self.snake.mode_image = "normal"
