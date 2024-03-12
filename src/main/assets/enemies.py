@@ -69,9 +69,9 @@ class Enemie(Sprite):
         
         
 class Murcielago(Enemie):
-    def __init__(self, x, y, speed):
+    def __init__(self, x, y, path_right, path_down, path_left, path_up, speed):
 
-        fullpath = [(8, 'right'), (8, 'down'), (8, 'left'), (8, 'up')]
+        fullpath = [(path_right, 'right'), (path_down, 'down'), (path_left, 'left'), (path_up, 'up')]
         self.speed = speed
         self.velx = 0
         self.vely = 0

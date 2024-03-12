@@ -22,7 +22,7 @@ class GameOverState(GameState):
                 if event.key == pygame.K_RETURN:
                     # Reinicia el juego creando una nueva instancia de SnakeGame
                     self.game.__init__()
-                    self.game.screen_manager.change_state('PLAYING1')
+                    self.game.screen_manager.change_state('PLAYING2')
                 elif event.key == pygame.K_ESCAPE:
                     # Cambia al estado del menú
                     self.game.__init__()
