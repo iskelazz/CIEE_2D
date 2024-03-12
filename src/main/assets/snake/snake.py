@@ -21,17 +21,20 @@ class SnakeSegment(Sprite):
         self.rect.topleft = (position.x * CELL_SIZE, position.y * CELL_SIZE)
 
 class Snake:
-    def __init__(self):
+    def __init__(self, pos_x, pos_y):
         self.load_images()
         self.segments = Group()
-        self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
+        #Posicion del cuerpo, la pasada por parametro es la cabeza, se situa siempre en horizontal mirando a la derecha
+        self.body = [Vector2(pos_x, pos_y), Vector2(pos_x-1, pos_y), Vector2(pos_x-2, pos_y)]
         self.direction = Vector2(1, 0)
         self.new_block = False
+        
+        #La imagen que muestra es la de la serpiente en estado normal, puede cambiar para parpadear en estados alterados de la serpietne
+        self.mode_image = "normal"
         self.create_snake()
         self.last_update_time = time.time()
         self.state = NormalState(self)
-        self.speed = 9 # 9 movimientos por segundo
-        self.draw_segments = self.draw_snake_segments
+        self.speed = 7 # 7 movimientos por segundo
 
     def set_state(self, new_state_cls):
         self.state.on_exit()  # Llama a on_exit del estado actual
@@ -39,49 +42,29 @@ class Snake:
         self.state.on_enter()
 
     def load_images(self):
-        # Convertimos los Vector2 a tuplas para usarlos como claves
-        self.head_images = {
-            (0, -1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'head_up.png')).convert_alpha(),
-            (0, 1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'head_down.png')).convert_alpha(),
-            (1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'head_right.png')).convert_alpha(),
-            (-1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'head_left.png')).convert_alpha(),
-        }
-        self.tail_images = {
-            (0, -1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'tail_up.png')).convert_alpha(),
-            (0, 1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'tail_down.png')).convert_alpha(),
-            (1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'tail_right.png')).convert_alpha(),
-            (-1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'tail_left.png')).convert_alpha(),
+        modes = ["normal", "white", "yellow"]
+        directions = {
+            (0, -1): "up",
+            (0, 1): "down",
+            (1, 0): "right",
+            (-1, 0): "left",
         }
 
-        self.body_vertical = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_vertical.png')).convert_alpha()
-        self.body_horizontal = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_horizontal.png')).convert_alpha()
+        self.images = {mode: {"head": {}, "tail": {}, "body_vertical": None, "body_horizontal": None, "body_tr": None, "body_tl": None, "body_br": None, "body_bl": None} for mode in modes}
 
-        self.body_tr = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_tr.png')).convert_alpha()
-        self.body_tl = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_tl.png')).convert_alpha()
-        self.body_br = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_br.png')).convert_alpha()
-        self.body_bl = pygame.image.load(os.path.join(GRAPHICS_DIR, 'body_bl.png')).convert_alpha()
+        for mode in modes:
+            for direction, dir_name in directions.items():
+                self.images[mode]["head"][direction] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/head_{dir_name}.png")).convert_alpha()
+                self.images[mode]["tail"][direction] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/tail_{dir_name}.png")).convert_alpha()
 
-        self.head_blink_images = {
-            (0, -1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_head_up.png')).convert_alpha(),
-            (0, 1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_head_down.png')).convert_alpha(),
-            (1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_head_right.png')).convert_alpha(),
-            (-1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_head_left.png')).convert_alpha(),
-        }
+            self.images[mode]["body_vertical"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_vertical.png")).convert_alpha()
+            self.images[mode]["body_horizontal"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_horizontal.png")).convert_alpha()
+            self.images[mode]["body_tr"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_tr.png")).convert_alpha()
+            self.images[mode]["body_tl"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_tl.png")).convert_alpha()
+            self.images[mode]["body_br"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_br.png")).convert_alpha()
+            self.images[mode]["body_bl"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_bl.png")).convert_alpha()
 
-        self.tail_blink_images = {
-            (0, -1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_tail_up.png')).convert_alpha(),
-            (0, 1): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_tail_down.png')).convert_alpha(),
-            (1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_tail_right.png')).convert_alpha(),
-            (-1, 0): pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_tail_left.png')).convert_alpha(),
-        }
-        # Suponiendo que tienes sprites de parpadeo para el cuerpo
-        self.body_vertical_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_vertical.png')).convert_alpha()
-        self.body_horizontal_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_horizontal.png')).convert_alpha()
 
-        self.body_tr_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_tr.png')).convert_alpha()
-        self.body_tl_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_tl.png')).convert_alpha()
-        self.body_br_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_br.png')).convert_alpha()
-        self.body_bl_blink = pygame.image.load(os.path.join(GRAPHICS_DIR, 'white_body_bl.png')).convert_alpha()
 
     # Asegúrate de convertir los Vector2 a tuplas cuando accedas a las imágenes
     def draw_snake_segments(self):
@@ -90,29 +73,29 @@ class Snake:
             segment.update(position)
             if index == 0:
                 # Convertimos self.direction a tupla antes de usarlo
-                segment.image = self.head_images[tuple(self.direction)]
+                segment.image = self.images[self.mode_image]["head"][tuple(self.direction)]
             elif index == len(self.body) - 1:
                 direction = self.body[-1] - self.body[-2]
                 # Convertimos la dirección a tupla antes de usarla
-                segment.image = self.tail_images[tuple(direction)]
+                segment.image = self.images[self.mode_image]["tail"][tuple(direction)]
             else:
                 # Determina la orientación y los giros para los segmentos del cuerpo
                 prev_segment = self.body[index - 1]
                 next_segment = self.body[index + 1]
                 if prev_segment.x == next_segment.x:
-                    segment.image = self.body_vertical
+                    segment.image = self.images[self.mode_image]["body_vertical"]
                 elif prev_segment.y == next_segment.y:
-                    segment.image = self.body_horizontal
+                    segment.image = self.images[self.mode_image]["body_horizontal"]
                 else:
                     # Aquí determinamos los giros
                     if prev_segment.x < position.x and next_segment.y < position.y or prev_segment.y < position.y and next_segment.x < position.x:
-                        segment.image = self.body_tl
+                        segment.image = self.images[self.mode_image]["body_tl"]
                     elif prev_segment.x > position.x and next_segment.y < position.y or prev_segment.y < position.y and next_segment.x > position.x:
-                        segment.image = self.body_tr
+                        segment.image = self.images[self.mode_image]["body_tr"]
                     elif prev_segment.x < position.x and next_segment.y > position.y or prev_segment.y > position.y and next_segment.x < position.x:
-                        segment.image = self.body_bl
+                        segment.image = self.images[self.mode_image]["body_bl"]
                     elif prev_segment.x > position.x and next_segment.y > position.y or prev_segment.y > position.y and next_segment.x > position.x:
-                        segment.image = self.body_br
+                        segment.image = self.images[self.mode_image]["body_br"]
 
     def create_snake(self):
         "Creación y pintado inicial de la serpiente, siempre se crea en horizontal"
@@ -120,15 +103,15 @@ class Snake:
             if index == 0:
                 segment = SnakeSegment(position,index, 'head')
                 # Aquí convertimos self.direction a tupla
-                segment.image = self.head_images[tuple(self.direction)]
+                segment.image = self.images[self.mode_image]["head"][tuple(self.direction)]
             elif index == len(self.body) - 1:
                 segment = SnakeSegment(position,index, 'tail')
                 # Aquí convertimos la dirección de la cola a tupla
                 direction = self.body[-1] - self.body[-2]
-                segment.image = self.tail_images[tuple(direction)]
+                segment.image = self.images[self.mode_image]["tail"][tuple(direction)]
             else:
                 segment = SnakeSegment(position,index)
-                segment.image = self.body_horizontal
+                segment.image = self.images[self.mode_image]["body_horizontal"]
             self.segments.add(segment)
 
     def update(self, current_time):
@@ -141,7 +124,7 @@ class Snake:
                 new_body = self.body[:-1]
                 new_body.insert(0, new_body[0] + self.direction)
                 self.body = new_body
-                self.draw_segments()  # Utiliza el método de dibujo actual
+                self.draw_snake_segments()  # Utiliza el método de dibujo actual
             self.last_update_time = current_time
 
 

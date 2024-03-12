@@ -161,6 +161,7 @@ class Murcielago(Enemie):
     def handle_collision(self,segment,snake,game):
         if isinstance(snake.state, PacmanState):
             game.score.eat_red_apple()
+            self.kill()
             self.dead=True
         else:
             snake.reduce_body()

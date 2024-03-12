@@ -40,7 +40,7 @@ class PlayingState1(GameState):
         self.load_level(os.path.join(LEVEL_DIR, 'level2_alt.json'))
         area_manager = AreaManager()
         area_manager.load_areas(areas_dict)
-        self.snake = Snake()
+        self.snake = Snake(10,8)
         self.bat = Murcielago(3, 3, 3)
         self.sawTrap = SawTrap(45, 5, 8, 'vertical')
         self.fireTrap = FireTrap(Vector2(5, 5))
@@ -192,6 +192,8 @@ class PlayingState1(GameState):
             for asset in group:
                 asset.draw(screen, self.camera_offset)
 
+        for explosion in self.explosions_group:
+            explosion.draw(screen, self.camera_offset)
         
         if self.counter < self.speed * len(self.message):
             self.counter += 1
