@@ -1,22 +1,21 @@
 import pygame
-import random
+
 import os
 from pygame.sprite import Sprite
 from config import GRAPHICS_DIR, CELL_SIZE
 
-cell_size = 40
-cell_number = 20
 #Objeto para el cambio de nivel, Sprite temporal
 class Key(Sprite):
-	def __init__(self, x,y,door):
+	def __init__(self, x,y,doors):
 		super().__init__()
 		#cambiar sprite
-		self.image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'key.png')).convert_alpha()
+		original_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'key.png')).convert_alpha()
+		self.image = pygame.transform.scale(original_image, (CELL_SIZE, CELL_SIZE))
 		self.rect = self.image.get_rect()
 		self.rect.x=x
 		self.rect.y=y
 		self.picked=False
-		self.door=door
+		self.doors=doors
 
 	def draw(self, screen, camera_offset):
 		# Ajusta la posición de la manzana por el desplazamiento de la cámara
@@ -27,7 +26,8 @@ class Key(Sprite):
 		else: pass
 	def pick_up(self):
 		self.picked=True
-		self.door.open()
+		for door in self.doors:  # Abrir todas las puertas en la lista
+			door.open()
 	
 	def handle_collision(self,segment,snake,game):
 		self.pick_up()

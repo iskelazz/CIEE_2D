@@ -340,6 +340,13 @@
       "crop": [720, 560, 40, 40],
       "rotation": 0,
       "notes": "Muros rompibles con enredadera"
+    },
+    {
+      "type": "Hole",
+      "positions": [[57, 0],[58, 0],[59, 0],[59, 1],[59, 2],[59, 3],[59,4]],
+      "sprite": "terrain_atlas_1280.png",
+      "crop": [300, 980, 40, 40],
+      "rotation": 0
     }
   ]  
 }

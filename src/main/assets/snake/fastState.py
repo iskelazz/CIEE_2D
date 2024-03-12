@@ -16,7 +16,7 @@ class FastState(SnakeState):
         super().on_enter()
         self.yellow_timer = pygame.time.get_ticks() / 1000.0
         self.duration = 5  # Duración de 5 segundos para este estado
-        self.snake.speed = 14
+        self.snake.speed = 12
 
     def on_exit(self):
         self.snake.speed = 7
