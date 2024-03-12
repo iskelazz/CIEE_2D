@@ -58,8 +58,8 @@ class PlayingState2(GameState):
         self.pacmanFruit=PacmanFruit(37,3)
   
 
-        self.pointsDoor1=PointsDoor(9*CELL_SIZE,20*CELL_SIZE,False,self.game.score,100)
-        self.pointsDoor2=PointsDoor(10*CELL_SIZE,20*CELL_SIZE,False,self.game.score,100)
+        self.pointsDoor1=PointsDoor(9*CELL_SIZE,20*CELL_SIZE,False,self.game.score,500)
+        self.pointsDoor2=PointsDoor(10*CELL_SIZE,20*CELL_SIZE,False,self.game.score,500)
         self.door=Door(18*CELL_SIZE,13*CELL_SIZE,True)
         self.door2=Door(18*CELL_SIZE,14*CELL_SIZE,True)
         self.key=Key(6 * CELL_SIZE,3 * CELL_SIZE,[self.door,self.door2])
