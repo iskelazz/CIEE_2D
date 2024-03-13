@@ -27,6 +27,7 @@ class Snake:
         #Posicion del cuerpo, la pasada por parametro es la cabeza, se situa siempre en horizontal mirando a la derecha
         self.body = [Vector2(pos_x, pos_y), Vector2(pos_x-1, pos_y), Vector2(pos_x-2, pos_y)]
         self.direction = Vector2(1, 0)
+        self.new_direction = Vector2(1, 0)
         self.new_block = False
         
         #La imagen que muestra es la de la serpiente en estado normal, puede cambiar para parpadear en estados alterados de la serpietne
@@ -117,6 +118,7 @@ class Snake:
     def update(self, current_time):
         self.state.update()  # Asegúrate de que el estado actual se actualice
         if current_time - self.last_update_time > 1/self.speed:
+            self.direction = self.new_direction
             if self.new_block:
                 self.grow()
                 self.new_block = False
@@ -156,3 +158,14 @@ class Snake:
             self.body.pop()
             # Eliminamos también el último segmento del grupo de sprites
             self.segments.remove(self.segments.sprites()[-1])
+
+    def update_direction(self, key):
+        """Actualiza la dirección de la serpiente basada en la entrada del usuario."""
+        directions = {
+            pygame.K_UP: Vector2(0, -1),
+            pygame.K_DOWN: Vector2(0, 1),
+            pygame.K_LEFT: Vector2(-1, 0),
+            pygame.K_RIGHT: Vector2(1, 0),
+        }
+        if key in directions and directions[key] != -self.direction:
+            self.new_direction = directions[key]
