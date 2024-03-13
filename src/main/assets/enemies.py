@@ -15,11 +15,12 @@ class Enemie(Sprite):
     COLOR = (255, 0, 0)
     ANIMATION_DELAY = 4
     
-    def __init__(self, x, y,imageFile, coordFile, numImages):
+    def __init__(self, x, y,imageFile, coordFile, numImages,scale=None):
         super().__init__()
         self.x = x*cell_size
         self.y = y*cell_size
 
+        self.scale = scale
         self.image = None
         self.sheet = GestorRecursos.CargarImagen(imageFile,-1)
         self.sheet = self.sheet.convert_alpha()
@@ -40,9 +41,9 @@ class Enemie(Sprite):
         self.animDelay = 5
         self.animTime = 0
         self.rect = pygame.Rect(self.x,self.y,self.animationList[self.animationNum][self.spriteNum][2],self.animationList[self.animationNum][self.spriteNum][3])
-        self.updateAnim()
+        self.updateAnim(self.scale)
 
-    def updateAnim(self):
+    def updateAnim(self, scale):
         self.animTime -= 1
         # Miramos si ha pasado el retardo para dibujar una nueva postura
         if (self.animTime < 0):
@@ -53,11 +54,13 @@ class Enemie(Sprite):
                 self.spriteNum = 0
             if self.spriteNum < 0:
                 self.spriteNum = len(self.animationList[self.animationNum])-1
-            self.image = self.sheet.subsurface(self.animationList[self.animationNum][self.spriteNum])
-
+            if scale:
+                image = self.sheet.subsurface(self.animationList[self.animationNum][self.spriteNum])
+                self.image = pygame.transform.scale_by(image, (scale, scale))
+            else:self.image = self.sheet.subsurface(self.animationList[self.animationNum][self.spriteNum])
      
     def update(self):
-        self.updateAnim()
+        self.updateAnim(self.scale)
         
                 
             
@@ -180,20 +183,21 @@ class Murcielago(Enemie):
     
 class Eagle(Enemie):
     def __init__(self):
-        super().__init__(78, 20, 'eagle.png', 'eagleCoord.txt', [4])    
+        super().__init__(75, 20, 'eagle.png', 'eagleCoord.txt', [4],3)    
         self.last_attack_time=0
-    def update(self,snake, retrieved_eggs,current_time):
+    def update(self,snake=None, retrieved_eggs=0,current_time=0):
         attack=random.randint(0,retrieved_eggs)
-        if attack==0:
-            self.rotten_attack(snake)
-        elif attack==1:
-            self.trap_attack(snake)
-        elif attack==2:
-            self.fly_attack(snake)
-        else:
-            self.rotten_attack(snake)
-            self.trap_attack(snake)
-            self.fly_attack(snake)
+        super().update()
+        # if attack==0:
+        #     self.rotten_attack(snake)
+        # elif attack==1:
+        #     self.trap_attack(snake)
+        # elif attack==2:
+        #     self.fly_attack(snake)
+        # else:
+        #     self.rotten_attack(snake)
+        #     self.trap_attack(snake)
+        #     self.fly_attack(snake)
 
 
     def trap_attack(self,snake):

@@ -75,12 +75,13 @@ class PlayingState2(GameState):
         self.key_group=pygame.sprite.Group(self.key, self.key2)
         self.door_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2,self.door,self.door2,self.pointsDoor3,self.pointsDoor4,self.door3,self.door4)
         self.apple_group = pygame.sprite.Group()
-        self.trap_group=pygame.sprite.Group(self.spikeTrap,self.spikeTrap2,self.spikeTrap3,self.spikeTrap4,self.spikeTrap5,self.spikeTrap6,self.sawTrap)
+        self.spike_trap_group=pygame.sprite.Group(self.spikeTrap,self.spikeTrap2,self.spikeTrap3,self.spikeTrap4,self.spikeTrap5,self.spikeTrap6)
+        self.saw_trap_group=pygame.sprite.Group(self.sawTrap)
         self.gemstone_group = pygame.sprite.Group(self.gemstone2)
         self.golden_apple_group = pygame.sprite.Group(self.golden_apple)
         self.enemie_group=pygame.sprite.Group(self.bat, self.bat2, self.bat3, self.bat4, self.bat5)
         self.fruit_group=pygame.sprite.Group(self.pacmanFruit)
-        self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.trap_group, self.gemstone_group, self.golden_apple_group,self.enemie_group,self.fruit_group)
+        self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.spike_trap_group,self.saw_trap_group, self.gemstone_group, self.golden_apple_group,self.enemie_group,self.fruit_group)
 
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
 
@@ -219,25 +220,16 @@ class PlayingState2(GameState):
     def update(self):
         current_time = time.time()
         self.snake.update(current_time)
-        self.bat.update()
-        self.bat.handle_move()
-        self.bat2.update()
-        self.bat2.handle_move()
-        self.bat3.update()
-        self.bat3.handle_move()
-        self.bat4.update()
-        self.bat4.handle_move()
-        self.bat5.update()
-        self.bat5.handle_move()
+        for enemie in self.enemie_group:
+            enemie.update()
+            enemie.handle_move()
         
-        self.spikeTrap.animate_trap()
-        self.spikeTrap2.animate_trap()
-        self.spikeTrap3.animate_trap()
-        self.spikeTrap4.animate_trap()
-        self.spikeTrap5.animate_trap()
-        self.spikeTrap6.animate_trap()
-        self.sawTrap.animate_saw()
-        self.sawTrap.handle_move()
+        for spikeTrap in self.spike_trap_group:
+            spikeTrap.animate_trap()
+        for sawTrap in self.saw_trap_group:
+            sawTrap.animate_saw()
+            sawTrap.handle_move()
+            
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')
@@ -247,10 +239,6 @@ class PlayingState2(GameState):
         self.explosions_group.update()
         self.drop_gemstone()
         self.respawn_key_items()
-        # Añadir RottenApple cada 5 segundos hasta un máximo de 5
-        #if current_time - self.last_rotten_apple_time > 5 and len(self.rotten_apples) < 5:
-        #    self.add_rotten_apple()
-        #    self.last_rotten_apple_time = current_time
     def add_rotten_apple(self):
         #inicializacion temporal, funcion que no se usa en estos momentos
         AREA1 = AreaManager.get_instance().coords("AREA1")

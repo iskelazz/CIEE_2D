@@ -39,7 +39,7 @@ class PlayingState3(GameState):
         self.load_level(os.path.join(LEVEL_DIR, 'level3.json'))
         area_manager = AreaManager()
         area_manager.load_areas(areas_dict)
-        self.snake = Snake()
+        self.snake = Snake(10,8)
         self.gemstone = Gemstone(26,12)
         self.eagle=Eagle()
         self.enemy_group=pygame.sprite.Group(self.eagle)
@@ -113,7 +113,7 @@ class PlayingState3(GameState):
                     self.game.screen_manager.change_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
-                    self.update_direction(event.key)
+                    self.snake.update_direction(event.key)
 
     def update(self):
         current_time = time.time()
@@ -141,16 +141,6 @@ class PlayingState3(GameState):
         self.level_manager = LevelManager(self.game.screen)
         self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
 
-    def update_direction(self, key):
-        """Actualiza la dirección de la serpiente basada en la entrada del usuario."""
-        directions = {
-            pygame.K_UP: Vector2(0, -1),
-            pygame.K_DOWN: Vector2(0, 1),
-            pygame.K_LEFT: Vector2(-1, 0),
-            pygame.K_RIGHT: Vector2(1, 0),
-        }
-        if key in directions and directions[key] != -self.snake.direction:
-            self.snake.direction = directions[key]
     
     def check_collisions(self):
         """Verifica y maneja las colisiones."""
