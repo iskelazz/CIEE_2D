@@ -83,6 +83,10 @@ class PlayingState2(GameState):
         self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.trap_group, self.gemstone_group, self.golden_apple_group,self.enemie_group,self.fruit_group)
 
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
+
+        # Inicializa temporizadores de reaparición
+        self.timer_respawn_pacman = None
+        self.timer_respawn_gemstone = None
         
         # Textos 
         self.messages = TextColection.get_tutorial_playing_1()
@@ -161,7 +165,56 @@ class PlayingState2(GameState):
                     self.game.screen_manager.change_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
-                    self.update_direction(event.key)
+                    self.snake.update_direction(event.key)
+    
+    def respawn_object_if_missing(self, object, group, timer, interval):
+        """
+        Comprueba si un objeto está en un grupo y, si no está, activa un timer.
+        Si el timer supera el intervalo especificado, vuelve a añadir el objeto al grupo.
+
+        :param object: El objeto a comprobar y potencialmente reaparecer.
+        :param group: El grupo de sprites al que pertenece el objeto.
+        :param timer: El temporizador actual para el objeto. None si el objeto no está en cooldown.
+        :param interval: El intervalo de tiempo (en milisegundos) para reaparecer el objeto.
+        :return: El estado actualizado del temporizador para el objeto.
+        """
+        current_time = pygame.time.get_ticks()  # Obtiene el tiempo actual
+        if object not in group:
+            if timer is None:
+                timer = current_time
+            elif current_time - timer > interval:
+                group.add(object)
+                timer = None
+        else:
+            timer = None  # Resetea el timer si el objeto ya está en el grupo
+        
+        return timer
+
+    def respawn_key_items(self):
+        """
+        Función para gestionar el reaparecido de la fruta de Pacman y la gema.
+        """
+        # Intervalo para reaparecer la fruta de Pacman, en milisegundos
+        interval_pacman = 35000  # 35 segundos
+
+        # Intervalo para reaparecer la gema, en milisegundos
+        interval_gemstone = 15000  # 15 segundos
+
+        # Comprueba y gestiona el reaparecido de la fruta de Pacman
+        self.timer_respawn_pacman = self.respawn_object_if_missing(
+            self.pacmanFruit,
+            self.fruit_group,
+            self.timer_respawn_pacman,
+            interval_pacman
+        )
+        if self.gemstone_drop:
+            # Comprueba y gestiona el reaparecido de las 2 gemas
+            self.timer_respawn_gemstone = self.respawn_object_if_missing(
+                self.gemstone,
+                self.gemstone_group,
+                self.timer_respawn_gemstone,
+                interval_gemstone
+            )
 
     def update(self):
         current_time = time.time()
@@ -193,6 +246,7 @@ class PlayingState2(GameState):
             pointsDoor.update()
         self.explosions_group.update()
         self.drop_gemstone()
+        self.respawn_key_items()
         # Añadir RottenApple cada 5 segundos hasta un máximo de 5
         #if current_time - self.last_rotten_apple_time > 5 and len(self.rotten_apples) < 5:
         #    self.add_rotten_apple()
@@ -246,17 +300,6 @@ class PlayingState2(GameState):
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
         self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
-
-    def update_direction(self, key):
-        """Actualiza la dirección de la serpiente basada en la entrada del usuario."""
-        directions = {
-            pygame.K_UP: Vector2(0, -1),
-            pygame.K_DOWN: Vector2(0, 1),
-            pygame.K_LEFT: Vector2(-1, 0),
-            pygame.K_RIGHT: Vector2(1, 0),
-        }
-        if key in directions and directions[key] != -self.snake.direction:
-            self.snake.direction = directions[key]
     
     def check_collisions(self):
         """Verifica y maneja las colisiones."""

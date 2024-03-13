@@ -1,13 +1,8 @@
-from phases.AreaManager import AreaManager
-import pygame
-import os
-from pygame.sprite import Sprite
 from assets.consumable import Consumable 
 from assets.snake.pacmanState import PacmanState
 
-from config import GRAPHICS_DIR, CELL_SIZE
+from config import CELL_SIZE
 
-cell_number = 20 #temporal
  
 class PacmanFruit(Consumable):
     def __init__(self, x,y):
