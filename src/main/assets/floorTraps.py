@@ -76,6 +76,10 @@ class SpikeTrap(FloorTrap):
     def __init__(self, position):
         super().__init__('Spike_Trap.png', position, 32, 32)
         
+class WoodTrap(FloorTrap):
+    def __init__(self, position):
+        super().__init__('Wood_Trap.png', position, 32, 32)
+        
         
     
     
