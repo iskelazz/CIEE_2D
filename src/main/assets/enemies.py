@@ -40,7 +40,11 @@ class Enemie(Sprite):
 
         self.animDelay = 5
         self.animTime = 0
-        self.rect = pygame.Rect(self.x,self.y,self.animationList[self.animationNum][self.spriteNum][2],self.animationList[self.animationNum][self.spriteNum][3])
+        if scale:
+            self.rect = pygame.Rect(self.x,self.y,self.animationList[self.animationNum][self.spriteNum][2]*self.scale,self.animationList[self.animationNum][self.spriteNum][3]*self.scale)
+        else:
+            self.rect = pygame.Rect(self.x,self.y,self.animationList[self.animationNum][self.spriteNum][2],self.animationList[self.animationNum][self.spriteNum][3])
+        
         self.updateAnim(self.scale)
 
     def updateAnim(self, scale):
@@ -185,35 +189,65 @@ class Eagle(Enemie):
     def __init__(self):
         super().__init__(75, 20, 'eagle.png', 'eagleCoord.txt', [4],3)    
         self.last_attack_time=0
-    def update(self,snake=None, retrieved_eggs=0,current_time=0):
-        attack=random.randint(0,retrieved_eggs)
+    def update(self,snake,current_time,enemy_group):
+        
         super().update()
-        # if attack==0:
-        #     self.rotten_attack(snake)
-        # elif attack==1:
-        #     self.trap_attack(snake)
-        # elif attack==2:
-        #     self.fly_attack(snake)
-        # else:
-        #     self.rotten_attack(snake)
-        #     self.trap_attack(snake)
-        #     self.fly_attack(snake)
+        if current_time-self.last_attack_time>5:
+            self.last_attack_time=current_time
+            attack=random.randint(0,snake.retrieved_eggs)
+            if attack==0:
+                self.feather_attack(snake,enemy_group)
+            elif attack==1:
+                self.trap_attack(snake)
+            elif attack==2:
+                self.fly_attack(snake)
+            else:
+                self.feather_attack(snake)
+                self.trap_attack(snake)
+                self.fly_attack(snake)
 
 
     def trap_attack(self,snake):
-        pass
+        print("TRAMPA AAAAAAAAAAAAAAAAAH")
     
-    def rotten_attack(self,snake):
-        pass
+    def feather_attack(self,snake,enemy_group):
+        pluma=Feather(snake,6)
+        enemy_group.add(pluma)
+
+        print("PLUMAAAAAAA AAAAAAAAAAAAAAAAAH")
+    
 
     def fly_attack(self, snake):
-        pass
+        print("AY QUE VUELA AAAAAAAAAAAAAAAAAH")
+    
 
+class Feather(Enemie):
+    def __init__(self,snake,speed=4):
+        self.x=75
+        self.y=20
+        super().__init__(self.x, self.y, 'feather.png', 'feather_coord.txt', [4],3)  
+        self.xMove=snake.body[0][0]*cell_size-self.x
+        self.yMove=snake.body[0][1]*cell_size-self.y
+        print(self.x)
+        print(self.y)
+        print()
+        print(self.xMove)
+        print(self.yMove)
         
+        self.total_steps=(abs(self.xMove)+abs(self.yMove))/speed
+        self.xStep=self.xMove/self.total_steps
+        self.yStep=self.yMove/self.total_steps
         
-        
-        
-        
+
+    def handle_move(self):
+        if self.rect.x<0 or self.rect.y<0:
+            self.kill()
+        self.rect.x+=self.xStep
+        self.rect.y+=self.yStep
+    
+    def handle_collision(self,segment,snake,game):
+        self.kill()
+        snake.reduce_body()
    
                 
             

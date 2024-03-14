@@ -14,6 +14,7 @@ from assets.door import Door
 from phases.LevelManager import LevelManager
 from assets.floorTraps import FireTrap
 from assets.floorTraps import SpikeTrap
+from assets.egg import Egg
 from assets.sawTrap import SawTrap
 from assets.enemies import Murcielago
 from resources.text.TextCollection import TextColection
@@ -24,6 +25,7 @@ from assets.goldenapple import GoldenApple
 from assets.pacmanFruit import PacmanFruit
 
 from assets.enemies import Eagle
+from assets.enemies import Feather
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
 
@@ -42,13 +44,16 @@ class PlayingState3(GameState):
         self.snake = Snake(10,8)
         self.gemstone = Gemstone(26,12)
         self.eagle=Eagle()
-        self.enemy_group=pygame.sprite.Group(self.eagle)
+        self.feather=Feather(self.snake)
+        self.egg=Egg(20,10)
+        self.egg_group = pygame.sprite.Group(self.egg)
+        self.enemy_group=pygame.sprite.Group(self.feather)
         self.rotten_apple_group = pygame.sprite.Group()
         self.apple_group = pygame.sprite.Group()
         self.gemstone_group = pygame.sprite.Group(self.gemstone)
         self.explosions_group = pygame.sprite.Group()   
         
-        self.group_list=(self.apple_group,self.rotten_apple_group,self.gemstone_group,self.enemy_group)
+        self.group_list=(self.apple_group,self.rotten_apple_group,self.gemstone_group,self.enemy_group,self.egg_group)
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         self.init_apples(area_manager)
 
@@ -118,7 +123,11 @@ class PlayingState3(GameState):
     def update(self):
         current_time = time.time()
         self.snake.update(current_time)
-        self.eagle.update()
+        self.eagle.update(self.snake,current_time,self.enemy_group)
+        for enemie in self.enemy_group:
+            enemie.update()
+            enemie.handle_move()
+
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')
@@ -136,7 +145,7 @@ class PlayingState3(GameState):
         for group in self.group_list:
             for asset in group:
                 asset.draw(screen, self.camera_offset)
-
+        self.eagle.draw(screen, self.camera_offset)
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
         self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))

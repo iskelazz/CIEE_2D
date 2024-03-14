@@ -24,6 +24,8 @@ class Snake:
     def __init__(self, pos_x, pos_y):
         self.load_images()
         self.segments = Group()
+        
+        self.retrieved_eggs=0
         #Posicion del cuerpo, la pasada por parametro es la cabeza, se situa siempre en horizontal mirando a la derecha
         self.body = [Vector2(pos_x, pos_y), Vector2(pos_x-1, pos_y), Vector2(pos_x-2, pos_y)]
         self.direction = Vector2(1, 0)
