@@ -46,6 +46,7 @@ class PlayingState3(GameState):
         self.eagle=Eagle()
         self.feather=Feather(self.snake)
         self.egg=Egg(20,10)
+        self.spike_trap_group=pygame.sprite.Group()
         self.egg_group = pygame.sprite.Group(self.egg)
         self.enemy_group=pygame.sprite.Group(self.feather)
         self.rotten_apple_group = pygame.sprite.Group()
@@ -53,7 +54,7 @@ class PlayingState3(GameState):
         self.gemstone_group = pygame.sprite.Group(self.gemstone)
         self.explosions_group = pygame.sprite.Group()   
         
-        self.group_list=(self.apple_group,self.rotten_apple_group,self.gemstone_group,self.enemy_group,self.egg_group)
+        self.group_list=(self.apple_group,self.rotten_apple_group,self.gemstone_group,self.enemy_group,self.egg_group,self.spike_trap_group)
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         self.init_apples(area_manager)
 
@@ -123,11 +124,12 @@ class PlayingState3(GameState):
     def update(self):
         current_time = time.time()
         self.snake.update(current_time)
-        self.eagle.update(self.snake,current_time,self.enemy_group)
+        self.eagle.update(self.snake,current_time,self.enemy_group,self.spike_trap_group)
         for enemie in self.enemy_group:
             enemie.update()
             enemie.handle_move()
-
+        for spikeTrap in self.spike_trap_group:
+            spikeTrap.animate_trap()
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')

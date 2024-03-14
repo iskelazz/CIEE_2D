@@ -7,6 +7,8 @@ from config import GRAPHICS_DIR
 from resources.gestorRecursos import GestorRecursos
 from assets.snake.pacmanState import PacmanState
 
+from assets.floorTraps import SpikeTrap
+
 cell_size = 40
 cell_number = 20
 
@@ -189,7 +191,7 @@ class Eagle(Enemie):
     def __init__(self):
         super().__init__(75, 20, 'eagle.png', 'eagleCoord.txt', [4],3)    
         self.last_attack_time=0
-    def update(self,snake,current_time,enemy_group):
+    def update(self,snake,current_time,enemy_group,trap_group):
         
         super().update()
         if current_time-self.last_attack_time>5:
@@ -198,7 +200,7 @@ class Eagle(Enemie):
             if attack==0:
                 self.feather_attack(snake,enemy_group)
             elif attack==1:
-                self.trap_attack(snake)
+                self.trap_attack(snake,trap_group)
             elif attack==2:
                 self.fly_attack(snake)
             else:
@@ -207,7 +209,9 @@ class Eagle(Enemie):
                 self.fly_attack(snake)
 
 
-    def trap_attack(self,snake):
+    def trap_attack(self,snake,trap_group):
+        trampa=SpikeTrap(snake.body[0]+snake.direction*5)
+        trap_group.add(trampa)
         print("TRAMPA AAAAAAAAAAAAAAAAAH")
     
     def feather_attack(self,snake,enemy_group):
