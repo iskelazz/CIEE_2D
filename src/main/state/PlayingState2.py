@@ -33,7 +33,7 @@ class PlayingState2(GameState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
-        self.load_level(os.path.join(LEVEL_DIR, 'level2_alt.json'))
+        self.load_level(os.path.join(LEVEL_DIR, 'level1.json'))
         area_manager = AreaManager()
         area_manager.load_areas(areas_dict)
         self.snake = Snake(5,29)
@@ -311,5 +311,5 @@ class PlayingState2(GameState):
         self.level_manager.check_collisions(head, tail, self.snake.state, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
-        self.game.screen_manager.change_state('INTRO')
+        self.game.screen_manager.change_state('PLAYING3')
         self.game.screen_manager.update()

@@ -4,34 +4,22 @@ from pygame.math import Vector2
 from state.GameState import GameState
 from assets.redapple import RedApple
 from assets.rottenApple import RottenApple
-from assets.Hole import Hole
-from assets.key import Key
-from animations.explosion import Explosion
 from assets.snake.snake import Snake
-from assets.snake.fastState import FastState
-from assets.pointsDoor import PointsDoor
-from assets.door import Door
 from phases.LevelManager import LevelManager
-from assets.floorTraps import FireTrap
-from assets.floorTraps import SpikeTrap
 from assets.egg import Egg
-from assets.sawTrap import SawTrap
-from assets.enemies import Murcielago
-from resources.text.TextCollection import TextColection
 from phases.Area import Area
 from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
-from assets.goldenapple import GoldenApple
-from assets.pacmanFruit import PacmanFruit
+
 
 from assets.enemies import Eagle
-from assets.enemies import Feather
+
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
 
 areas_dict = {
-    "AREA1": Area("AREA1", 1, 1, 39, 19),
-    "AREA2": Area("AREA2", 1, 21, 19, 39)
+    "AREA1": Area("AREA1", 1, 1, 19, 19),
+    "AREA2": Area("AREA2", 21, 1, 19, 19)
     #añadir mas areas si es necesario
 }
 class PlayingState3(GameState):
@@ -42,7 +30,7 @@ class PlayingState3(GameState):
         self.load_level(os.path.join(LEVEL_DIR, 'level3.json'))
         area_manager = AreaManager()
         area_manager.load_areas(areas_dict)
-        self.snake = Snake(10,8)
+        self.snake = Snake(5,26)
         self.gemstone = Gemstone(26,12)
         self.eagle=Eagle()
         self.egg=Egg(20,10)
@@ -142,7 +130,6 @@ class PlayingState3(GameState):
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')
         self.camera_offset = self.calculate_camera_offset()
-        print(self.camera_offset)
 
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
