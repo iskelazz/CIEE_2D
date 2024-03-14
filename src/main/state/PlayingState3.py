@@ -37,6 +37,7 @@ areas_dict = {
 class PlayingState3(GameState):
     def __init__(self, game):
         super().__init__(game)
+        self.camera_offset = Vector2(0, 0)
         # Cargar nivel
         self.load_level(os.path.join(LEVEL_DIR, 'level3.json'))
         area_manager = AreaManager()
@@ -81,15 +82,23 @@ class PlayingState3(GameState):
         self.apple_group.add(apple)    
     
     def calculate_camera_offset(self):
-        # Para que la serpiente se encuentre en el centro de la camara
-        half_screen_width = SCREEN_WIDTH / 2
-        half_screen_height = SCREEN_HEIGHT / 2
+        # Coordenadas objetivo basadas en la posición de la cabeza de la serpiente
+        target_x = self.snake.segments.sprites()[0].rect.centerx - SCREEN_WIDTH / 2
+        target_y = self.snake.segments.sprites()[0].rect.centery - SCREEN_HEIGHT / 2
 
-        snake_head_position = self.snake.segments.sprites()[0].rect.center
-        camera_x = min(max(snake_head_position[0] - half_screen_width, 0), self.level_size[0] - SCREEN_WIDTH)
-        camera_y = min(max(snake_head_position[1] - half_screen_height, 0), self.level_size[1] - SCREEN_HEIGHT)
+        # Asegurarse de que la cámara no se salga de los límites del nivel
+        target_x = min(max(0, target_x), self.level_size[0] - SCREEN_WIDTH)
+        target_y = min(max(0, target_y), self.level_size[1] - SCREEN_HEIGHT)
 
-        return Vector2(camera_x, camera_y)
+        # Interpolar entre la posición actual de la cámara y el objetivo
+        # El factor de lerp determina qué tan "suave" o "rápido" es el movimiento de la cámara
+        # Un valor más bajo resultará en un movimiento más suave
+        lerp_factor = 0.1
+        new_camera_x = self.camera_offset.x + (target_x - self.camera_offset.x) * lerp_factor
+        new_camera_y = self.camera_offset.y + (target_y - self.camera_offset.y) * lerp_factor
+        # Actualizar la posición de la cámara
+        return Vector2(new_camera_x, new_camera_y)
+
 
     def calculate_camera_offset_block(self):
         # Para que la camara se mueva por bloques
@@ -133,6 +142,7 @@ class PlayingState3(GameState):
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.change_state('GAME_OVER')
         self.camera_offset = self.calculate_camera_offset()
+        print(self.camera_offset)
 
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
