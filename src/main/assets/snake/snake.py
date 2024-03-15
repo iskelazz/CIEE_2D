@@ -40,16 +40,11 @@ class Snake:
         self.speed = 7 # 7 movimientos por segundo
 
         #sonidos
-        self.snake_walk_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'snake_walk.wav'))
         self.red_apple_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eat_red_apple.wav'))
         self.rotten_apple_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eat_rotten_apple.wav'))
         self.bat_hit_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_hit.wav'))
         self.bat_kill_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_kill.wav'))
         
-        pygame.mixer.Sound.set_volume(self.snake_walk_sound, 0.4)
-        self.snake_walk_sound.play(-1)
-        
-
     def set_state(self, new_state_cls):
         self.state.on_exit()  # Llama a on_exit del estado actual
         self.state = new_state_cls # Crea una nueva instancia del nuevo estado

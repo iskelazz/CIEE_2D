@@ -2,13 +2,14 @@ import pygame
 from state.GameState import GameState
 import sys, os
 from Utils import Utils
+from resources.text.TextCollection import TextColection
 from config import GRAPHICS_DIR, FONTS_DIR, SOUNDS_DIR
 
 class MenuState(GameState):
     def __init__(self, game):
         super().__init__(game)
         self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 48)
-        self.options = ['JUGAR', 'SALIR']
+        self.options = TextColection.get_menu_options_text()
         self.current_option = 0
         self.color = (255, 255, 255)
         self.color_inactive = (100, 100, 100)

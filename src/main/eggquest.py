@@ -18,7 +18,7 @@ class EggQuest:
         self.screen_width = SCREEN_WIDTH
         self.screen_height = SCREEN_HEIGHT
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height)) #800x800
-        pygame.display.set_caption('Snake Game')
+        pygame.display.set_caption('EggQuest')
         self.FPS = 60
         self.clock = pygame.time.Clock()
 

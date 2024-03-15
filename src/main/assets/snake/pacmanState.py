@@ -2,6 +2,8 @@ from assets.snake.snakeState import SnakeState
 from assets.snake.normalState import NormalState
 import pygame
 import time
+import os
+from config import SOUNDS_DIR
 
 class PacmanState(SnakeState):
     def __init__(self, snake):
@@ -11,10 +13,14 @@ class PacmanState(SnakeState):
         self.blink_interval = 0.5  # Intervalo de tiempo en segundos para cambiar entre parpadeo y estado normal
         self.use_blink_images = False
         self.start_time = time.time()
+        
+        #sonido
+        self.snake_pacman_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'pacman_state.wav'))
 
     def on_enter(self):
         self.duration = 25  # Duración de 25 segundos para este estado
         self.blink_timer = pygame.time.get_ticks() / 1000.0  # Iniciar temporizador para el parpadeo
+        self.snake_pacman_sound.play(-1)
 
     def update(self):
         super().update()  
@@ -38,4 +44,5 @@ class PacmanState(SnakeState):
 
 
     def on_exit(self):
+        self.snake_pacman_sound.stop()
         self.snake.mode_image = "normal"

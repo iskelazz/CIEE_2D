@@ -1,6 +1,7 @@
+import sys, os
 import pygame
 from state.GameState import GameState
-import sys, os
+from resources.text.TextCollection import TextColection
 from config import FONTS_DIR, GRAPHICS_DIR
 
 class GameOverState(GameState):
@@ -14,10 +15,10 @@ class GameOverState(GameState):
         self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'game_over_background.png')).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
 
-        self.retry_text = 'Presiona ENTER para reintentar'
-        self.menu_text = 'Presiona ESC para Menu'
-        self.score_text = f'Puntuación: {self.game.score.score:06d}'
-        self.game_over_text = 'GAME OVER'
+        self.retry_text = TextColection.get_gameover_retry_text()
+        self.menu_text = TextColection.get_gameover_exit_text()
+        self.score_text = TextColection.get_gameover_score_text() + str(self.game.score.score)
+        self.game_over_text = TextColection.get_gameover_text()
 
     def handle_events(self, events):
         for event in events:
