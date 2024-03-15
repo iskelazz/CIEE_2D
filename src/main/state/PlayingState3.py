@@ -112,7 +112,7 @@ class PlayingState3(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.game.screen_manager.change_state('PAUSE')
+                    self.game.screen_manager.push_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
                     self.snake.update_direction(event.key)
