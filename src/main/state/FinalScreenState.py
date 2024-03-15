@@ -23,3 +23,6 @@ class FinalScreenState(GameState):
     
     def draw(self, screen):
         pass
+
+    def tag(self):
+        pass

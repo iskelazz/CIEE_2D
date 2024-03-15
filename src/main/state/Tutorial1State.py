@@ -24,4 +24,7 @@ class Tutorial1State(GameState):
         screen.blit(self.tutorial_image, (0, 0))
 
     def update(self):
-        pass 
+        pass
+
+    def tag(self):
+        return "TUTO1"

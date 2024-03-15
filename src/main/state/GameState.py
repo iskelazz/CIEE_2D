@@ -15,3 +15,7 @@ class GameState(ABC):
     @abstractmethod
     def draw(self, screen):
         pass
+
+    @abstractmethod
+    def tag(self):
+        pass

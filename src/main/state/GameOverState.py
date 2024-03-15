@@ -53,3 +53,6 @@ class GameOverState(GameState):
         menu_surface = self.small_font.render(self.menu_text, True, pygame.Color('white'))
         menu_rect = menu_surface.get_rect(center=(self.game.screen_width / 2, self.game.screen_height / 2 + 100))
         screen.blit(menu_surface, menu_rect)
+
+    def tag(self):
+        return "GAME_OVER"

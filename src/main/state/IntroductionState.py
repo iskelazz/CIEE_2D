@@ -55,3 +55,6 @@ class IntroductionState(GameState):
         
         self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'White')
         screen.blit(self.snip, (100, 300))
+
+    def tag(self):
+        return "INTRO"

@@ -163,3 +163,6 @@ class PlayingState1(GameState):
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')
         self.game.screen_manager.update()
+
+    def tag(self):
+        return "PLAYING1"

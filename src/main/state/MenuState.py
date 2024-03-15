@@ -45,3 +45,6 @@ class MenuState(GameState):
             color = self.color if index == self.current_option else self.color_inactive
             position = (self.game.screen_width / 2, self.game.screen_height - self.game.screen_height / 6 + 30 * index)
             Utils.draw_text_with_shadow(screen, option, position, self.font, color)
+
+    def tag(self):
+        "MENU"

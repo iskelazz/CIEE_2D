@@ -143,3 +143,6 @@ class PlayingState(GameState):
             reduce_value = len(body) - index
             for i in range(reduce_value):
                 self.snake.reduce_body()
+
+    def tag(self):
+        return "PLAYING"

@@ -32,3 +32,6 @@ class StartScreenState(GameState):
     
     # Usa Utils para dibujar el texto con sombra
         Utils.draw_text_with_shadow(screen, self.text, (self.game.screen_width / 2, self.game.screen_height - self.game.screen_height / 6), self.font)
+
+    def tag(self):
+        return "START"

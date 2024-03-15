@@ -30,3 +30,6 @@ class PauseState(GameState):
         # Dibuja el texto y el símbolo de pausa
         Utils.draw_text_with_shadow(screen, self.pause_text, (self.game.screen_width / 2, self.game.screen_height / 2 - 30), self.font)
         Utils.draw_text_with_shadow(screen, self.pause_symbol, (self.game.screen_width / 2, self.game.screen_height / 2 + 30), self.font)
+
+    def tag(self):
+        return "PAUSE"
