@@ -14,3 +14,5 @@ class RedApple(Apple):
 		self.randomize(snake.body,area_manager.coords(area_manager.get_area_tag_by_object(self)))
 		snake.add_block()
 		game.score.eat_red_apple()
+		snake.red_apple_sound.play()
+		

@@ -8,6 +8,7 @@ from assets.snake.snake import Snake
 from phases.LevelManager import LevelManager
 from phases.Area import Area
 from phases.AreaManager import AreaManager
+from config import SOUNDS_DIR
 
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
@@ -33,6 +34,9 @@ class PlayingState1(GameState):
 
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         self.init_apples(area_manager)
+
+        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'level_1_theme.mp3'))
+        self.background_music.play(-1)
 
     def init_apples(self, area_manager):
         "Inicializado de las manzanas según el diseño establecido para el nivel"
@@ -92,7 +96,7 @@ class PlayingState1(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.game.screen_manager.push_state('PAUSE')
+                    self.game.screen_manager.change_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
                     self.snake.update_direction(event.key)
@@ -161,6 +165,7 @@ class PlayingState1(GameState):
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
+        self.background_music.stop()
         self.game.screen_manager.change_state('PLAYING2')
         self.game.screen_manager.update()
 

@@ -5,7 +5,7 @@ from assets.snake.normalState import NormalState
 from assets.snake.pacmanState import PacmanState
 from pygame.math import Vector2
 from pygame.sprite import Sprite, Group
-from config import GRAPHICS_DIR, CELL_SIZE
+from config import GRAPHICS_DIR, CELL_SIZE, SOUNDS_DIR
 
 
 class SnakeSegment(Sprite):
@@ -38,6 +38,8 @@ class Snake:
         self.last_update_time = time.time()
         self.state = NormalState(self)
         self.speed = 7 # 7 movimientos por segundo
+        self.red_apple_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eat_red_apple.wav'))
+        self.rotten_apple_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eat_rotten_apple.wav'))
 
     def set_state(self, new_state_cls):
         self.state.on_exit()  # Llama a on_exit del estado actual

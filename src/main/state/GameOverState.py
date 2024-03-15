@@ -6,6 +6,7 @@ from config import FONTS_DIR
 class GameOverState(GameState):
     def __init__(self, game):
         super().__init__(game)
+        pygame.mixer.stop()
         self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 48)
         self.small_font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 32)
         self.retry_text = 'Press ENTER to Retry'

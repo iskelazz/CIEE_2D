@@ -2,7 +2,7 @@ import pygame
 from state.GameState import GameState
 import sys, os
 from Utils import Utils
-from config import GRAPHICS_DIR, FONTS_DIR 
+from config import GRAPHICS_DIR, FONTS_DIR, SOUNDS_DIR
 
 class MenuState(GameState):
     def __init__(self, game):
@@ -15,6 +15,10 @@ class MenuState(GameState):
         # Carga la imagen de fondo
         self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'portada.png')).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
+        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'menu_theme.mp3'))
+        self.menu_option_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'menu_option.wav'))
+        self.play_option_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'play_selected.wav'))
+        self.background_music.play(-1)
 
     def handle_events(self, events):
         for event in events:
@@ -24,11 +28,15 @@ class MenuState(GameState):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.current_option = max(0, self.current_option - 1)
+                    self.menu_option_sound.play()
                 elif event.key == pygame.K_DOWN:
                     self.current_option = min(len(self.options) - 1, self.current_option + 1)
+                    self.menu_option_sound.play()
                 elif event.key == pygame.K_RETURN:
                     if self.current_option == 0:  # PLAY selected
+                        self.play_option_sound.play()
                         self.game.screen_manager.change_state('INTRO')
+                        self.background_music.stop()
                     elif self.current_option == 1:  # EXIT selected
                         pygame.quit()
                         sys.exit()

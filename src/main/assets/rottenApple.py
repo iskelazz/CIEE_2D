@@ -13,3 +13,4 @@ class RottenApple(Apple):
             self.randomize(snake.body,area_manager.coords(area_manager.get_area_tag_by_object(self)))
             snake.reduce_body()
             game.score.eat_rotten_apple() 
+            snake.rotten_apple_sound.play()

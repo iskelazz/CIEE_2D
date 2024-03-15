@@ -22,6 +22,10 @@ class EggQuest:
         self.FPS = 60
         self.clock = pygame.time.Clock()
 
+        #mixer para efectos de sonido 
+        pygame.mixer.pre_init(44100,-16,2,512)
+        pygame.mixer.init()
+
     def run(self):
         while True:
             events = pygame.event.get()
