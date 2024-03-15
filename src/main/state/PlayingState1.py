@@ -6,7 +6,6 @@ from assets.redapple import RedApple
 from assets.rottenApple import RottenApple
 from assets.snake.snake import Snake
 from phases.LevelManager import LevelManager
-from resources.text.TextCollection import TextColection
 from phases.Area import Area
 from phases.AreaManager import AreaManager
 
@@ -33,15 +32,6 @@ class PlayingState1(GameState):
         self.group_list=(self.rotten_apple_group, self.apple_group, self.explosions_group)
 
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
-        
-        # Textos 
-        self.messages = TextColection.get_tutorial_playing_1()
-        self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 32)
-        self.counter = 0
-        self.speed = 6
-        self.active_message = 0
-        self.message = self.messages[self.active_message]
-        self.done = False
         self.init_apples(area_manager)
 
     def init_apples(self, area_manager):
@@ -144,20 +134,6 @@ class PlayingState1(GameState):
 
         for explosion in self.explosions_group:
             explosion.draw(screen, self.camera_offset)
-        
-        if self.counter < self.speed * len(self.message):
-            self.counter += 1
-        elif self.counter >= self.speed * len(self.message):
-            self.done = True
-        
-        if self.active_message < len(self.messages)-1 and self.done:
-            self.active_message +=1
-            self.done = False
-            self.message = self.messages[self.active_message]
-            self.counter = 0
-        
-        self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'Black')
-        screen.blit(self.snip, (100, 600))
         
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)

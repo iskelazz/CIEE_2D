@@ -7,6 +7,7 @@ from state.PauseState import PauseState
 from state.MenuState import MenuState 
 from state.GameOverState import GameOverState
 from state.IntroductionState import IntroductionState
+from state.Tutorial1State import Tutorial1State
 
 
 class StateFactory:
@@ -30,5 +31,7 @@ class StateFactory:
             return GameOverState(game)
         elif state_id == 'INTRO':
             return IntroductionState(game)
+        elif state_id == 'TUTO1':
+            return Tutorial1State(game)
         else:
             raise ValueError(f"Unknown state ID: {state_id}")

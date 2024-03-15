@@ -22,8 +22,6 @@ class IntroductionState(GameState):
         self.message = self.messages[self.active_message]
         self.done = False
 
-        pygame.mixer
-
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.QUIT:
@@ -39,7 +37,7 @@ class IntroductionState(GameState):
                             self.counter = 0
                             self.speed = 3
                         else:
-                            self.game.screen_manager.change_state('PLAYING1')
+                            self.game.screen_manager.change_state('TUTO1')
                     else:
                         self.speed = 1
 
