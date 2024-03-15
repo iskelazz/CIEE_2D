@@ -65,12 +65,23 @@ class Enemie(Sprite):
                 image = self.sheet.subsurface(self.animationList[self.animationNum][self.spriteNum])
                 self.image = pygame.transform.scale_by(image, (scale, scale))
             else:self.image = self.sheet.subsurface(self.animationList[self.animationNum][self.spriteNum])
-     
+            
+    def invert_direction(self, direction):
+        aux = None
+        if (direction == 'down'): 
+            aux = 'up'
+        elif (direction == 'up'):
+            aux = 'down'
+        elif (direction == 'left'):
+            aux = 'right'
+        elif (direction == 'right'):
+            aux = 'left'  
+        return aux
+        
     def update(self):
         self.updateAnim(self.scale)
         
-                
-            
+                 
     def draw(self, screen, camera_offset):
         adjusted_position = (self.rect.x - camera_offset.x, 
                             self.rect.y - camera_offset.y)
@@ -79,12 +90,14 @@ class Enemie(Sprite):
         
         
 class Murcielago(Enemie):
-    def __init__(self, x, y, path_right, path_down, path_left, path_up, speed):
+    def __init__(self, x, y, path_right, path_down, path_left, path_up, speed, open):
 
         fullpath = [(path_right, 'right'), (path_down, 'down'), (path_left, 'left'), (path_up, 'up')]
         self.speed = speed
         self.velx = 0
         self.vely = 0
+        self.invert = False
+        self.open = open
         
         self.dead=False
         #self.rect = pygame.Rect(x*cell_size, y*cell_size, cell_size, cell_size)
@@ -98,14 +111,32 @@ class Murcielago(Enemie):
         self.animation_cont = 0
 
         super().__init__(x, y,'bat.png','batCoord.txt',[5])
-       
-    def update_path(self): 
-        self.path_cont += 1
-        path_index = (self.path_cont % len(self.fullpath))
-        self.path = self.fullpath[path_index]
-        self.plenght = (self.path[0] - 1) * cell_size
-        self.direction = self.path[1]
-    
+        
+    def update_path(self):
+        if (self.open == False):
+            self.path_cont += 1
+            path_index = (self.path_cont % len(self.fullpath))
+            self.path = self.fullpath[path_index]
+            self.plenght = (self.path[0] - 1) * cell_size
+            self.direction = self.path[1]
+            
+        else:
+            if (self.invert==False):
+                self.path_cont += 1
+                path_index = (self.path_cont % len(self.fullpath))
+                self.path = self.fullpath[path_index]
+                self.plenght = (self.path[0] - 1) * cell_size
+                self.direction = self.path[1]
+                if (path_index == len(self.fullpath)-1): self.invert = True
+            else:
+                path_index = (self.path_cont % len(self.fullpath))
+                self.path = self.fullpath[path_index]
+                self.plenght = (self.path[0] - 1) * cell_size
+                self.direction = self.invert_direction(self.path[1])
+                self.path_cont -= 1
+                if (path_index == 0): self.invert = False
+                
+            
     def move(self, dx, dy):
         self.rect.x += dx
         self.rect.y += dy

@@ -9,6 +9,8 @@ from phases.LevelManager import LevelManager
 from phases.Area import Area
 from phases.AreaManager import AreaManager
 from config import SOUNDS_DIR
+from assets.enemies import Murcielago
+
 
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
