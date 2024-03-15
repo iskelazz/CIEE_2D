@@ -28,7 +28,7 @@ class MenuState(GameState):
                     self.current_option = min(len(self.options) - 1, self.current_option + 1)
                 elif event.key == pygame.K_RETURN:
                     if self.current_option == 0:  # PLAY selected
-                        self.game.screen_manager.change_state('PLAYING3')
+                        self.game.screen_manager.change_state('INTRO')
                     elif self.current_option == 1:  # EXIT selected
                         pygame.quit()
                         sys.exit()

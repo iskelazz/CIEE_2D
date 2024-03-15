@@ -17,7 +17,7 @@ class IntroductionState(GameState):
         
         self.snip = self.font.render('',True, 'Black')
         self.counter = 0
-        self.speed = 1
+        self.speed = 3
         self.active_message = 0
         self.message = self.messages[self.active_message]
         self.done = False
@@ -30,14 +30,18 @@ class IntroductionState(GameState):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN and self.done:
-                    if self.active_message < len(self.messages)-1:
-                        self.active_message +=1
-                        self.done = False
-                        self.message = self.messages[self.active_message]
-                        self.counter = 0
+                if event.key == pygame.K_RETURN:
+                    if self.done:
+                        if self.active_message < len(self.messages)-1:
+                            self.active_message +=1
+                            self.done = False
+                            self.message = self.messages[self.active_message]
+                            self.counter = 0
+                            self.speed = 3
+                        else:
+                            self.game.screen_manager.change_state('PLAYING1')
                     else:
-                        self.game.screen_manager.change_state('PLAYING1')
+                        self.speed = 1
 
     def update(self):
         pass  # No hay lógica de actualización 
