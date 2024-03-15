@@ -7,6 +7,7 @@ from config import FONTS_DIR
 class PauseState(GameState):
     def __init__(self, game):
         super().__init__(game)
+        pygame.mixer.pause()
         self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 48)
         self.pause_text = 'PAUSE'
         self.pause_symbol = '||'  # Símbolo de pausa
@@ -15,6 +16,7 @@ class PauseState(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 # Regresar al estado de juego guardado
+                pygame.mixer.unpause()
                 self.game.screen_manager.pop_state()
 
     def update(self):

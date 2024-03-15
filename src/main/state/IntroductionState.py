@@ -71,3 +71,7 @@ class IntroductionState(GameState):
             screen.blit(self.snip, (350, 400))
         else:
             screen.blit(self.snip, (80, 400))
+
+    def tag():
+        return 'INTRO'
+        
