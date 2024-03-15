@@ -8,7 +8,7 @@ class StartScreenState(GameState):
     def __init__(self, game):
         super().__init__(game)
         self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 48)
-        self.text = 'Press ENTER to start'
+        self.text = 'Presiona ENTER para empezar'
         self.color = (255, 255, 255)
         # Carga la imagen de fondo
         self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'portada.png')).convert()

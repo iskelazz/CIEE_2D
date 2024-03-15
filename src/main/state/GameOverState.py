@@ -1,7 +1,7 @@
 import pygame
 from state.GameState import GameState
 import sys, os
-from config import FONTS_DIR 
+from config import FONTS_DIR, GRAPHICS_DIR
 
 class GameOverState(GameState):
     def __init__(self, game):
@@ -9,9 +9,14 @@ class GameOverState(GameState):
         pygame.mixer.stop()
         self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 48)
         self.small_font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 32)
-        self.retry_text = 'Press ENTER to Retry'
-        self.menu_text = 'Press ESC to Menu'
-        self.score_text = f'Score: {self.game.score.score:06d}'
+
+        # Carga la imagen de fondo
+        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'game_over_background.png')).convert()
+        self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
+
+        self.retry_text = 'Presiona ENTER para reintentar'
+        self.menu_text = 'Presiona ESC para Menu'
+        self.score_text = f'Puntuación: {self.game.score.score:06d}'
         self.game_over_text = 'GAME OVER'
 
     def handle_events(self, events):
@@ -36,7 +41,7 @@ class GameOverState(GameState):
 
     def draw(self, screen):
         # Fondo
-        screen.fill(pygame.Color('black'))
+        screen.blit(self.background_image, (0, 0))
 
         # Texto de Game Over
         game_over_surface = self.font.render(self.game_over_text, True, pygame.Color('white'))
