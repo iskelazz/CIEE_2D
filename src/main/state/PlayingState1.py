@@ -182,7 +182,7 @@ class PlayingState1(GameState):
             self.game.screen_manager.change_state('GAME_OVER')
 
         
-        self.level_manager.check_collisions(head, tail, self.snake.state, self.game.screen_manager, self.explosions_group)
+        self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')

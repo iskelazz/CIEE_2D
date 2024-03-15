@@ -113,13 +113,18 @@ class LevelManager:
                 screen.blit(obj.image, obj_position)
 
     #Esta funcion verifica las colisiones del jugador con los objetos estaticos y las gestiona
-    def check_collisions(self, head,tail, snake_state, manager, explosion):
-        
+    def check_collisions(self, snake, manager, explosion):
+        head = snake.segments.sprites()[0]
+        full_body_collide = False
         for group in self.sprite_groups.values():
             collided_sprites = pygame.sprite.spritecollide(head, group, False)
-            tail_collide=pygame.sprite.spritecollideany(tail, group)
+            collisions = pygame.sprite.groupcollide(snake.segments, group, False, False)
+            print(len(collisions))
+            print(len(snake.segments))
+            if len(collisions) == len(snake.segments):
+                full_body_collide = True
             for sprite in collided_sprites:
-                sprite.handle_collision(manager,tail_collide,snake_state,explosion)
+                sprite.handle_collision(manager,full_body_collide,snake.state,explosion)
 
     #Calculamos las posiciones de los objetos estaticos para evitar la aparicion de objetos aleatorios en esas posiciones
     def precalculate_static_objects_positions(self):

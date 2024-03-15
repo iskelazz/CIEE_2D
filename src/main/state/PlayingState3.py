@@ -166,7 +166,7 @@ class PlayingState3(GameState):
         if pygame.sprite.spritecollideany(self.eagle,head_body):
             self.eagle.handle_collision(self.snake,self.game)   
         
-        self.level_manager.check_collisions(head, tail, self.snake.state, self.game.screen_manager, self.explosions_group)
+        self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')
