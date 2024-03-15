@@ -119,8 +119,6 @@ class LevelManager:
         for group in self.sprite_groups.values():
             collided_sprites = pygame.sprite.spritecollide(head, group, False)
             collisions = pygame.sprite.groupcollide(snake.segments, group, False, False)
-            print(len(collisions))
-            print(len(snake.segments))
             if len(collisions) == len(snake.segments):
                 full_body_collide = True
             for sprite in collided_sprites:
