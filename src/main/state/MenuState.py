@@ -55,4 +55,4 @@ class MenuState(GameState):
             Utils.draw_text_with_shadow(screen, option, position, self.font, color)
 
     def tag(self):
-        "MENU"
+        return "MENU"

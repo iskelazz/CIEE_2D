@@ -33,8 +33,10 @@ class PlayingState2(GameState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
-        self.load_level(os.path.join(LEVEL_DIR, 'level2.json'))
+        self.load_level(os.path.join(LEVEL_DIR, 'level2_alt.json'))
         area_manager = AreaManager()
+        self.game.score.init_level_score()
+        reference_score = self.game.score.score
         area_manager.load_areas(areas_dict)
         self.snake = Snake(5,29)
         self.bat = Murcielago(3, 3, 8, 8, 8, 8, 2)
@@ -58,14 +60,14 @@ class PlayingState2(GameState):
         self.pacmanFruit=PacmanFruit(37,3)
   
 
-        self.pointsDoor1=PointsDoor(9*CELL_SIZE,20*CELL_SIZE,False,self.game.score,500)
-        self.pointsDoor2=PointsDoor(10*CELL_SIZE,20*CELL_SIZE,False,self.game.score,500)
+        self.pointsDoor1=PointsDoor(9*CELL_SIZE,20*CELL_SIZE,False,self.game.score,500+reference_score)
+        self.pointsDoor2=PointsDoor(10*CELL_SIZE,20*CELL_SIZE,False,self.game.score,500+reference_score)
         self.door=Door(18*CELL_SIZE,13*CELL_SIZE,True)
         self.door2=Door(18*CELL_SIZE,14*CELL_SIZE,True)
         self.key=Key(6 * CELL_SIZE,3 * CELL_SIZE,[self.door,self.door2])
 
-        self.pointsDoor3=PointsDoor(44*CELL_SIZE,17*CELL_SIZE,True,self.game.score,3000)
-        self.pointsDoor4=PointsDoor(44*CELL_SIZE,18*CELL_SIZE,True,self.game.score,3000)
+        self.pointsDoor3=PointsDoor(44*CELL_SIZE,17*CELL_SIZE,True,self.game.score,3000+reference_score)
+        self.pointsDoor4=PointsDoor(44*CELL_SIZE,18*CELL_SIZE,True,self.game.score,3000+reference_score)
         self.door3=Door(57*CELL_SIZE,0*CELL_SIZE,True)
         self.door4=Door(57*CELL_SIZE,1*CELL_SIZE,True)
         self.key2=Key(58 * CELL_SIZE,18 * CELL_SIZE,[self.door3,self.door4])
@@ -89,14 +91,6 @@ class PlayingState2(GameState):
         self.timer_respawn_pacman = None
         self.timer_respawn_gemstone = None
         
-        # Textos 
-        self.messages = TextColection.get_tutorial_playing_1()
-        self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 32)
-        self.counter = 0
-        self.speed = 6
-        self.active_message = 0
-        self.message = self.messages[self.active_message]
-        self.done = False
         self.init_apples(area_manager)
 
     def init_apples(self, area_manager):
@@ -271,20 +265,6 @@ class PlayingState2(GameState):
         for explosion in self.explosions_group:
             explosion.draw(screen, self.camera_offset)
         
-        if self.counter < self.speed * len(self.message):
-            self.counter += 1
-        elif self.counter >= self.speed * len(self.message):
-            self.done = True
-        
-        if self.active_message < len(self.messages)-1 and self.done:
-            self.active_message +=1
-            self.done = False
-            self.message = self.messages[self.active_message]
-            self.counter = 0
-        
-        self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'Black')
-        screen.blit(self.snip, (100, 600))
-        
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
         self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
@@ -311,6 +291,7 @@ class PlayingState2(GameState):
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
+        self.game.score.save_score()
         self.game.screen_manager.change_state('PLAYING3')
         self.game.screen_manager.update()
 

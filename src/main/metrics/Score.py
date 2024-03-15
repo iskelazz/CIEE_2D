@@ -5,7 +5,8 @@ from config import FONTS_DIR
 #Se encarga de la puntuación 
 class Score:
     def __init__(self, screen, screen_width):
-        self.score = 0 
+        self.score = 0
+        self.finish_level_score = 0 
         self.SCORE_PER_APPLE = 100
         self.SCORE_GOLDEN_APPLE = 5000
         self.SCORE_PER_ROTTEN = 100
@@ -34,3 +35,11 @@ class Score:
     def eat_rotten_apple(self):
         """Si la serpiente come una manzana podrida, disminuye la puntuacion en 1000"""
         self.score -= self.SCORE_PER_APPLE
+
+    def init_level_score(self):
+        """Inicializa el score al almacenado en el punto de guardado"""
+        self.score = self.finish_level_score
+
+    def save_score(self):
+        """Guarda un nuevo score"""
+        self.finish_level_score = self.score

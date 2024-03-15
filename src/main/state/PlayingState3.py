@@ -26,6 +26,7 @@ class PlayingState3(GameState):
     def __init__(self, game):
         super().__init__(game)
         self.camera_offset = Vector2(0, 0)
+        self.game.score.init_level_score()
         # Cargar nivel
         self.load_level(os.path.join(LEVEL_DIR, 'level3.json'))
         area_manager = AreaManager()
@@ -170,6 +171,7 @@ class PlayingState3(GameState):
     
     def next_level(self):
         self.game.screen_manager.change_state('PLAYING2')
+        self.game.score.save_score()
     
     def tag(self):
         return "PLAYING3"

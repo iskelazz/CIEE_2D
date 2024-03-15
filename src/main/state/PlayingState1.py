@@ -24,6 +24,7 @@ class PlayingState1(GameState):
         # Cargar nivel
         self.load_level(os.path.join(LEVEL_DIR, 'level1.json'))
         area_manager = AreaManager()
+        self.game.score.init_level_score()
         area_manager.load_areas(areas_dict)
         self.snake = Snake(8,10)
         self.apple_group = pygame.sprite.Group() 
@@ -31,7 +32,7 @@ class PlayingState1(GameState):
         self.last_rotten_apple_time = time.time()
         self.explosions_group = pygame.sprite.Group()  
         self.group_list=(self.rotten_apple_group, self.apple_group, self.explosions_group)
-
+        
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         self.init_apples(area_manager)
 
@@ -166,6 +167,7 @@ class PlayingState1(GameState):
     
     def next_level(self):
         self.background_music.stop()
+        self.game.score.save_score()
         self.game.screen_manager.change_state('PLAYING2')
         self.game.screen_manager.update()
 

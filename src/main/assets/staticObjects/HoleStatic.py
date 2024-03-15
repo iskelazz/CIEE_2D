@@ -14,7 +14,7 @@ class HoleStatic(StaticGameObject):
         pass  
 
     def handle_collision(self, screen_manager, tail_collide, snake_state, explosion):
-        screen_manager.current_state.next_level()
+        screen_manager.current_state().next_level()
 
     def occupied_positions(self): 
         return self.position
