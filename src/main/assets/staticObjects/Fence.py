@@ -12,7 +12,7 @@ class Fence(StaticGameObject):
         pass  
 
     def handle_collision(self, screen_manager, tail_collide, snake_state, explosion):
-        screen_manager.change_state('GAME_OVER')
+        screen_manager.push_state('GAME_OVER')
 
     def occupied_positions(self): 
         return self.position

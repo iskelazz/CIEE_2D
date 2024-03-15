@@ -117,7 +117,7 @@ class PlayingState(GameState):
                 self.snake.reduce_body()
                 self.game.score.trap_collision()
             if len(self.snake.body) < 1 or self.game.score.score < 0:
-                self.game.screen_manager.change_state('GAME_OVER')
+                self.game.screen_manager.push_state('GAME_OVER')
        
         #Colision con trampas de pinchos        
         if pygame.sprite.collide_mask(head, self.spikeTrap):
@@ -125,11 +125,11 @@ class PlayingState(GameState):
                 self.snake.reduce_body()
                 self.game.score.trap_collision()
             if len(body) < 1 or self.game.score.score < 0:
-                self.game.screen_manager.change_state('GAME_OVER')
+                self.game.screen_manager.push_state('GAME_OVER')
                
         #Colision con cuchilla de cabeza
         if pygame.sprite.collide_mask(head, self.sawTrap):
-            self.game.screen_manager.change_state('GAME_OVER')
+            self.game.screen_manager.push_state('GAME_OVER')
            
         #Colision con cuchilla de cuerpo
         if pygame.sprite.spritecollideany(self.sawTrap, body):

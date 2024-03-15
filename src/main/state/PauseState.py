@@ -15,7 +15,7 @@ class PauseState(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 # Regresar al estado de juego guardado
-                self.game.screen_manager.change_state("PLAYING_STATE")
+                self.game.screen_manager.pop_state()
 
     def update(self):
         pass  # No es necesario actualizar nada en el estado de pausa

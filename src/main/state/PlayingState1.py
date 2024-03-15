@@ -92,7 +92,7 @@ class PlayingState1(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.game.screen_manager.change_state('PAUSE')
+                    self.game.screen_manager.push_state('PAUSE')
                 else:
                     # Actualiza la dirección basada en la tecla presionada
                     self.snake.update_direction(event.key)
@@ -102,7 +102,7 @@ class PlayingState1(GameState):
         self.snake.update(current_time)
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
-            self.game.screen_manager.change_state('GAME_OVER')
+            self.game.screen_manager.push_state('GAME_OVER')
         self.camera_offset = self.calculate_camera_offset_block()
         self.explosions_group.update()
         # Añadir RottenApple cada 5 segundos hasta un máximo de 5
@@ -155,7 +155,7 @@ class PlayingState1(GameState):
       
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
-            self.game.screen_manager.change_state('GAME_OVER')
+            self.game.screen_manager.push_state('GAME_OVER')
 
         
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)

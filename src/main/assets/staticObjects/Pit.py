@@ -15,7 +15,7 @@ class Pit(StaticGameObject):
 
     def handle_collision(self, screen_manager, full_body_contact, snake_state, explosion):
         if full_body_contact:
-            screen_manager.change_state('GAME_OVER')
+            screen_manager.push_state('GAME_OVER')
         else: pass
 
     def occupied_positions(self): 

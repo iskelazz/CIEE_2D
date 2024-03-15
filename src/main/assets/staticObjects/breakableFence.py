@@ -19,7 +19,7 @@ class BreakableFence(StaticGameObject):
             explosion.add(new_explosion)
             self.kill()
         else:
-            screen_manager.change_state('GAME_OVER')
+            screen_manager.push_state('GAME_OVER')
 
     def occupied_positions(self): 
         return self.position

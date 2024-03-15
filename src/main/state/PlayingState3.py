@@ -128,7 +128,7 @@ class PlayingState3(GameState):
             spikeTrap.animate_trap()
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
-            self.game.screen_manager.change_state('GAME_OVER')
+            self.game.screen_manager.push_state('GAME_OVER')
         self.camera_offset = self.calculate_camera_offset()
 
     def draw(self, screen):
@@ -162,7 +162,7 @@ class PlayingState3(GameState):
         
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
-            self.game.screen_manager.change_state('GAME_OVER')
+            self.game.screen_manager.push_state('GAME_OVER')
         if pygame.sprite.spritecollideany(self.eagle,head_body):
             self.eagle.handle_collision(self.snake,self.game)   
         

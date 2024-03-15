@@ -65,7 +65,7 @@ class FloorTrap(Sprite):
                 snake.reduce_body()
                 game.score.trap_collision()
             if len(snake.body) < 1 or game.score.score < 0:
-                game.screen_manager.change_state('GAME_OVER')  
+                game.screen_manager.push_state('GAME_OVER')  
    
     
 class FireTrap(FloorTrap):

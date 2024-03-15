@@ -21,12 +21,14 @@ class GameOverState(GameState):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     # Reinicia el juego creando una nueva instancia de SnakeGame
-                    self.game.__init__()
-                    self.game.screen_manager.change_state('PLAYING1')
+                    self.game.screen_manager.pop_state()
+                    tag = self.game.screen_manager.current_state().tag()
+                    self.game.screen_manager.change_state(tag)
                 elif event.key == pygame.K_ESCAPE:
                     # Cambia al estado del menú
                     self.game.__init__()
-                    self.game.screen_manager.change_state('MENU')
+                    self.game.screen_manager.pop_state()
+                    self.game.screen_manager.change_state("MENU")
 
     def update(self):
         pass  # No hay necesidad de actualización lógica en la pantalla de Game Over

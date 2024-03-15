@@ -122,7 +122,7 @@ class SawTrap(Sprite):
 
     def handle_collision(self,segment,snake,game):
         if segment.number==0:
-            game.screen_manager.change_state('GAME_OVER')
+            game.screen_manager.push_state('GAME_OVER')
         else:
             reduce_value = len(snake.segments.sprites()[1:]) - segment.number
             for i in range(reduce_value):
