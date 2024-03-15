@@ -10,7 +10,7 @@ class IntroductionState(GameState):
         super().__init__(game)
         self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 35)
         # Carga la imagen de fondo
-        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'introduction_background.png')).convert()
+        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'story_1_background.png')).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
         
         self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'intro_theme.mp3'))

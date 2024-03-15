@@ -2,7 +2,7 @@ import pygame
 
 import os
 from pygame.sprite import Sprite
-from config import GRAPHICS_DIR, CELL_SIZE
+from config import GRAPHICS_DIR, CELL_SIZE, SOUNDS_DIR
 
 #Objeto para el cambio de nivel, Sprite temporal
 class Key(Sprite):
@@ -16,6 +16,7 @@ class Key(Sprite):
 		self.rect.y=y
 		self.picked=False
 		self.doors=doors
+		self.open_door_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'door_open.wav'))
 
 	def draw(self, screen, camera_offset):
 		# Ajusta la posición de la manzana por el desplazamiento de la cámara
@@ -30,4 +31,5 @@ class Key(Sprite):
 			door.open()
 	
 	def handle_collision(self,segment,snake,game):
+		self.open_door_sound.play()
 		self.pick_up()

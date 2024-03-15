@@ -3,7 +3,7 @@ import pygame, os
 import random
 from pygame.sprite import Sprite
 from pygame.math import Vector2
-from config import GRAPHICS_DIR
+from config import GRAPHICS_DIR, SOUNDS_DIR
 from resources.gestorRecursos import GestorRecursos
 from assets.snake.pacmanState import PacmanState
 
@@ -109,6 +109,10 @@ class Murcielago(Enemie):
         self.plenght = (self.path[0] - 1) * cell_size
         self.direction = self.path[1]
         self.animation_cont = 0
+        
+        self.bat_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_sound.wav'))
+        pygame.mixer.Sound.set_volume(self.bat_sound, 0.6)
+        self.bat_sound.play(-1)
 
         super().__init__(x, y,'bat.png','batCoord.txt',[5])
         
@@ -201,10 +205,12 @@ class Murcielago(Enemie):
 
     def handle_collision(self,segment,snake,game):
         if isinstance(snake.state, PacmanState):
+            snake.bat_kill_sound.play()
             game.score.eat_red_apple()
             self.kill()
             self.dead=True
         else:
+            snake.bat_hit_sound.play()
             snake.reduce_body()
             game.score.trap_collision()
             if len(snake.body) < 1 or game.score.score < 0:

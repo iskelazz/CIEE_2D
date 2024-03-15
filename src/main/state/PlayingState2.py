@@ -12,7 +12,6 @@ from phases.LevelManager import LevelManager
 from assets.floorTraps import SpikeTrap
 from assets.sawTrap import SawTrap
 from assets.enemies import Murcielago
-from resources.text.TextCollection import TextColection
 from phases.Area import Area
 from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
@@ -20,7 +19,7 @@ from assets.goldenapple import GoldenApple
 from assets.pacmanFruit import PacmanFruit
 
 import os
-from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
+from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
 """Se definen coordenadas del mapa(En celdas de tablero) que definen un area y una clase areaManager para evaluar de forma rapida el estado de diferentes objetos en ellas"""
 areas_dict = {
     "AREA1": Area("AREA1", 1, 1, 19, 19),
@@ -90,8 +89,12 @@ class PlayingState2(GameState):
         # Inicializa temporizadores de reaparición
         self.timer_respawn_pacman = None
         self.timer_respawn_gemstone = None
-        
+
         self.init_apples(area_manager)
+
+        #sonidos
+        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'level_2_theme.wav'))
+        self.background_music.play(-1)
 
     def init_apples(self, area_manager):
         "Inicializado de las manzanas según el diseño establecido para el nivel"
