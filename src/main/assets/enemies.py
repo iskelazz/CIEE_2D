@@ -123,9 +123,16 @@ class Murcielago(Enemie):
         self.direction = self.path[1]
         self.animation_cont = 0
         
-        self.bat_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_sound.wav'))
-        pygame.mixer.Sound.set_volume(self.bat_sound, 0.6)
-        self.bat_sound.play(-1)
+        self.bat_sound_1 = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_sound.wav'))
+        self.bat_sound_2 = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_sound_2.wav'))
+        self.bat_sound_3 = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_sound_3.wav'))
+
+        self.bat_sounds_group = [self.bat_sound_1, self.bat_sound_2, self.bat_sound_3]
+        self.bat_sound_selected = self.bat_sounds_group[random.randint(0,2)]
+        
+        pygame.mixer.Sound.set_volume(self.bat_sound_selected, 0.6)
+
+        self.bat_sound_selected.play(-1)
 
         super().__init__(x, y,'bat.png','batCoord.txt',[5])
         
