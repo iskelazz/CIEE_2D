@@ -170,7 +170,7 @@ class PlayingState1(GameState):
     def next_level(self):
         self.background_music.stop()
         self.game.score.save_score()
-        self.game.screen_manager.change_state('PLAYING2')
+        self.game.screen_manager.change_state('STORY2')
         self.game.screen_manager.update()
 
     def tag(self):

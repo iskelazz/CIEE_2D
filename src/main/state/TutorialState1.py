@@ -3,7 +3,7 @@ from state.GameState import GameState
 import sys, os
 from config import GRAPHICS_DIR, SOUNDS_DIR
 
-class Tutorial1State(GameState):
+class TutorialState1(GameState):
     def __init__(self,game):
         super().__init__(game)
         self.tutorial_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'tutorial_1.png')).convert()

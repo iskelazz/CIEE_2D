@@ -5,17 +5,17 @@ from resources.text.TextCollection import TextColection
 
 from config import GRAPHICS_DIR, FONTS_DIR, SOUNDS_DIR
 
-class IntroductionState(GameState):
+class StoryTellingState2(GameState):
     def __init__(self, game):
         super().__init__(game)
         self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 35)
         # Carga la imagen de fondo
-        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'story_1_background.png')).convert()
+        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'story_2_background.png')).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
         
         self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'intro_theme.mp3'))
         self.typing_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'typing_sound.wav'))
-        self.messages = TextColection.get_introduction_text()
+        self.messages = TextColection.get_story_2_text()
         
         self.snip = self.font.render('',True, 'Black')
         self.counter = 0
@@ -48,7 +48,7 @@ class IntroductionState(GameState):
                         else:
                             self.typing_sound.stop()
                             self.background_music.stop()
-                            self.game.screen_manager.change_state('TUTO1')
+                            self.game.screen_manager.change_state('PLAYING2')
                     else:
                         self.speed = 1
 
@@ -67,11 +67,9 @@ class IntroductionState(GameState):
             self.typing_sound.stop()
         
         self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'White')
-        if self.active_message == len(self.messages)-1:
-            screen.blit(self.snip, (350, 400))
-        else:
-            screen.blit(self.snip, (80, 400))
+        
+        screen.blit(self.snip, (350, 400))
 
     def tag():
-        return 'INTRO'
+        return 'STORY2'
         
