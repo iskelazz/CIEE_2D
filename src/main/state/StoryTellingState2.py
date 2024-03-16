@@ -46,8 +46,7 @@ class StoryTellingState2(GameState):
                             self.counter = 0
                             self.speed = 3
                         else:
-                            self.typing_sound.stop()
-                            self.background_music.stop()
+                            pygame.mixer.Sound.stop()
                             self.game.screen_manager.change_state('PLAYING2')
                     else:
                         self.speed = 1
@@ -68,7 +67,7 @@ class StoryTellingState2(GameState):
         
         self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'White')
         
-        screen.blit(self.snip, (80, 400))
+        screen.blit(self.snip, (60, 400))
 
     def tag():
         return 'STORY2'

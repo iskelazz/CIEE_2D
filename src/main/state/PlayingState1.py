@@ -271,7 +271,7 @@ class PlayingState1(GameState):
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
-        self.background_music.stop()
+        pygame.mixer.Sound.stop()
         self.game.score.save_score()
         self.game.screen_manager.change_state('STORY2')
         self.game.screen_manager.update()
