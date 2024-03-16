@@ -7,7 +7,9 @@ from config import GRAPHICS_DIR, SOUNDS_DIR
 from resources.gestorRecursos import GestorRecursos
 from assets.snake.pacmanState import PacmanState
 import time
-from assets.floorTraps import SpikeTrap
+from assets.floorTraps import WoodTrap
+
+from config import SOUNDS_DIR
 
 cell_size = 40
 cell_number = 20
@@ -238,33 +240,36 @@ class Eagle(Enemie):
         self.flying=False
         self.attacking=False
         
-        self.fly_prep_time=30
+        self.fly_prep_time=60
     def update(self,snake,current_time,enemy_group,trap_group):
         super().update()
         if self.flying==False:
+            #comprueba el cooldown entre ataques
             if current_time-self.last_attack_time>random.randint(5,15):
                 self.last_attack_time=current_time
+                #elige entre los tres posibles ataques dependiendo de la cantidad de huevos recogidos
                 attack=random.randint(0,snake.retrieved_eggs)
                 if attack==0:
                     self.feather_attack(snake,enemy_group)
                 elif attack==1:
                     self.trap_attack(snake,trap_group)
                 elif attack==2 :
-                    print("AY QUE VUELA AAAAAAAAAAAAAAAAAH")
                     self.flying=True
                     self.animationNum=1
                     self.attacking=True
+                    snake.eagle_sound.play()
+                #cuando tiene todos los huevos usa los tres ataques a la vez
                 else:
                     self.feather_attack(snake)
                     self.trap_attack(snake,trap_group)
                     if random.randint(1,3)==3:
-                        print("AY QUE VUELA AAAAAAAAAAAAAAAAAH")
                         self.flying=True
                         self.animationNum=1
                         self.attacking=True
         #ataque volador
         else:
-            if self.fly_prep_time>0:
+            #cambia de animacion y se pone a la altura de la serpiente
+            if self.fly_prep_time>30:
                 if (snake.body[0][1]-1)*cell_size<self.rect.y and (snake.body[0][1]+1)*cell_size>self.rect.y:
                     yStep=0
                 else:
@@ -273,13 +278,18 @@ class Eagle(Enemie):
                     else: yStep=-25         
                 self.fly_prep_time-=1
                 self.move(0,yStep)
+            #se mantiene a esa altura un momento, para dar margen
+            elif self.fly_prep_time>0:
+                self.fly_prep_time-=1
+            #vuela en linea recta por todo el mapa y regresa a su sitio inicial
             else :
                 self.animationNum=2
-                self.move(-30,0)
+                self.move(-20,0)
                 if self.rect.x<0:
                     self.fly_prep_time=30
                     self.animationNum=0
                     self.rect.x=75*cell_size
+                    self.rect.y=20*cell_size
                     self.flying=False
                     self.last_attack_time=current_time
                     self.attacking=False
@@ -297,15 +307,18 @@ class Eagle(Enemie):
         screen.blit(pygame.transform.flip(self.image, True, False), adjusted_position)
 
     def trap_attack(self,snake,trap_group):
-        trampa=SpikeTrap(snake.body[0]+snake.direction*5)
+        snake.wooden_trap_sound.play()
+        trampa=WoodTrap(snake.body[0]+snake.direction*5)
         trap_group.add(trampa)
-        print("TRAMPA AAAAAAAAAAAAAAAAAH")
     
     def feather_attack(self,snake,enemy_group):
+        if random.randint(1,2)==2:
+            snake.feather1_sound.play()
+        else:snake.feather2_sound.play()
+        
         pluma=Feather(self.rect.x,self.rect.y,snake,6)
         enemy_group.add(pluma)
 
-        print("PLUMAAAAAAA AAAAAAAAAAAAAAAAAH")
 
     def handle_collision(self,snake,game):
         if self.attacking==True:
@@ -334,7 +347,7 @@ class Feather(Enemie):
     
     def handle_collision(self,segment,snake,game):
         self.kill()
-        snake.reduce_body()
+        super().handle_collision(segment,snake,game)
    
                 
             
