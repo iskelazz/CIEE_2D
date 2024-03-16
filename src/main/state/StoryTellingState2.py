@@ -68,7 +68,7 @@ class StoryTellingState2(GameState):
         
         self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'White')
         
-        screen.blit(self.snip, (350, 400))
+        screen.blit(self.snip, (80, 400))
 
     def tag():
         return 'STORY2'
