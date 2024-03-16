@@ -51,10 +51,6 @@ class PlayingState1(GameState):
         #Inicializacion de trampas y enemigos
         self.floor_trap_group = self.init_wood_traps()
         self.saw_trap_group = self.init_saw_traps()
-        self.bat_group = self.init_bats()
-
-        #Inicializacion fruta pacman
-        self.fruit_group = pygame.sprite.Group(PacmanFruit(72,10))
 
         #Puerta de salida de la fase
         self.door=Door(75*CELL_SIZE,0*CELL_SIZE,False)
@@ -67,7 +63,7 @@ class PlayingState1(GameState):
 
 
         #Lista con grupos de sprites
-        self.group_list=(self.rotten_apple_group, self.apple_group, self.key_group, self.door_group, self.explosions_group, self.floor_trap_group, self.saw_trap_group, self.bat_group, self.fruit_group)
+        self.group_list=(self.rotten_apple_group, self.apple_group, self.key_group, self.door_group, self.explosions_group, self.floor_trap_group, self.saw_trap_group)
         
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         
@@ -111,22 +107,15 @@ class PlayingState1(GameState):
         #Trampas pantalla 3
         self.sawTrap = SawTrap(43, 11, 2, 'vertical')
         self.sawTrap2 = SawTrap(43, 4, 3, 'vertical')
+        self.sawTrap3 = SawTrap(44, 9, 12, 'horizontal')
 
         #Trampas pantalla 4
-        self.sawTrap3 = SawTrap(73, 13, 5, 'horizontal')
-        self.sawTrap4 = SawTrap(65, 8, 6, 'vertical')
+        self.sawTrap4 = SawTrap(73, 13, 5, 'horizontal')
+        self.sawTrap5 = SawTrap(65, 8, 6, 'vertical')
+        self.sawTrap6 = SawTrap(63, 7, 13, 'horizontal')
 
-        return pygame.sprite.Group(self.sawTrap, self.sawTrap2, self.sawTrap3, self.sawTrap4)
+        return pygame.sprite.Group(self.sawTrap, self.sawTrap2, self.sawTrap3, self.sawTrap4, self.sawTrap5,  self.sawTrap6)
     
-    def init_bats(self):
-        #Enemigos pantalla 3
-        self.bat = Murcielago(45, 8, 4, 2, 4, 2, 1, False)
-        
-        #Enemigos pantalla 4
-        self.bat3 = Murcielago(76, 2, 2, 4, 2, 4, 1, False)
-        self.bat4 = Murcielago(62, 7, 15, 1, 15, 1, 2, False)
-
-        return pygame.sprite.Group(self.bat, self.bat3, self.bat4)
     
     def init_apples(self, area_manager):
         "Inicializado de las manzanas según el diseño establecido para el nivel"
@@ -207,10 +196,6 @@ class PlayingState1(GameState):
         self.explosions_group.update()
         for woodTrap in self.floor_trap_group:
             woodTrap.animate_trap()
-            
-        for bat in self.bat_group:
-            bat.update()
-            bat.handle_move()
 
         for sawTrap in self.saw_trap_group:
             sawTrap.animate_saw()
