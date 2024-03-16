@@ -8,7 +8,9 @@ class RottenApple(Apple):
         super().__init__(os.path.join(GRAPHICS_DIR, 'apple_rotten.png'), staticPositions)
     
     def handle_collision(self,segment,snake,game):
-        if len(snake.body) > 1: # Asegurarse de que la serpiente no se reduzca por debajo de un tamaño mínimo
+        if len(snake.body) <= 1 or game.score.score < 0:
+                game.screen_manager.push_state('GAME_OVER') 
+        else:
             area_manager = AreaManager()
             self.randomize(snake.body,area_manager.coords(area_manager.get_area_tag_by_object(self)))
             snake.reduce_body()
