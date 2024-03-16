@@ -65,3 +65,6 @@ class GameOverState(GameState):
 
     def tag(self):
         return "GAME_OVER"
+    
+    def next_level(self):
+        pass
