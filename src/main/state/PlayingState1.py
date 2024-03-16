@@ -22,7 +22,9 @@ from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
 """Se definen coordenadas del mapa(En celdas de tablero) que definen un area y una clase areaManager para evaluar de forma rapida el estado de diferentes objetos en ellas"""
 areas_dict = {
     "AREA1": Area("AREA1", 1, 1, 19, 19),
-    "AREA2": Area("AREA2", 21, 1, 10, 19),
+    "AREA2": Area("AREA2", 21, 1, 8, 19),
+    "AREA3": Area("AREA3", 44, 1, 15, 19),
+    "AREA4": Area("AREA4", 61, 6, 17, 13)
     #añadir mas areas si es necesario
 }
 class PlayingState1(GameState):
@@ -107,8 +109,8 @@ class PlayingState1(GameState):
 
     def init_saw_traps(self):
         #Trampas pantalla 3
-        self.sawTrap = SawTrap(43, 10, 3, 'vertical')
-        self.sawTrap2 = SawTrap(43, 4, 4, 'vertical')
+        self.sawTrap = SawTrap(43, 11, 2, 'vertical')
+        self.sawTrap2 = SawTrap(43, 4, 3, 'vertical')
 
         #Trampas pantalla 4
         self.sawTrap3 = SawTrap(73, 13, 5, 'horizontal')
@@ -119,25 +121,30 @@ class PlayingState1(GameState):
     def init_bats(self):
         #Enemigos pantalla 3
         self.bat = Murcielago(45, 8, 4, 2, 4, 2, 1, False)
-        self.bat2 = Murcielago(52, 8, 5, 2, 5, 2, 1, False)
         
         #Enemigos pantalla 4
         self.bat3 = Murcielago(76, 2, 2, 4, 2, 4, 1, False)
         self.bat4 = Murcielago(62, 7, 15, 1, 15, 1, 2, False)
 
-        return pygame.sprite.Group(self.bat, self.bat2, self.bat3, self.bat4)
+        return pygame.sprite.Group(self.bat, self.bat3, self.bat4)
     
     def init_apples(self, area_manager):
         "Inicializado de las manzanas según el diseño establecido para el nivel"
         #Definimos las areas donde queremos inicializar manzanas
         AREA1 = area_manager.coords("AREA1")
         AREA2 = area_manager.coords("AREA2")
+        AREA3 = area_manager.coords("AREA3")
+        AREA4 = area_manager.coords("AREA4")
 
         #Una fruta buena y una mala por area
         self.fruit_sorting(AREA1, 1, RedApple)
         self.fruit_sorting(AREA1, 1, RottenApple)
         self.fruit_sorting(AREA2, 1, RedApple)
         self.fruit_sorting(AREA2, 1, RottenApple)
+        self.fruit_sorting(AREA3, 1, RedApple)
+        self.fruit_sorting(AREA3, 1, RottenApple)
+        self.fruit_sorting(AREA4, 1, RedApple)
+        self.fruit_sorting(AREA4, 1, RottenApple)
         
     def fruit_sorting(self, area, number, fruit_class):
         "Llama a la función para añadir manzanas tantas veces como este definido en inicializar_apples"
