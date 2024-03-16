@@ -10,7 +10,7 @@ class PacmanState(SnakeState):
         super().__init__(snake)
         self.blink_timer = 0
         self.blink_duration = 0.1  # Duración del parpadeo activo
-        self.blink_interval = 0.5  # Intervalo de tiempo en segundos para cambiar entre parpadeo y estado normal
+        self.blink_interval = 0.2  # Intervalo de tiempo en segundos para cambiar entre parpadeo y estado normal
         self.use_blink_images = False
         self.start_time = time.time()
         

@@ -6,7 +6,7 @@ from pygame.math import Vector2
 from config import GRAPHICS_DIR, SOUNDS_DIR
 from resources.gestorRecursos import GestorRecursos
 from assets.snake.pacmanState import PacmanState
-
+import time
 from assets.floorTraps import SpikeTrap
 
 cell_size = 40
@@ -28,7 +28,10 @@ class Enemie(Sprite):
         self.sheet = self.sheet.convert_alpha()
         data = GestorRecursos.CargarArchivoCoordenadas(coordFile)
         data = data.split()
-        
+        self.current_time=0
+        self.hit_cooldown=0.2
+        self.hit_timer=0
+
         self.animationNum = 0
         self.spriteNum = 0
         cont = 0
@@ -79,6 +82,7 @@ class Enemie(Sprite):
         return aux
         
     def update(self):
+        self.current_time=pygame.time.get_ticks() / 1000.0  # Obtén el tiempo actual en segundos
         self.updateAnim(self.scale)
         
                  
@@ -87,7 +91,14 @@ class Enemie(Sprite):
                             self.rect.y - camera_offset.y)
         
         screen.blit(self.image, adjusted_position)
-        
+    def handle_collision(self,segment,snake,game):
+        self.current_time=pygame.time.get_ticks() / 1000.0    
+        if self.current_time - self.hit_timer > self.hit_cooldown:
+            self.hit_timer=self.current_time
+            snake.reduce_body()
+            game.score.trap_collision()
+            if len(snake.body) <= 1 or game.score.score < 0:
+                game.screen_manager.push_state('GAME_OVER') 
         
 class Murcielago(Enemie):
     def __init__(self, x, y, path_right, path_down, path_left, path_up, speed, open):
@@ -139,12 +150,10 @@ class Murcielago(Enemie):
                 self.direction = self.invert_direction(self.path[1])
                 self.path_cont -= 1
                 if (path_index == 0): self.invert = False
-                
-            
+                         
     def move(self, dx, dy):
         self.rect.x += dx
         self.rect.y += dy
-
         
     def move_left(self, vel):
         self.vely = 0
@@ -172,8 +181,7 @@ class Murcielago(Enemie):
         self.vely = vel
         if self.direction != 'down':
             self.direction == 'down'
-            self.animation_cont = 0     
-    
+            self.animation_cont = 0       
         
     def handle_move(self):
         if self.direction == 'right':
@@ -211,10 +219,7 @@ class Murcielago(Enemie):
             self.dead=True
         else:
             snake.bat_hit_sound.play()
-            snake.reduce_body()
-            game.score.trap_collision()
-            if len(snake.body) <= 1 or game.score.score < 0:
-                game.screen_manager.push_state('GAME_OVER') 
+            super().handle_collision(segment,snake,game)
 
     def update(self):
         if self.dead==False:
@@ -237,7 +242,7 @@ class Eagle(Enemie):
     def update(self,snake,current_time,enemy_group,trap_group):
         super().update()
         if self.flying==False:
-            if current_time-self.last_attack_time>random.randint(3,10):
+            if current_time-self.last_attack_time>random.randint(5,15):
                 self.last_attack_time=current_time
                 attack=random.randint(0,snake.retrieved_eggs)
                 if attack==0:
@@ -251,7 +256,7 @@ class Eagle(Enemie):
                     self.attacking=True
                 else:
                     self.feather_attack(snake)
-                    self.fly_attack(snake)
+                    self.trap_attack(snake,trap_group)
                     if random.randint(1,3)==3:
                         print("AY QUE VUELA AAAAAAAAAAAAAAAAAH")
                         self.flying=True
@@ -304,10 +309,7 @@ class Eagle(Enemie):
 
     def handle_collision(self,snake,game):
         if self.attacking==True:
-            snake.reduce_body()
-            game.score.trap_collision()
-            if len(snake.body) <= 1 or game.score.score < 0:
-                game.screen_manager.push_state('GAME_OVER')  
+            super().handle_collision(None,snake,game)  
         else :game.screen_manager.change_state('INTRO')
 
 
