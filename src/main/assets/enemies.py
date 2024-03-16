@@ -213,7 +213,7 @@ class Murcielago(Enemie):
             snake.bat_hit_sound.play()
             snake.reduce_body()
             game.score.trap_collision()
-            if len(snake.body) < 1 or game.score.score < 0:
+            if len(snake.body) <= 1 or game.score.score < 0:
                 game.screen_manager.push_state('GAME_OVER') 
 
     def update(self):
@@ -305,6 +305,9 @@ class Eagle(Enemie):
     def handle_collision(self,snake,game):
         if self.attacking==True:
             snake.reduce_body()
+            game.score.trap_collision()
+            if len(snake.body) <= 1 or game.score.score < 0:
+                game.screen_manager.push_state('GAME_OVER')  
         else :game.screen_manager.change_state('INTRO')
 
 
