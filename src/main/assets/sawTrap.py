@@ -2,7 +2,7 @@ import pygame, os
 from pygame.sprite import Sprite
 from pygame.math import Vector2
 from assets.trackPiece import TrackPiece
-from config import GRAPHICS_DIR
+from config import GRAPHICS_DIR,SOUNDS_DIR
 cell_size = 40
 cell_number = 20
 
@@ -32,6 +32,8 @@ class SawTrap(Sprite):
             self.direction = 'down'
             
         self.trackPiece = TrackPiece.create_pieces(x, y, lenght, orientation)
+
+        self.saw_cut_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'saw_cut.wav'))
         
     def move(self, dx, dy):
         self.rect.x += dx
@@ -122,8 +124,10 @@ class SawTrap(Sprite):
 
     def handle_collision(self,segment,snake,game):
         if segment.number==0:
+            self.saw_cut_sound.play()
             game.screen_manager.push_state('GAME_OVER')
         else:
+            self.saw_cut_sound.play()
             reduce_value = len(snake.segments.sprites()[1:]) - segment.number
             for i in range(reduce_value):
                 snake.state, snake.reduce_body()
