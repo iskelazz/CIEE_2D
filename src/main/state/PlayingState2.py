@@ -210,13 +210,6 @@ class PlayingState2(GameState):
         self.explosions_group.update()
         self.drop_gemstone()
         self.respawn_key_items()
-    def add_rotten_apple(self):
-        #inicializacion temporal, funcion que no se usa en estos momentos
-        AREA1 = AreaManager.get_instance().coords("AREA1")
-        rotten_apple = RottenApple(lambda: self.level_manager.precalculate_static_objects_positions())
-        rotten_apple.randomize(self.snake.body, AREA1)
-        self.apple_group.add(rotten_apple) 
-        self.rotten_apples.add(rotten_apple)
 
     def drop_gemstone(self):
         number_enemies = AreaManager.get_instance().count_objects_in_area(self.enemie_group,"AREA1")+AreaManager.get_instance().count_objects_in_area(self.enemie_group,"AREA3")
