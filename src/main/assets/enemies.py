@@ -249,10 +249,8 @@ class Eagle(Enemie):
         
         self.fly_prep_time=60
 
-        self.feather1_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'feather_woosh1.wav'))
-        self.feather2_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'feather_woosh2.wav'))
+        self.feather_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'feather_swoosh.mp3'))
         self.eagle_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eagle_sound.wav'))
-
         self.eagle_sound.play(-1)
 
     def update(self,snake,current_time,enemy_group,trap_group):
@@ -271,7 +269,6 @@ class Eagle(Enemie):
                     self.flying=True
                     self.animationNum=1
                     self.attacking=True
-                    snake.eagle_sound.play()
                 #cuando tiene todos los huevos usa los tres ataques a la vez
                 else:
                     self.feather_attack(snake)
@@ -326,11 +323,7 @@ class Eagle(Enemie):
         trap_group.add(trampa)
     
     def feather_attack(self,snake,enemy_group):
-        if random.randint(1,2)==2:
-            self.feather1_sound.play()
-        else:
-            self.feather2_sound.play()
-        
+        self.feather_sound.play()
         pluma=Feather(self.rect.x,self.rect.y,snake,6)
         enemy_group.add(pluma)
 
