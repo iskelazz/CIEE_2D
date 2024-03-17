@@ -17,6 +17,7 @@ from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
 from assets.goldenapple import GoldenApple
 from assets.pacmanFruit import PacmanFruit
+from camera import Camera, MoveByBlocks
 
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
@@ -33,6 +34,10 @@ class PlayingState2(GameState):
         super().__init__(game)
         # Cargar nivel
         self.load_level(os.path.join(LEVEL_DIR, 'level2_alt.json'))
+
+        #inicializar camara
+        self.camera = Camera(MoveByBlocks())
+
         area_manager = AreaManager()
         self.game.score.init_level_score()
         reference_score = self.game.score.score
@@ -125,37 +130,6 @@ class PlayingState2(GameState):
         apple.randomize(self.snake.body, area)
         self.apple_group.add(apple)
 
-    def calculate_camera_offset(self):
-        # Para que la serpiente se encuentre en el centro de la camara
-        half_screen_width = SCREEN_WIDTH / 2
-        half_screen_height = SCREEN_HEIGHT / 2
-
-        snake_head_position = self.snake.segments.sprites()[0].rect.center
-        camera_x = min(max(snake_head_position[0] - half_screen_width, 0), self.level_size[0] - SCREEN_WIDTH)
-        camera_y = min(max(snake_head_position[1] - half_screen_height, 0), self.level_size[1] - SCREEN_HEIGHT)
-
-        return Vector2(camera_x, camera_y)
-
-    def calculate_camera_offset_block(self):
-        # Para que la camara se mueva por bloques
-
-        # Obtener la posición del centro de la cabeza de la serpiente
-        snake_head_position = self.snake.segments.sprites()[0].rect.center
-
-        # Calcular en qué "bloque" de la cámara está basado en la posición de la cabeza de la serpiente
-        block_x = int(snake_head_position[0] // SCREEN_WIDTH)
-        block_y = int(snake_head_position[1] // SCREEN_HEIGHT)
-
-        # Calcular el desplazamiento de la cámara para centrar ese bloque
-        camera_x = block_x * SCREEN_WIDTH
-        camera_y = block_y * SCREEN_HEIGHT
-
-        # Asegurarse de que la cámara no se desplace fuera de los límites del nivel
-        camera_x = min(max(camera_x, 0), self.level_size[0] - SCREEN_WIDTH)
-        camera_y = min(max(camera_y, 0), self.level_size[1] - SCREEN_HEIGHT)
-
-        return Vector2(camera_x, camera_y)
-
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -230,7 +204,7 @@ class PlayingState2(GameState):
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.push_state('GAME_OVER')
-        self.camera_offset = self.calculate_camera_offset_block()
+        self.camera.update(self.snake)
         for pointsDoor in self.door_group:
             pointsDoor.update()
         self.explosions_group.update()
@@ -253,20 +227,20 @@ class PlayingState2(GameState):
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
         screen.fill((175,215,70))
-        self.level_manager.draw_level(screen, self.camera_offset)
-        self.level_manager.draw_objects(screen, self.camera_offset)
+        self.level_manager.draw_level(screen, self.camera.offset)
+        self.level_manager.draw_objects(screen, self.camera.offset)
         self.game.score.draw_score()
         
         for segment in self.snake.segments:
-            adjusted_position = segment.rect.topleft - self.camera_offset
+            adjusted_position = segment.rect.topleft - self.camera.offset
             screen.blit(segment.image, adjusted_position)
         
         for group in self.group_list:
             for asset in group:
-                asset.draw(screen, self.camera_offset)
+                asset.draw(screen, self.camera.offset)
 
         for explosion in self.explosions_group:
-            explosion.draw(screen, self.camera_offset)
+            explosion.draw(screen, self.camera.offset)
         
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
