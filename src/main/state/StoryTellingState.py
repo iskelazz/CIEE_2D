@@ -14,6 +14,8 @@ class StoryTellingState(GameState):
             return 'story_2_background.png'
         elif 'STORY3' == story:
             return 'story_3_background.png'
+        elif 'STORY4' == story:
+            return 'story_4_background.jpg'
         
     def getTextMessages(self, story):
         if 'STORY1' == story:
@@ -22,6 +24,8 @@ class StoryTellingState(GameState):
             return TextColection.get_story_2_text()
         elif 'STORY3' == story:
             return TextColection.get_story_3_text()
+        elif 'STORY4' == story:
+            return TextColection.get_story_4_text()
     
     def getNextState(self, story):
         if 'STORY1' == story:
@@ -30,6 +34,18 @@ class StoryTellingState(GameState):
             return 'TUTO2'
         elif 'STORY3' == story:
             return 'TUTO3'
+        elif 'STORY4' == story:
+            return 'MENU'
+    
+    def getTextColor(self, story):
+        if 'STORY1' == story:
+            return 'White'
+        elif 'STORY2' == story:
+            return 'White'
+        elif 'STORY3' == story:
+            return 'White'
+        elif 'STORY4' == story:
+            return 'Black'
             
     def __init__(self, game, story):
         super().__init__(game)
@@ -41,8 +57,9 @@ class StoryTellingState(GameState):
         self.background_music = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'intro_theme.mp3'))
         self.typing_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'typing_sound.wav'))
         self.messages = self.getTextMessages(story)
-        
+        self.text_color = self.getTextColor(story)
         self.next_state = self.getNextState(story)
+
 
         self.snip = self.font.render('',True, 'Black')
         self.counter = 0
@@ -93,7 +110,7 @@ class StoryTellingState(GameState):
             self.typing_sound_playing = False
             self.typing_sound.stop()
         
-        self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'White')
+        self.snip = self.font.render(self.message[0:self.counter//self.speed], True, self.text_color)
 
         screen.blit(self.snip, (80, 400))
             

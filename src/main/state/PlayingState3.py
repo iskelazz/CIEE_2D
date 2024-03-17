@@ -198,7 +198,7 @@ class PlayingState3(PlayingState):
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
-        self.game.screen_manager.change_state('MENU')
+        self.game.screen_manager.change_state('STORY4')
         self.game.score.save_score()
     
     def tag(self):
