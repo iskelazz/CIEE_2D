@@ -239,7 +239,7 @@ class PlayingState1(GameState):
         if area_tag not in self.activated_areas:
             self.activated_areas[area_tag] = {
                 "last_generation_time": time.time(),
-                "to_generate": random.randint(2, 5),
+                "to_generate": random.randint(1, 3),
                 "generated": 0
             }
 
