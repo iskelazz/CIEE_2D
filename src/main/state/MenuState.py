@@ -36,7 +36,7 @@ class MenuState(GameState):
                 elif event.key == pygame.K_RETURN:
                     if self.current_option == 0:  # PLAY selected
                         self.play_option_sound.play()
-                        self.game.screen_manager.change_state('PLAYING3')
+                        self.game.screen_manager.change_state('STORY1')
                         self.background_music.stop()
                     elif self.current_option == 1:  # EXIT selected
                         pygame.quit()
