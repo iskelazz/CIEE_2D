@@ -10,9 +10,7 @@ from assets.egg import Egg
 from phases.Area import Area
 from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
-
-
-from assets.enemies import Eagle
+from assets.eagle import Eagle
 
 import os
 from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR

@@ -11,7 +11,7 @@ from assets.door import Door
 from phases.LevelManager import LevelManager
 from assets.floorTraps import SpikeTrap
 from assets.sawTrap import SawTrap
-from assets.enemies import Murcielago
+from assets.murcielago import Murcielago
 from phases.Area import Area
 from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
