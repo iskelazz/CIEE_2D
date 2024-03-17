@@ -1,38 +1,42 @@
 import pygame
 import time
-from pygame.math import Vector2
-from state.GameState import GameState
+from state.PlayingState import PlayingState
 from assets.redapple import RedApple
 from assets.rottenApple import RottenApple
-from assets.snake.snake import Snake
 from phases.LevelManager import LevelManager
 from assets.egg import Egg
 from phases.Area import Area
 from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
+from camera import Camera, FollowSnake
+
 from assets.eagle import Eagle
 
 import os
-from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
+from config import LEVEL_DIR, CELL_SIZE, SOUNDS_DIR
 
 areas_dict = {
-    "AREA1": Area("AREA1", 1, 1, 19, 19),
-    "AREA2": Area("AREA2", 21, 1, 19, 19)
+    "AREA1": Area("AREA1", 1, 13, 16, 5),
+    "AREA2": Area("AREA2", 1, 1, 39, 12),
+    "AREA3": Area("AREA3", 40, 1, 39, 12)
     #añadir mas areas si es necesario
 }
-class PlayingState3(GameState):
+class PlayingState3(PlayingState):
     def __init__(self, game):
         super().__init__(game)
-        self.camera_offset = Vector2(0, 0)
+        self.camera = Camera(FollowSnake())
         self.game.score.init_level_score()
         # Cargar nivel
         self.load_level(os.path.join(LEVEL_DIR, 'level3.json'))
+
+        self.initialize_snake((4, 15))
+
         area_manager = AreaManager()
         area_manager.load_areas(areas_dict)
-        self.snake = Snake(30,26)
-        self.gemstone = Gemstone(26,12)
-        self.eagle=Eagle()
-        self.egg=Egg(20,10)
+
+        self.gemstone = Gemstone(77,2)
+        #self.eagle=Eagle()
+        self.egg=Egg(4,4)
         self.spike_trap_group=pygame.sprite.Group()
         self.egg_group = pygame.sprite.Group(self.egg)
         self.enemy_group=pygame.sprite.Group()
@@ -54,12 +58,15 @@ class PlayingState3(GameState):
         #Definimos las areas donde queremos inicializar manzanas
         AREA1 = area_manager.coords("AREA1")
         AREA2 = area_manager.coords("AREA2")
+        AREA3 = area_manager.coords("AREA3")
 
         #Una fruta buena y una mala por area
-        self.fruit_sorting(AREA1, 2, RedApple)
-        self.fruit_sorting(AREA1, 3, RottenApple)
-        self.fruit_sorting(AREA2, 2, RedApple)
-        self.fruit_sorting(AREA2, 4, RottenApple)
+        self.fruit_sorting(AREA1, 1, RedApple)
+        self.fruit_sorting(AREA1, 1, RottenApple)
+        self.fruit_sorting(AREA2, 1, RedApple)
+        self.fruit_sorting(AREA2, 1, RottenApple)
+        self.fruit_sorting(AREA3, 1, RedApple)
+        self.fruit_sorting(AREA3, 1, RottenApple)
         
     def fruit_sorting(self, area, number, fruit_class):
         "Llama a la función para añadir manzanas tantas veces como este definido en inicializar_apples"
@@ -72,58 +79,11 @@ class PlayingState3(GameState):
         apple.randomize(self.snake.body, area)
         self.apple_group.add(apple)    
     
-    def calculate_camera_offset(self):
-        # Coordenadas objetivo basadas en la posición de la cabeza de la serpiente
-        target_x = self.snake.segments.sprites()[0].rect.centerx - SCREEN_WIDTH / 2
-        target_y = self.snake.segments.sprites()[0].rect.centery - SCREEN_HEIGHT / 2
-
-        # Asegurarse de que la cámara no se salga de los límites del nivel
-        target_x = min(max(0, target_x), self.level_size[0] - SCREEN_WIDTH)
-        target_y = min(max(0, target_y), self.level_size[1] - SCREEN_HEIGHT)
-
-        # Interpolar entre la posición actual de la cámara y el objetivo
-        # El factor de lerp determina qué tan "suave" o "rápido" es el movimiento de la cámara
-        # Un valor más bajo resultará en un movimiento más suave
-        lerp_factor = 0.1
-        new_camera_x = self.camera_offset.x + (target_x - self.camera_offset.x) * lerp_factor
-        new_camera_y = self.camera_offset.y + (target_y - self.camera_offset.y) * lerp_factor
-        # Actualizar la posición de la cámara
-        return Vector2(new_camera_x, new_camera_y)
-
-
-    def calculate_camera_offset_block(self):
-        # Para que la camara se mueva por bloques
-
-        # Obtener la posición del centro de la cabeza de la serpiente
-        snake_head_position = self.snake.segments.sprites()[0].rect.center
-
-        # Calcular en qué "bloque" de la cámara está basado en la posición de la cabeza de la serpiente
-        block_x = int(snake_head_position[0] // SCREEN_WIDTH)
-        block_y = int(snake_head_position[1] // SCREEN_HEIGHT)
-
-        # Calcular el desplazamiento de la cámara para centrar ese bloque
-        camera_x = block_x * SCREEN_WIDTH
-        camera_y = block_y * SCREEN_HEIGHT
-
-        # Asegurarse de que la cámara no se desplace fuera de los límites del nivel
-        camera_x = min(max(camera_x, 0), self.level_size[0] - SCREEN_WIDTH)
-        camera_y = min(max(camera_y, 0), self.level_size[1] - SCREEN_HEIGHT)
-
-        return Vector2(camera_x, camera_y)
-
-    def handle_events(self, events):
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.game.screen_manager.push_state('PAUSE')
-                else:
-                    # Actualiza la dirección basada en la tecla presionada
-                    self.snake.update_direction(event.key)
-
     def update(self):
         current_time = time.time()
         self.snake.update(current_time)
-        self.eagle.update(self.snake,current_time,self.enemy_group,self.spike_trap_group)
+        #self.eagle.update(self.snake,current_time,self.enemy_group,self.spike_trap_group)
+        self.camera.update(self.snake)
         for enemie in self.enemy_group:
             enemie.update()
             enemie.handle_move()
@@ -132,21 +92,20 @@ class PlayingState3(GameState):
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.push_state('GAME_OVER')
-        self.camera_offset = self.calculate_camera_offset()
 
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
         screen.fill((175,215,70))
-        self.level_manager.draw_level(screen, self.camera_offset)
-        self.level_manager.draw_objects(screen, self.camera_offset)
+        self.level_manager.draw_level(screen, self.camera.offset)
+        self.level_manager.draw_objects(screen, self.camera.offset)
         self.game.score.draw_score()
         for segment in self.snake.segments:
-            adjusted_position = segment.rect.topleft - self.camera_offset
+            adjusted_position = segment.rect.topleft - self.camera.offset
             screen.blit(segment.image, adjusted_position)
         for group in self.group_list:
             for asset in group:
-                asset.draw(screen, self.camera_offset)
-        self.eagle.draw(screen, self.camera_offset)
+                asset.draw(screen, self.camera.offset)
+        #self.eagle.draw(screen, self.camera.offset)
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
         self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
@@ -166,13 +125,13 @@ class PlayingState3(GameState):
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.push_state('GAME_OVER')
-        if pygame.sprite.spritecollideany(self.eagle,head_body):
-            self.eagle.handle_collision(self.snake,self.game)   
+        #if pygame.sprite.spritecollideany(self.eagle,head_body):
+        #    self.eagle.handle_collision(self.snake,self.game)   
         
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
-        self.game.screen_manager.change_state('PLAYING2')
+        self.game.screen_manager.change_state('MENU')
         self.game.score.save_score()
     
     def tag(self):

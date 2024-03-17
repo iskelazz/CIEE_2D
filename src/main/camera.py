@@ -8,14 +8,14 @@ class Camera:
         self.follow_strategy = follow_strategy
 
     def update(self, target):
-        self.offset = self.follow_strategy.get_offset(target)
+        self.offset = self.follow_strategy.get_offset(target, self.offset)
 
 class FollowStrategy:
     def get_offset(self, target):
         raise NotImplementedError
 #Patron estrategia para decidir como se va mover la camara
 class FollowSnake(FollowStrategy):
-    def get_offset(self, snake):
+    def get_offset(self, snake, offset):
         # Coordenadas objetivo basadas en la posición de la cabeza de la serpiente
         target_x = snake.segments.sprites()[0].rect.centerx - SCREEN_WIDTH / 2
         target_y = snake.segments.sprites()[0].rect.centery - SCREEN_HEIGHT / 2
@@ -24,13 +24,13 @@ class FollowSnake(FollowStrategy):
         # El factor de lerp determina qué tan "suave" o "rápido" es el movimiento de la cámara
         # Un valor más bajo resultará en un movimiento más suave
         lerp_factor = 0.1
-        new_camera_x = self.camera_offset.x + (target_x - self.camera_offset.x) * lerp_factor
-        new_camera_y = self.camera_offset.y + (target_y - self.camera_offset.y) * lerp_factor
+        new_camera_x = offset.x + (target_x - offset.x) * lerp_factor
+        new_camera_y = offset.y + (target_y - offset.y) * lerp_factor
         # Actualizar la posición de la cámara
         return Vector2(new_camera_x, new_camera_y)
 
 class MoveByBlocks(FollowStrategy):
-    def get_offset(self, snake):
+    def get_offset(self, snake, offset):
         # Estrategia para que la camara se mueva por bloques
         # Obtener la posición del centro de la cabeza de la serpiente
         snake_head_position = snake.segments.sprites()[0].rect.center
