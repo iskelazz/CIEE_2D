@@ -2,7 +2,7 @@ import sys, os
 import pygame
 from state.GameState import GameState
 from resources.text.TextCollection import TextColection
-from config import FONTS_DIR, GRAPHICS_DIR
+from config import FONTS_DIR, GRAPHICS_DIR,SOUNDS_DIR
 
 class GameOverState(GameState):
     def __init__(self, game):
@@ -19,6 +19,9 @@ class GameOverState(GameState):
         self.menu_text = TextColection.get_gameover_exit_text()
         self.score_text = TextColection.get_gameover_score_text() + str(self.game.score.score)
         self.game_over_text = TextColection.get_gameover_text()
+
+        self.game_over_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'game_over.wav'))
+        self.game_over_sound.play()
 
     def handle_events(self, events):
         for event in events:
