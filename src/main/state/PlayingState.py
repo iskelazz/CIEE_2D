@@ -78,6 +78,29 @@ class PlayingState(GameState, ABC):
     def next_level(self):
         pass
 
+    def respawn_object_if_missing(self, object, group, timer, interval):
+        """
+        Comprueba si un objeto está en un grupo y, si no está, activa un timer.
+        Si el timer supera el intervalo especificado, vuelve a añadir el objeto al grupo.
+
+        :param object: El objeto a comprobar y potencialmente reaparecer.
+        :param group: El grupo de sprites al que pertenece el objeto.
+        :param timer: El temporizador actual para el objeto. None si el objeto no está en cooldown.
+        :param interval: El intervalo de tiempo (en milisegundos) para reaparecer el objeto.
+        :return: El estado actualizado del temporizador para el objeto.
+        """
+        current_time = pygame.time.get_ticks()  # Obtiene el tiempo actual
+        if object not in group:
+            if timer is None:
+                timer = current_time
+            elif current_time - timer > interval:
+                group.add(object)
+                timer = None
+        else:
+            timer = None  # Resetea el timer si el objeto ya está en el grupo
+        
+        return timer
+
     def check_area_activation(self, current_time):
         area_tag = AreaManager.get_instance().get_area_tag_by_point(
             self.snake.segments.sprites()[0].rect.centerx,

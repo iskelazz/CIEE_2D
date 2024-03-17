@@ -44,5 +44,6 @@ class EggQuest:
 
 if __name__ == "__main__":
     game = EggQuest()
+    Config.initialize()
     game.run()
 

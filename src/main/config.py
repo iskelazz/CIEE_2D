@@ -21,3 +21,4 @@ class Config:
     @classmethod
     def update_map_size(cls, width, height):
         cls.map_size = (width, height)
+Config.initialize()

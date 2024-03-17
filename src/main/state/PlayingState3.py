@@ -42,6 +42,8 @@ class PlayingState3(PlayingState):
 
         self.gemstone = Gemstone(77,2)
         self.gemstone2 = Gemstone(25,25)
+        self.gemstone_drop=False
+
         self.eagle=Eagle()
         #Huevo 1
         self.egg=Egg(4,4)
@@ -55,7 +57,7 @@ class PlayingState3(PlayingState):
         self.enemy_group=pygame.sprite.Group()
         self.rotten_apple_group = pygame.sprite.Group()
         self.apple_group = pygame.sprite.Group()
-        self.gemstone_group = pygame.sprite.Group(self.gemstone, self.gemstone2)
+        self.gemstone_group = pygame.sprite.Group(self.gemstone)
         self.explosions_group = pygame.sprite.Group()
 
         #Puerta 1 
@@ -81,6 +83,9 @@ class PlayingState3(PlayingState):
         #sonidos
         self.background_music = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'level_3_theme.mp3'))
         self.background_music.play(-1)
+
+        # Inicializa temporizadores de reaparición
+        self.timer_respawn_gemstone = None
 
     def init_apples(self, area_manager):
         "Inicializado de las manzanas según el diseño establecido para el nivel"
@@ -133,6 +138,8 @@ class PlayingState3(PlayingState):
         self.check_collisions()
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.push_state('GAME_OVER')
+        self.drop_gemstone()
+        self.respawn_key_items()
 
     def draw(self, screen):
         """Dibuja todos los elementos del juego en la pantalla."""
@@ -147,9 +154,28 @@ class PlayingState3(PlayingState):
             for asset in group:
                 asset.draw(screen, self.camera.offset)
         self.eagle.draw(screen, self.camera.offset)
-    def load_level(self, json_path):
-        self.level_manager = LevelManager(self.game.screen)
-        self.level_manager.load_level_from_json(os.path.join(Config.LEVEL_DIR, json_path))
+
+    def drop_gemstone(self):
+        if len(self.egg_group) == 0 and self.gemstone_drop==False:
+            self.gemstone_group.add(self.gemstone2)
+            self.gemstone_drop=True
+
+    def respawn_key_items(self):
+        """
+        Función para gestionar el reaparecido de la fruta de Pacman y la gema.
+        """
+
+        # Intervalo para reaparecer la gema, en milisegundos
+        interval_gemstone = 15000  # 15 segundos
+
+        if self.gemstone_drop:
+            # Comprueba y gestiona el reaparecido de las 2 gemas
+            self.timer_respawn_gemstone = self.respawn_object_if_missing(
+                self.gemstone2,
+                self.gemstone_group,
+                self.timer_respawn_gemstone,
+                interval_gemstone
+            )
 
     
     def check_collisions(self):
