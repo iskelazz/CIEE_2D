@@ -14,6 +14,7 @@ from assets.sawTrap import SawTrap
 from camera import Camera, MoveByBlocks
 from assets.door import Door
 from assets.key import Key
+import random
 
 
 import os
@@ -41,13 +42,14 @@ class PlayingState1(GameState):
         # Division de la fase en areas
         area_manager = AreaManager()
         area_manager.load_areas(areas_dict)
-        
-        self.snake = Snake(8,10)
+        self.activated_areas = {}  # Diccionario para manejar el estado por área
+        self.completed_areas = set()  # Para registrar áreas que ya completaron la generación
+
+        self.snake = Snake(8,10) #Creacion de la serpiente con la posicion de su cabeza pasada por parametro
         
         #Definimos grupos de la fruta aleatoria
         self.apple_group = pygame.sprite.Group() 
         self.rotten_apple_group = pygame.sprite.Group()  
-        self.last_rotten_apple_time = time.time()
         self.explosions_group = pygame.sprite.Group()  
         
         #Inicializacion de trampas y enemigos
@@ -129,13 +131,9 @@ class PlayingState1(GameState):
 
         #Una fruta buena y una mala por area
         self.fruit_sorting(AREA1, 1, RedApple)
-        self.fruit_sorting(AREA1, 1, RottenApple)
         self.fruit_sorting(AREA2, 1, RedApple)
-        self.fruit_sorting(AREA2, 1, RottenApple)
         self.fruit_sorting(AREA3, 1, RedApple)
-        self.fruit_sorting(AREA3, 1, RottenApple)
         self.fruit_sorting(AREA4, 1, RedApple)
-        self.fruit_sorting(AREA4, 1, RottenApple)
         
     def fruit_sorting(self, area, number, fruit_class):
         "Llama a la función para añadir manzanas tantas veces como este definido en inicializar_apples"
@@ -163,6 +161,10 @@ class PlayingState1(GameState):
         current_time = time.time()
         self.snake.update(current_time)
         self.check_collisions()
+        # Comprueba las Areas a las que llega la serpiente
+        self.check_area_activation(current_time)
+        # Generar rotten apples en todas las áreas activas
+        self.generate_rotten_apple(current_time)
         if self.snake.is_snake_out_of_bounds(self.level_manager.cell_number_x, self.level_manager.cell_number_y):
             self.game.screen_manager.push_state('GAME_OVER')
         self.camera.update(self.snake)
@@ -224,6 +226,35 @@ class PlayingState1(GameState):
         self.game.score.save_score()
         self.game.screen_manager.change_state('STORY2')
         self.game.screen_manager.update()
+
+    def check_area_activation(self, current_time):
+        area_tag = AreaManager.get_instance().get_area_tag_by_point(
+            self.snake.segments.sprites()[0].rect.centerx,
+            self.snake.segments.sprites()[0].rect.centery
+        )
+        if area_tag and area_tag not in self.completed_areas:
+            self.activate_rotten_apples_generation(area_tag)
+
+    def activate_rotten_apples_generation(self, area_tag):
+        if area_tag not in self.activated_areas:
+            self.activated_areas[area_tag] = {
+                "last_generation_time": time.time(),
+                "to_generate": random.randint(2, 5),
+                "generated": 0
+            }
+
+    def generate_rotten_apple(self, current_time):
+        for area_tag, state in list(self.activated_areas.items()):
+            if state["generated"] < state["to_generate"]:
+                if current_time - state["last_generation_time"] >= 5:
+                    area = AreaManager.get_instance().coords(area_tag)
+                    self.add_apple_in_area(area, RottenApple)
+                    state["last_generation_time"] = current_time
+                    state["generated"] += 1
+                    if state["generated"] >= state["to_generate"]:
+                        # Si se ha alcanzado el número de generaciones para esta área, la elimina
+                        del self.activated_areas[area_tag]
+                        self.completed_areas.add(area_tag)
 
     def tag(self):
         return "PLAYING1"
