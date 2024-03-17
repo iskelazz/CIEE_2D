@@ -21,6 +21,3 @@ class Config:
     @classmethod
     def update_map_size(cls, width, height):
         cls.map_size = (width, height)
-
-# Asegúrate de llamar a Config.initialize() al inicio de tu programa o antes de acceder a sus atributos.
-Config.initialize()

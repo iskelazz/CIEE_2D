@@ -18,18 +18,21 @@ class AreaManager(metaclass=SingletonMeta):
         self.areas = new_areas  # Carga o sustituye las áreas
 
     def get_area_tag_by_point(self, x, y):
+        """Indica en que area se encuentra el punto, None si no esta en ninguna"""
         for tag, area in self.areas.items():
             if area.rect.collidepoint(x, y):
                 return tag
         return None
 
     def get_area_tag_by_object(self, obj):
+        """Indica en que area se encuentra el objeto, None si no esta en ninguna"""
         for tag, area in self.areas.items():
             if area.rect.colliderect(obj.rect):
                 return tag
         return None
 
     def count_objects_in_area(self, objects, area_tag):
+        """Cuenta cuantos objetos de un grupo pasado por parametro hay en un area pasada por parametro"""
         count = 0
         area = self.areas.get(area_tag)
         if not area:
@@ -40,6 +43,7 @@ class AreaManager(metaclass=SingletonMeta):
         return count
 
     def coords(self, area_tag):
+        """Recuperamos las coordenadas de un area pasada con tag por parametro"""
         area = self.areas.get(area_tag)
         if area:
             return [area.rect.x // Config.CELL_SIZE, area.rect.y // Config.CELL_SIZE, area.rect.width // Config.CELL_SIZE, area.rect.height // Config.CELL_SIZE]
