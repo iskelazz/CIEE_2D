@@ -23,11 +23,9 @@ class GestorRecursos(object):
         else:
             # Se carga la imagen indicando la carpeta en la que está
             fullname = os.path.join(GRAPHICS_DIR, name)
-            print(fullname)
             try:
                 imagen = pygame.image.load(fullname)
             except (pygame.error):
-                print ('Cannot load image:', fullname)
                 raise (SystemExit)
             imagen = imagen.convert()
             if colorkey != None:

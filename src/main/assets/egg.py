@@ -17,4 +17,3 @@ class Egg(Consumable):
         area_manager = AreaManager()
         snake.retrieved_eggs +=1
         self.kill()
-        print(snake.retrieved_eggs)

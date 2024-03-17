@@ -54,10 +54,8 @@ class FloorTrap(Sprite):
     def is_on(self):
         
         if (self.image == self.sprites[7] or self.image == self.sprites[8] or self.image == self.sprites[9]):
-            print('ON')
             return True
         else:
-            print('OFF')
             return False
     
     def handle_collision(self,segment,snake,game):

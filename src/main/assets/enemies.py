@@ -308,7 +308,6 @@ class Eagle(Enemie):
     def move(self,xStep,yStep):
         self.rect.x+=xStep
         self.rect.y+=yStep
-        #print(self.rect.y)
         
         pass    
     def draw(self, screen, camera_offset):
