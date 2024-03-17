@@ -20,6 +20,9 @@ class FollowSnake(FollowStrategy):
         target_x = snake.segments.sprites()[0].rect.centerx - Config.SCREEN_WIDTH / 2
         target_y = snake.segments.sprites()[0].rect.centery - Config.SCREEN_HEIGHT / 2
 
+        # Asegurarse de que la cámara no se salga de los límites del nivel
+        target_x = min(max(0, target_x), Config.map_size[0] - Config.SCREEN_WIDTH)
+        target_y = min(max(0, target_y), Config.map_size[1] - Config.SCREEN_HEIGHT)
         # Interpolar entre la posición actual de la cámara y el objetivo
         # El factor de lerp determina qué tan "suave" o "rápido" es el movimiento de la cámara
         # Un valor más bajo resultará en un movimiento más suave
