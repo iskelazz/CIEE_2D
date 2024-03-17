@@ -46,7 +46,7 @@ class StoryTellingState2(GameState):
                             self.counter = 0
                             self.speed = 3
                         else:
-                            pygame.mixer.Sound.stop()
+                            self.background_music.stop()
                             self.game.screen_manager.change_state('PLAYING2')
                     else:
                         self.speed = 1
