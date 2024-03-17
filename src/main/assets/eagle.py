@@ -115,6 +115,12 @@ class Feather(Enemy):
         self.rect.x+=self.xStep
         self.rect.y+=self.yStep
     
+    def draw(self, screen, camera_offset):
+        adjusted_position = (self.rect.x - camera_offset.x, 
+                            self.rect.y - camera_offset.y)
+        
+        
+        screen.blit(pygame.transform.flip(self.image, False,True), adjusted_position)
     def handle_collision(self,segment,snake,game):
         self.kill()
         super().handle_collision(segment,snake,game)
