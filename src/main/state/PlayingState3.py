@@ -31,7 +31,7 @@ class PlayingState3(GameState):
         self.load_level(os.path.join(LEVEL_DIR, 'level3.json'))
         area_manager = AreaManager()
         area_manager.load_areas(areas_dict)
-        self.snake = Snake(5,26)
+        self.snake = Snake(30,26)
         self.gemstone = Gemstone(26,12)
         self.eagle=Eagle()
         self.egg=Egg(20,10)

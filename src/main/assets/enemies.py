@@ -7,7 +7,7 @@ from config import GRAPHICS_DIR, SOUNDS_DIR
 from resources.gestorRecursos import GestorRecursos
 from assets.snake.pacmanState import PacmanState
 import time
-from assets.floorTraps import WoodTrap
+from assets.floorTraps import FireTrap
 
 from config import SOUNDS_DIR
 
@@ -242,7 +242,7 @@ class Murcielago(Enemie):
 class Eagle(Enemie):
     def __init__(self):
         
-        super().__init__(75, 20, 'eagle.png', 'eagleCoord.txt', [10, 6, 5],3)    
+        super().__init__(5, 30, 'eagle.png', 'eagleCoord.txt', [10, 6, 5],3)    
         self.last_attack_time=0
         self.flying=False
         self.attacking=False
@@ -295,12 +295,12 @@ class Eagle(Enemie):
             #vuela en linea recta por todo el mapa y regresa a su sitio inicial
             else :
                 self.animationNum=2
-                self.move(-20,0)
-                if self.rect.x<0:
+                self.move(20,0)
+                if self.rect.x>80:
                     self.fly_prep_time=30
                     self.animationNum=0
-                    self.rect.x=75*cell_size
-                    self.rect.y=20*cell_size
+                    self.rect.x=5*cell_size
+                    self.rect.y=30*cell_size
                     self.flying=False
                     self.last_attack_time=current_time
                     self.attacking=False
@@ -309,16 +309,11 @@ class Eagle(Enemie):
         self.rect.x+=xStep
         self.rect.y+=yStep
         
-        pass    
-    def draw(self, screen, camera_offset):
-        adjusted_position = (self.rect.x - camera_offset.x, 
-                            self.rect.y - camera_offset.y)
         
-        screen.blit(pygame.transform.flip(self.image, True, False), adjusted_position)
 
     def trap_attack(self,snake,trap_group):
         snake.wooden_trap_sound.play()
-        trampa=WoodTrap(snake.body[0]+snake.direction*5)
+        trampa=FireTrap(snake.body[0]+snake.direction*5)
         trap_group.add(trampa)
     
     def feather_attack(self,snake,enemy_group):
@@ -330,7 +325,7 @@ class Eagle(Enemie):
     def handle_collision(self,snake,game):
         if self.attacking==True:
             super().handle_collision(None,snake,game)  
-        else :game.screen_manager.change_state('INTRO')
+        else :game.screen_manager.change_state('START')
 
 
 class Feather(Enemie):
