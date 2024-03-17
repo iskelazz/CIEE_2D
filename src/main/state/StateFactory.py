@@ -6,10 +6,8 @@ from state.FinalScreenState import FinalScreenState
 from state.PauseState import PauseState
 from state.MenuState import MenuState 
 from state.GameOverState import GameOverState
-from state.StoryTellingState1 import StoryTellingState1
-from state.StoryTellingState2 import StoryTellingState2
-from state.TutorialState1 import TutorialState1
-from state.TutorialState2 import TutorialState2
+from state.StoryTellingState import StoryTellingState
+from state.TutorialState import TutorialState
 
 
 class StateFactory:
@@ -20,17 +18,21 @@ class StateFactory:
         elif state_id == 'MENU':
             return MenuState(game)
         elif state_id == 'STORY1':
-            return StoryTellingState1(game)
+            return StoryTellingState(game, state_id)
         elif state_id == 'TUTO1':
-            return TutorialState1(game)
+            return TutorialState(game,state_id)
         elif state_id == 'PLAYING1':
             return PlayingState1(game)
         elif state_id == 'STORY2':
-            return StoryTellingState2(game)
+             return StoryTellingState(game, state_id)
         elif state_id == 'TUTO2':
-            return TutorialState2(game)
+            return TutorialState(game,state_id)
         elif state_id == 'PLAYING2':
             return PlayingState2(game)
+        elif state_id == 'STORY3':
+            return StoryTellingState(game, state_id)
+        elif state_id == 'TUTO3':
+            return TutorialState(game,state_id)
         elif state_id == 'PLAYING3':
             return PlayingState3(game)
         elif state_id == 'PAUSE':

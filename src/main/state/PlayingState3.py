@@ -15,7 +15,7 @@ from assets.gemstone import Gemstone
 from assets.enemies import Eagle
 
 import os
-from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, FONTS_DIR
+from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
 
 areas_dict = {
     "AREA1": Area("AREA1", 1, 1, 19, 19),
@@ -46,6 +46,10 @@ class PlayingState3(GameState):
         self.group_list=(self.apple_group,self.rotten_apple_group,self.gemstone_group,self.enemy_group,self.egg_group,self.spike_trap_group)
         self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
         self.init_apples(area_manager)
+
+        #sonidos
+        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'level_3_theme.mp3'))
+        self.background_music.play(-1)
 
     def init_apples(self, area_manager):
         "Inicializado de las manzanas según el diseño establecido para el nivel"

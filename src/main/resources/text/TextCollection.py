@@ -21,7 +21,14 @@ class TextColection:
         return ['La serpiente se encuentra frente a un río peligroso...',
                     'nuevos enemigos se cruzan en su camino...',
                     'buscan poner fin a la mision de recuperar los huevos robados ...',
-                    '¿Será capaz la serpiente de derrotarlos y superar las trampas?']
+                    '¿Podrá la serpiente derrotarlos y superar las trampas?']
+    
+    @staticmethod
+    def get_story_3_text():
+        return ['Finalmente, la serpiente ha llegado a la guarida del águila...',
+                    'Pero el verdadero desafío aguarda en la cima...',
+                    'solo con coraje, habilidad y determinación podrá vencerla ...',
+                    '¿Recuperará sus huevos, restaurando así la paz en el bosque?']
 
     @staticmethod
     def get_gameover_retry_text():

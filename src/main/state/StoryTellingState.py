@@ -5,18 +5,45 @@ from resources.text.TextCollection import TextColection
 
 from config import GRAPHICS_DIR, FONTS_DIR, SOUNDS_DIR
 
-class StoryTellingState2(GameState):
-    def __init__(self, game):
+class StoryTellingState(GameState):
+    
+    def getBackgoundImage(self, story):
+        if 'STORY1' == story:
+            return 'story_1_background.png'
+        elif 'STORY2' == story:
+            return 'story_2_background.png'
+        elif 'STORY3' == story:
+            return 'story_3_background.png'
+        
+    def getTextMessages(self, story):
+        if 'STORY1' == story:
+            return TextColection.get_story_1_text()
+        elif 'STORY2' == story:
+            return TextColection.get_story_2_text()
+        elif 'STORY3' == story:
+            return TextColection.get_story_3_text()
+    
+    def getNextState(self, story):
+        if 'STORY1' == story:
+            return 'TUTO1'
+        elif 'STORY2' == story:
+            return 'TUTO2'
+        elif 'STORY3' == story:
+            return 'TUTO3'
+            
+    def __init__(self, game, story):
         super().__init__(game)
         self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 35)
         # Carga la imagen de fondo
-        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'story_2_background.png')).convert()
+        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, self.getBackgoundImage(story))).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
         
         self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'intro_theme.mp3'))
         self.typing_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'typing_sound.wav'))
-        self.messages = TextColection.get_story_2_text()
+        self.messages = self.getTextMessages(story)
         
+        self.next_state = self.getNextState(story)
+
         self.snip = self.font.render('',True, 'Black')
         self.counter = 0
         self.speed = 3
@@ -48,7 +75,7 @@ class StoryTellingState2(GameState):
                         else:
                             self.typing_sound.stop()
                             self.background_music.stop()
-                            self.game.screen_manager.change_state('TUTO2')
+                            self.game.screen_manager.change_state(self.next_state)
                     else:
                         self.speed = 1
 
@@ -67,9 +94,9 @@ class StoryTellingState2(GameState):
             self.typing_sound.stop()
         
         self.snip = self.font.render(self.message[0:self.counter//self.speed], True, 'White')
-        
-        screen.blit(self.snip, (60, 400))
 
+        screen.blit(self.snip, (80, 400))
+            
     def tag():
-        return 'STORY2'
+        return 'STORY'
         
