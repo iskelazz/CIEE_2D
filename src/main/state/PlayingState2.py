@@ -18,6 +18,7 @@ from assets.gemstone import Gemstone
 from assets.goldenapple import GoldenApple
 from assets.pacmanFruit import PacmanFruit
 from camera import Camera, MoveByBlocks
+import random
 
 import os
 from config import Config
@@ -37,6 +38,9 @@ class PlayingState2(GameState):
 
         #inicializar camara
         self.camera = Camera(MoveByBlocks())
+
+        self.activated_areas = {}  # Diccionario para manejar el estado por área
+        self.completed_areas = set()  # Para registrar áreas que ya completaron la generación
 
         area_manager = AreaManager()
         self.game.score.init_level_score()
@@ -109,13 +113,9 @@ class PlayingState2(GameState):
 
         #Una fruta buena y una mala por area
         self.fruit_sorting(AREA1, 1, RedApple)
-        self.fruit_sorting(AREA1, 1, RottenApple)
         self.fruit_sorting(AREA2, 1, RedApple)
-        self.fruit_sorting(AREA2, 1, RottenApple)
         self.fruit_sorting(AREA3, 1, RedApple)
-        self.fruit_sorting(AREA3, 1, RottenApple)
         self.fruit_sorting(AREA4, 1, RedApple)
-        self.fruit_sorting(AREA4, 1, RottenApple)
         
     def fruit_sorting(self, area, number, fruit_class):
         "Llama a la función para añadir manzanas tantas veces como este definido en inicializar_apples"
@@ -206,6 +206,10 @@ class PlayingState2(GameState):
         for pointsDoor in self.door_group:
             pointsDoor.update()
         self.explosions_group.update()
+        # Comprueba las Areas a las que llega la serpiente
+        self.check_area_activation(current_time)
+        # Generar rotten apples en todas las áreas activas
+        self.generate_rotten_apple(current_time)
         self.drop_gemstone()
         self.respawn_key_items()
 
@@ -262,6 +266,35 @@ class PlayingState2(GameState):
         self.game.score.save_score()
         self.game.screen_manager.change_state('PLAYING3')
         self.game.screen_manager.update()
+
+    def check_area_activation(self, current_time):
+        area_tag = AreaManager.get_instance().get_area_tag_by_point(
+            self.snake.segments.sprites()[0].rect.centerx,
+            self.snake.segments.sprites()[0].rect.centery
+        )
+        if area_tag and area_tag not in self.completed_areas:
+            self.activate_rotten_apples_generation(area_tag)
+
+    def activate_rotten_apples_generation(self, area_tag):
+        if area_tag not in self.activated_areas:
+            self.activated_areas[area_tag] = {
+                "last_generation_time": time.time(),
+                "to_generate": random.randint(1, 3),
+                "generated": 0
+            }
+
+    def generate_rotten_apple(self, current_time):
+        for area_tag, state in list(self.activated_areas.items()):
+            if state["generated"] < state["to_generate"]:
+                if current_time - state["last_generation_time"] >= 5:
+                    area = AreaManager.get_instance().coords(area_tag)
+                    self.add_apple_in_area(area, RottenApple)
+                    state["last_generation_time"] = current_time
+                    state["generated"] += 1
+                    if state["generated"] >= state["to_generate"]:
+                        # Si se ha alcanzado el número de generaciones para esta área, la elimina
+                        del self.activated_areas[area_tag]
+                        self.completed_areas.add(area_tag)
 
     def tag(self):
         return "PLAYING2"
