@@ -248,6 +248,13 @@ class Eagle(Enemie):
         self.attacking=False
         
         self.fly_prep_time=60
+
+        self.feather1_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'feather_woosh1.wav'))
+        self.feather2_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'feather_woosh2.wav'))
+        self.eagle_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eagle_sound.wav'))
+
+        self.eagle_sound.play(-1)
+
     def update(self,snake,current_time,enemy_group,trap_group):
         super().update()
         if self.flying==False:
@@ -320,8 +327,9 @@ class Eagle(Enemie):
     
     def feather_attack(self,snake,enemy_group):
         if random.randint(1,2)==2:
-            snake.feather1_sound.play()
-        else:snake.feather2_sound.play()
+            self.feather1_sound.play()
+        else:
+            self.feather2_sound.play()
         
         pluma=Feather(self.rect.x,self.rect.y,snake,6)
         enemy_group.add(pluma)
