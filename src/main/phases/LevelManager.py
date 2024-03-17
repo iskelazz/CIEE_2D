@@ -11,8 +11,6 @@ class LevelManager:
         self.cell_number_x = 0  
         self.cell_number_y = 0
         self.cell_size = Config.CELL_SIZE
-        self.width = 0
-        self.height = 0
         self.layers = []  
         self.sprite_groups = {}
 
@@ -57,8 +55,7 @@ class LevelManager:
             self.cell_number_x = len(data['layers'][0]['tiles'][0])  
             self.cell_number_y = len(data['layers'][0]['tiles'])
 
-            self.width = self.cell_number_x * self.cell_size
-            self.height = self.cell_number_y * self.cell_size
+            Config.update_map_size(self.cell_number_x * self.cell_size, self.cell_number_y * self.cell_size)
 
             for layer_data in data['layers']:
                 self.load_layer(layer_data)
