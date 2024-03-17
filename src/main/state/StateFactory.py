@@ -9,6 +9,7 @@ from state.GameOverState import GameOverState
 from state.StoryTellingState1 import StoryTellingState1
 from state.StoryTellingState2 import StoryTellingState2
 from state.TutorialState1 import TutorialState1
+from state.TutorialState2 import TutorialState2
 
 
 class StateFactory:
@@ -27,7 +28,7 @@ class StateFactory:
         elif state_id == 'STORY2':
             return StoryTellingState2(game)
         elif state_id == 'TUTO2':
-            return TutorialState1(game)
+            return TutorialState2(game)
         elif state_id == 'PLAYING2':
             return PlayingState2(game)
         elif state_id == 'PLAYING3':

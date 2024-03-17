@@ -48,7 +48,7 @@ class StoryTellingState2(GameState):
                         else:
                             self.typing_sound.stop()
                             self.background_music.stop()
-                            self.game.screen_manager.change_state('PLAYING2')
+                            self.game.screen_manager.change_state('TUTO2')
                     else:
                         self.speed = 1
 
