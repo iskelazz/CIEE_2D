@@ -41,7 +41,7 @@ class PlayingState3(PlayingState):
         area_manager.load_areas(areas_dict)
 
         self.gemstone = Gemstone(77,2)
-        self.gemstone2 = Gemstone(25,25)
+        self.gemstone2 = Gemstone(23,35)
         self.gemstone_drop=False
 
         self.eagle=Eagle()
