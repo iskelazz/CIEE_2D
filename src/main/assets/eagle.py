@@ -3,7 +3,7 @@ import pygame, os
 import random
 from config import Config
 from assets.floorTraps import FireTrap
-from assets.enemies import Enemy, Feather
+from assets.enemies import Enemy
 
 cell_size = 40
 cell_number = 20
@@ -95,3 +95,27 @@ class Eagle(Enemy):
         if self.attacking==True:
             super().handle_collision(None,snake,game)  
         else :game.screen_manager.change_state('START')
+
+class Feather(Enemy):
+    def __init__(self,x,y,snake,speed=4):
+        self.x=x/cell_size
+        self.y=y/cell_size
+        super().__init__(self.x, self.y, 'feather.png', 'feather_coord.txt', [4],3)  
+        self.xMove=snake.body[0][0]*cell_size-self.x
+        self.yMove=snake.body[0][1]*cell_size-self.y
+        
+        self.total_steps=(abs(self.xMove)+abs(self.yMove))/speed
+        self.xStep=self.xMove/self.total_steps
+        self.yStep=self.yMove/self.total_steps
+        
+
+    def handle_move(self):
+        if self.rect.x<0 or self.rect.y<0:
+            self.kill()
+        self.rect.x+=self.xStep
+        self.rect.y+=self.yStep
+    
+    def handle_collision(self,segment,snake,game):
+        self.kill()
+        super().handle_collision(segment,snake,game)
+   

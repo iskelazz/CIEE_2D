@@ -35,7 +35,7 @@ class PlayingState3(PlayingState):
         area_manager.load_areas(areas_dict)
 
         self.gemstone = Gemstone(77,2)
-        #self.eagle=Eagle()
+        self.eagle=Eagle()
         self.egg=Egg(4,4)
         self.spike_trap_group=pygame.sprite.Group()
         self.egg_group = pygame.sprite.Group(self.egg)
@@ -82,7 +82,7 @@ class PlayingState3(PlayingState):
     def update(self):
         current_time = time.time()
         self.snake.update(current_time)
-        #self.eagle.update(self.snake,current_time,self.enemy_group,self.spike_trap_group)
+        self.eagle.update(self.snake,current_time,self.enemy_group,self.spike_trap_group)
         self.camera.update(self.snake)
         for enemie in self.enemy_group:
             enemie.update()
@@ -125,8 +125,8 @@ class PlayingState3(PlayingState):
         #Colision de serpiente con su cuerpo
         if pygame.sprite.spritecollideany(head, body):
             self.game.screen_manager.push_state('GAME_OVER')
-        #if pygame.sprite.spritecollideany(self.eagle,head_body):
-        #    self.eagle.handle_collision(self.snake,self.game)   
+        if pygame.sprite.spritecollideany(self.eagle,head_body):
+            self.eagle.handle_collision(self.snake,self.game)   
         
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
