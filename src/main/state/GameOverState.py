@@ -2,17 +2,17 @@ import sys, os
 import pygame
 from state.GameState import GameState
 from resources.text.TextCollection import TextColection
-from config import FONTS_DIR, GRAPHICS_DIR,SOUNDS_DIR
+from config import Config
 
 class GameOverState(GameState):
     def __init__(self, game):
         super().__init__(game)
         pygame.mixer.stop()
-        self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 48)
-        self.small_font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 32)
+        self.font = pygame.font.Font(os.path.join(Config.FONTS_DIR, 'Another_.ttf'), 48)
+        self.small_font = pygame.font.Font(os.path.join(Config.FONTS_DIR, 'Another_.ttf'), 32)
 
         # Carga la imagen de fondo
-        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'game_over_background.png')).convert()
+        self.background_image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'game_over_background.png')).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
 
         self.retry_text = TextColection.get_gameover_retry_text()
@@ -20,7 +20,7 @@ class GameOverState(GameState):
         self.score_text = TextColection.get_gameover_score_text() + str(self.game.score.score)
         self.game_over_text = TextColection.get_gameover_text()
 
-        self.game_over_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'game_over.wav'))
+        self.game_over_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'game_over.wav'))
         self.game_over_sound.play()
 
     def handle_events(self, events):

@@ -3,7 +3,7 @@
 import pygame, sys, os
 from pygame.locals import *
 
-from config import GRAPHICS_DIR
+from config import Config
 
 
 # -------------------------------------------------
@@ -22,7 +22,7 @@ class GestorRecursos(object):
         # Si no ha sido cargado anteriormente
         else:
             # Se carga la imagen indicando la carpeta en la que está
-            fullname = os.path.join(GRAPHICS_DIR, name)
+            fullname = os.path.join(Config.GRAPHICS_DIR, name)
             try:
                 imagen = pygame.image.load(fullname)
             except (pygame.error):
@@ -46,7 +46,7 @@ class GestorRecursos(object):
         # Si no ha sido cargado anteriormente
         else:
             # Se carga el recurso indicando el nombre de su carpeta
-            fullname = os.path.join(GRAPHICS_DIR, name)
+            fullname = os.path.join(Config.GRAPHICS_DIR, name)
             pfile=open(fullname,'r')
             datos=pfile.read()
             pfile.close()

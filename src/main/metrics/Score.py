@@ -1,6 +1,6 @@
 import pygame
 import os
-from config import FONTS_DIR
+from config import Config
 
 #Se encarga de la puntuación 
 class Score:
@@ -16,7 +16,7 @@ class Score:
 
     def draw_score(self):
         """Pinta la puntuación en el extremo superior izquierdo de la pantalla"""    
-        font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 64)  
+        font = pygame.font.Font(os.path.join(Config.FONTS_DIR, 'Another_.ttf'), 64)  
         score_surface = font.render(f'{self.score:06d}', True, pygame.Color('white'))
         score_rect = score_surface.get_rect(topright=(self.screen_width - 20, 20)) 
         self.screen.blit(score_surface, score_rect)

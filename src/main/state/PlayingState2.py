@@ -20,7 +20,7 @@ from assets.pacmanFruit import PacmanFruit
 from camera import Camera, MoveByBlocks
 
 import os
-from config import LEVEL_DIR, CELL_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
+from config import Config
 """Se definen coordenadas del mapa(En celdas de tablero) que definen un area y una clase areaManager para evaluar de forma rapida el estado de diferentes objetos en ellas"""
 areas_dict = {
     "AREA1": Area("AREA1", 1, 1, 19, 19),
@@ -33,7 +33,7 @@ class PlayingState2(GameState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
-        self.load_level(os.path.join(LEVEL_DIR, 'level2_alt.json'))
+        self.load_level(os.path.join(Config.LEVEL_DIR, 'level2_alt.json'))
 
         #inicializar camara
         self.camera = Camera(MoveByBlocks())
@@ -64,17 +64,17 @@ class PlayingState2(GameState):
         self.pacmanFruit=PacmanFruit(37,3)
   
 
-        self.pointsDoor1=PointsDoor(9*CELL_SIZE,20*CELL_SIZE,False,self.game.score,500+reference_score)
-        self.pointsDoor2=PointsDoor(10*CELL_SIZE,20*CELL_SIZE,False,self.game.score,500+reference_score)
-        self.door=Door(18*CELL_SIZE,13*CELL_SIZE,True)
-        self.door2=Door(18*CELL_SIZE,14*CELL_SIZE,True)
-        self.key=Key(6 * CELL_SIZE,3 * CELL_SIZE,[self.door,self.door2])
+        self.pointsDoor1=PointsDoor(9*Config.CELL_SIZE,20*Config.CELL_SIZE,False,self.game.score,500+reference_score)
+        self.pointsDoor2=PointsDoor(10*Config.CELL_SIZE,20*Config.CELL_SIZE,False,self.game.score,500+reference_score)
+        self.door=Door(18*Config.CELL_SIZE,13*Config.CELL_SIZE,True)
+        self.door2=Door(18*Config.CELL_SIZE,14*Config.CELL_SIZE,True)
+        self.key=Key(6 * Config.CELL_SIZE,3 * Config.CELL_SIZE,[self.door,self.door2])
 
-        self.pointsDoor3=PointsDoor(44*CELL_SIZE,17*CELL_SIZE,True,self.game.score,3000+reference_score)
-        self.pointsDoor4=PointsDoor(44*CELL_SIZE,18*CELL_SIZE,True,self.game.score,3000+reference_score)
-        self.door3=Door(57*CELL_SIZE,0*CELL_SIZE,True)
-        self.door4=Door(57*CELL_SIZE,1*CELL_SIZE,True)
-        self.key2=Key(58 * CELL_SIZE,18 * CELL_SIZE,[self.door3,self.door4])
+        self.pointsDoor3=PointsDoor(44*Config.CELL_SIZE,17*Config.CELL_SIZE,True,self.game.score,3000+reference_score)
+        self.pointsDoor4=PointsDoor(44*Config.CELL_SIZE,18*Config.CELL_SIZE,True,self.game.score,3000+reference_score)
+        self.door3=Door(57*Config.CELL_SIZE,0*Config.CELL_SIZE,True)
+        self.door4=Door(57*Config.CELL_SIZE,1*Config.CELL_SIZE,True)
+        self.key2=Key(58 * Config.CELL_SIZE,18 * Config.CELL_SIZE,[self.door3,self.door4])
 
         self.pointsDoor_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2,self.pointsDoor3,self.pointsDoor4)
         self.explosions_group = pygame.sprite.Group()    
@@ -89,8 +89,6 @@ class PlayingState2(GameState):
         self.fruit_group=pygame.sprite.Group(self.pacmanFruit)
         self.group_list=(self.key_group,self.door_group,self.apple_group,self.rotten_apple_group,self.spike_trap_group,self.saw_trap_group, self.gemstone_group, self.golden_apple_group,self.enemie_group,self.fruit_group)
 
-        self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
-
         # Inicializa temporizadores de reaparición
         self.timer_respawn_pacman = None
         self.timer_respawn_gemstone = None
@@ -98,7 +96,7 @@ class PlayingState2(GameState):
         self.init_apples(area_manager)
 
         #sonidos
-        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'level_2_theme.wav'))
+        self.background_music = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'level_2_theme.wav'))
         self.background_music.play(-1)
 
     def init_apples(self, area_manager):
@@ -237,7 +235,7 @@ class PlayingState2(GameState):
         
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
-        self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
+        self.level_manager.load_level_from_json(os.path.join(Config.LEVEL_DIR, json_path))
     
     def check_collisions(self):
         """Verifica y maneja las colisiones."""

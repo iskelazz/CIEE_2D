@@ -2,7 +2,7 @@ import pygame
 import sys
 from metrics.Score import Score
 from state.StateManager import StateManager
-from config import SCREEN_WIDTH, SCREEN_HEIGHT
+from config import Config
 
 class EggQuest:
     def __init__(self):
@@ -10,13 +10,14 @@ class EggQuest:
         # Valorar la creacion de una clase repositorio para compartir info entre estados
         self.score = Score(self.screen, self.screen_width)
         self.screen_manager = StateManager(self)
-        self.screen_manager.change_state('PLAYING2')
+        self.screen_manager.change_state('PLAYING3')
 
     def initialize_game(self):
         """Configura los parámetros iniciales y los objetos de Pygame."""
         pygame.init()
-        self.screen_width = SCREEN_WIDTH
-        self.screen_height = SCREEN_HEIGHT
+        Config.initialize()
+        self.screen_width = Config.SCREEN_WIDTH
+        self.screen_height = Config.SCREEN_HEIGHT
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height)) #800x800
         pygame.display.set_caption('EggQuest')
         self.FPS = 60

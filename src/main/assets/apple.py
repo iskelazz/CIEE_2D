@@ -2,7 +2,7 @@ from phases.AreaManager import AreaManager
 import random
 import os
 from assets.consumable import Consumable 
-from config import GRAPHICS_DIR, CELL_SIZE
+from config import Config
 
 cell_number = 20 #temporal
  
@@ -32,8 +32,8 @@ class Apple(Consumable):
 
         if available_positions:
             new_position = random.choice(list(available_positions))
-            self.rect.x = new_position[0] * CELL_SIZE
-            self.rect.y = new_position[1] * CELL_SIZE
+            self.rect.x = new_position[0] * Config.CELL_SIZE
+            self.rect.y = new_position[1] * Config.CELL_SIZE
             return True
         else:
             # No hay posiciones disponibles en el área dada

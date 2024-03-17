@@ -13,7 +13,7 @@ from camera import Camera, FollowSnake
 from assets.eagle import Eagle
 
 import os
-from config import LEVEL_DIR, CELL_SIZE, SOUNDS_DIR
+from config import Config
 
 areas_dict = {
     "AREA1": Area("AREA1", 1, 13, 16, 5),
@@ -27,7 +27,7 @@ class PlayingState3(PlayingState):
         self.camera = Camera(FollowSnake())
         self.game.score.init_level_score()
         # Cargar nivel
-        self.load_level(os.path.join(LEVEL_DIR, 'level3.json'))
+        self.load_level(os.path.join(Config.LEVEL_DIR, 'level3.json'))
 
         self.initialize_snake((4, 15))
 
@@ -46,11 +46,11 @@ class PlayingState3(PlayingState):
         self.explosions_group = pygame.sprite.Group()   
         
         self.group_list=(self.apple_group,self.rotten_apple_group,self.gemstone_group,self.enemy_group,self.egg_group,self.spike_trap_group)
-        self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
+        self.level_size = (self.level_manager.cell_number_x * Config.CELL_SIZE, self.level_manager.cell_number_y * Config.CELL_SIZE)
         self.init_apples(area_manager)
 
         #sonidos
-        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'level_3_theme.mp3'))
+        self.background_music = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'level_3_theme.mp3'))
         self.background_music.play(-1)
 
     def init_apples(self, area_manager):
@@ -108,7 +108,7 @@ class PlayingState3(PlayingState):
         #self.eagle.draw(screen, self.camera.offset)
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
-        self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
+        self.level_manager.load_level_from_json(os.path.join(Config.LEVEL_DIR, json_path))
 
     
     def check_collisions(self):

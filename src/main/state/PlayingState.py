@@ -4,7 +4,7 @@ from state.GameState import GameState
 from phases.AreaManager import AreaManager
 from phases.LevelManager import LevelManager
 import os
-from config import LEVEL_DIR
+from config import Config
 import time
 import random
 from assets.rottenApple import RottenApple
@@ -63,7 +63,7 @@ class PlayingState(GameState, ABC):
 
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
-        self.level_manager.load_level_from_json(os.path.join(LEVEL_DIR, json_path))
+        self.level_manager.load_level_from_json(os.path.join(Config.LEVEL_DIR, json_path))
     
     @abstractmethod
     def check_collisions(self):

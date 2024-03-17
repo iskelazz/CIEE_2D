@@ -1,7 +1,7 @@
 from assets.door import Door
 import pygame
 import os
-from config import FONTS_DIR, CELL_SIZE
+from config import Config
 
 #Objeto para el cambio de nivel, Sprite temporal
 class PointsDoor(Door):
@@ -9,7 +9,7 @@ class PointsDoor(Door):
 		super().__init__(x,y,vertical)
 		self.score=score
 		self.openscore = openscore
-		self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 20)
+		self.font = pygame.font.Font(os.path.join(Config.FONTS_DIR, 'Another_.ttf'), 20)
 		self.use_text = use_text
 
 	def draw(self, screen, camera_offset):
@@ -23,8 +23,8 @@ class PointsDoor(Door):
 			if self.use_text:
 				text = f"{self.openscore}"  # Calcula los puntos que faltan
 				text_surface = self.font.render(text, True, (255, 255, 255))  # Crea una superficie de texto en blanco
-				text_rect = text_surface.get_rect(center=(self.rect.x + CELL_SIZE/2 - camera_offset.x, 
-								self.rect.y + CELL_SIZE/2 - camera_offset.y))  # Posiciona el texto justo arriba de la puerta
+				text_rect = text_surface.get_rect(center=(self.rect.x + Config.CELL_SIZE/2 - camera_offset.x, 
+								self.rect.y + Config.CELL_SIZE/2 - camera_offset.y))  # Posiciona el texto justo arriba de la puerta
 				screen.blit(text_surface, text_rect)        
 		else: pass
 	

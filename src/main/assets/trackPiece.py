@@ -1,7 +1,7 @@
 import pygame, os
 from pygame.sprite import Group, Sprite
 from pygame.math import Vector2
-from config import GRAPHICS_DIR
+from config import Config
 
 cell_size = 40
 cell_number = 20
@@ -18,11 +18,11 @@ class TrackPiece(Sprite):
     def load_piece(self):
         image = None
         if self.piece == 'first':
-            image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'saw_track_left_edge.png')).convert_alpha()
+            image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'saw_track_left_edge.png')).convert_alpha()
         elif self.piece == 'mid':
-            image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'saw_track_repeating_center.png')).convert_alpha()
+            image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'saw_track_repeating_center.png')).convert_alpha()
         elif self.piece == 'last':
-            image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'saw_track_right_edge.png')).convert_alpha()
+            image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'saw_track_right_edge.png')).convert_alpha()
         
         image = pygame.transform.scale(image, (cell_size, cell_size))
         

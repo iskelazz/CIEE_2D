@@ -3,18 +3,18 @@ import os
 from state.GameState import GameState
 from resources.text.TextCollection import TextColection
 from Utils import Utils
-from config import FONTS_DIR, GRAPHICS_DIR
+from config import Config
 
 class PauseState(GameState):
     def __init__(self, game):
         super().__init__(game)
         pygame.mixer.pause()
-        self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 52)
+        self.font = pygame.font.Font(os.path.join(Config.FONTS_DIR, 'Another_.ttf'), 52)
         self.pause_text = TextColection.get_pause_text()
         self.pause_symbol = '||'  # Símbolo de pausa
 
         # Carga la imagen de fondo    
-        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'pause_background.png')).convert()
+        self.background_image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'pause_background.png')).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
 
     def handle_events(self, events):

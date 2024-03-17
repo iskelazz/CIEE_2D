@@ -1,4 +1,4 @@
-from config import CELL_SIZE
+from config import Config
 
 class SingletonMeta(type):
     _instances = {}
@@ -42,7 +42,7 @@ class AreaManager(metaclass=SingletonMeta):
     def coords(self, area_tag):
         area = self.areas.get(area_tag)
         if area:
-            return [area.rect.x // CELL_SIZE, area.rect.y // CELL_SIZE, area.rect.width // CELL_SIZE, area.rect.height // CELL_SIZE]
+            return [area.rect.x // Config.CELL_SIZE, area.rect.y // Config.CELL_SIZE, area.rect.width // Config.CELL_SIZE, area.rect.height // Config.CELL_SIZE]
         return None
 
     @staticmethod

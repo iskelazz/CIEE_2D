@@ -1,13 +1,11 @@
 from phases.AreaManager import AreaManager
 import os
 from assets.apple import Apple 
-from config import GRAPHICS_DIR, CELL_SIZE
-
-cell_number = 20 #temporal
+from config import Config
  
 class RedApple(Apple):
 	def __init__(self, staticPositions):
-		super().__init__(os.path.join(GRAPHICS_DIR, 'apple.png'), staticPositions)
+		super().__init__(os.path.join(Config.GRAPHICS_DIR, 'apple.png'), staticPositions)
 	
 	def handle_collision(self,segment,snake,game):
 		area_manager = AreaManager()

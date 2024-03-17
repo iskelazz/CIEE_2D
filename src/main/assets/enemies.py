@@ -1,15 +1,7 @@
-import pygame, os
+import pygame
 
-import random
 from pygame.sprite import Sprite
-from pygame.math import Vector2
-from config import GRAPHICS_DIR, SOUNDS_DIR
 from resources.gestorRecursos import GestorRecursos
-from assets.snake.pacmanState import PacmanState
-import time
-from assets.floorTraps import FireTrap
-
-from config import SOUNDS_DIR
 
 cell_size = 40
 cell_number = 20

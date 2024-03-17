@@ -1,7 +1,7 @@
 import pygame
 from state.GameState import GameState
 import sys, os
-from config import GRAPHICS_DIR, SOUNDS_DIR
+from config import Config
 
 class TutorialState(GameState):
     
@@ -32,9 +32,9 @@ class TutorialState(GameState):
     def __init__(self,game, stage):
         super().__init__(game)
         self.next_state = self.getNextState(stage)
-        self.tutorial_image = pygame.image.load(os.path.join(GRAPHICS_DIR, self.getTutorialImage(stage))).convert()
+        self.tutorial_image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, self.getTutorialImage(stage))).convert()
         self.tutorial_image = pygame.transform.scale(self.tutorial_image, (game.screen_width, game.screen_height))
-        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, self.getMusicTheme(stage)))
+        self.background_music = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, self.getMusicTheme(stage)))
         self.background_music.play(-1)
 
     def handle_events(self, events):

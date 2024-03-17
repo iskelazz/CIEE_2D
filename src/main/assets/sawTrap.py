@@ -2,7 +2,7 @@ import pygame, os
 from pygame.sprite import Sprite
 from pygame.math import Vector2
 from assets.trackPiece import TrackPiece
-from config import GRAPHICS_DIR,SOUNDS_DIR
+from config import Config
 cell_size = 40
 cell_number = 20
 
@@ -33,7 +33,7 @@ class SawTrap(Sprite):
             
         self.trackPiece = TrackPiece.create_pieces(x, y, lenght, orientation)
 
-        self.saw_cut_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'saw_cut.wav'))
+        self.saw_cut_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'saw_cut.wav'))
         
     def move(self, dx, dy):
         self.rect.x += dx
@@ -100,11 +100,11 @@ class SawTrap(Sprite):
        
        
         images = [
-            pygame.image.load(os.path.join(GRAPHICS_DIR, 'rotating_saw_01.png')).convert_alpha(),
-            pygame.image.load(os.path.join(GRAPHICS_DIR, 'rotating_saw_02.png')).convert_alpha(),
-            pygame.image.load(os.path.join(GRAPHICS_DIR, 'rotating_saw_03.png')).convert_alpha(),
-            pygame.image.load(os.path.join(GRAPHICS_DIR, 'rotating_saw_04.png')).convert_alpha(),
-            pygame.image.load(os.path.join(GRAPHICS_DIR, 'rotating_saw_05.png')).convert_alpha(),
+            pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'rotating_saw_01.png')).convert_alpha(),
+            pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'rotating_saw_02.png')).convert_alpha(),
+            pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'rotating_saw_03.png')).convert_alpha(),
+            pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'rotating_saw_04.png')).convert_alpha(),
+            pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'rotating_saw_05.png')).convert_alpha(),
         ]
         
         saw_images = []

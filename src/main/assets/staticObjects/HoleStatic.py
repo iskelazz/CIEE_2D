@@ -1,7 +1,4 @@
 from assets.staticObjects.StaticGameObject import StaticGameObject
-import pygame
-cell_size = 40
-cell_number = 20
 #objeto estatico para el cambio de nivel
 class HoleStatic(StaticGameObject):
     def __init__(self, sprite, position):

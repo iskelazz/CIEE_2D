@@ -1,16 +1,10 @@
 import pygame, os
 
 import random
-from pygame.sprite import Sprite
-from pygame.math import Vector2
-from config import GRAPHICS_DIR, SOUNDS_DIR
-from resources.gestorRecursos import GestorRecursos
 from assets.snake.pacmanState import PacmanState
-import time
-from assets.floorTraps import FireTrap
 from assets.enemies import Enemy
 
-from config import SOUNDS_DIR
+from config import Config
 
 cell_size = 40
 cell_number = 20
@@ -36,9 +30,9 @@ class Murcielago(Enemy):
         self.direction = self.path[1]
         self.animation_cont = 0
         
-        self.bat_sound_1 = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_sound.wav'))
-        self.bat_sound_2 = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_sound_2.wav'))
-        self.bat_sound_3 = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_sound_3.wav'))
+        self.bat_sound_1 = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'enemy_bat_sound.wav'))
+        self.bat_sound_2 = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'enemy_bat_sound_2.wav'))
+        self.bat_sound_3 = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'enemy_bat_sound_3.wav'))
 
         self.bat_sounds_group = [self.bat_sound_1, self.bat_sound_2, self.bat_sound_3]
         self.bat_sound_selected = self.bat_sounds_group[random.randint(0,2)]

@@ -1,12 +1,12 @@
 from assets.staticObjects.StaticGameObject import StaticGameObject
 import pygame
 import os
-from config import SOUNDS_DIR
+from config import Config
 
 class Fence(StaticGameObject):
     def __init__(self, sprite, position):
         super().__init__(sprite, position)
-        self.collision_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'collision.wav'))
+        self.collision_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'collision.wav'))
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)

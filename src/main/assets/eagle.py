@@ -1,16 +1,9 @@
 import pygame, os
 
 import random
-from pygame.sprite import Sprite
-from pygame.math import Vector2
-from config import GRAPHICS_DIR, SOUNDS_DIR
-from resources.gestorRecursos import GestorRecursos
-from assets.snake.pacmanState import PacmanState
-import time
+from config import Config
 from assets.floorTraps import FireTrap
 from assets.enemies import Enemy, Feather
-
-from config import SOUNDS_DIR
 
 cell_size = 40
 cell_number = 20
@@ -25,8 +18,8 @@ class Eagle(Enemy):
         
         self.fly_prep_time=60
 
-        self.feather_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'feather_swoosh.mp3'))
-        self.eagle_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eagle_sound.wav'))
+        self.feather_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'feather_swoosh.mp3'))
+        self.eagle_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'eagle_sound.wav'))
         self.eagle_sound.play(-1)
 
     def update(self,snake,current_time,enemy_group,trap_group):

@@ -1,14 +1,12 @@
 from pygame.sprite import Sprite
-
-cell_size = 40
-cell_number = 20
+from config import Config
 
 class StaticGameObject(Sprite):
     def __init__(self, sprite, position):
         super().__init__()
         self.image = sprite
         self.position = position
-        self.rect = self.image.get_rect(topleft=(position[0] * cell_size, position[1] * cell_size))
+        self.rect = self.image.get_rect(topleft=(position[0] * Config.CELL_SIZE, position[1] * Config.CELL_SIZE))
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)

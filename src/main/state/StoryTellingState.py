@@ -3,7 +3,7 @@ import sys, os
 from state.GameState import GameState
 from resources.text.TextCollection import TextColection
 
-from config import GRAPHICS_DIR, FONTS_DIR, SOUNDS_DIR
+from config import Config
 
 class StoryTellingState(GameState):
     
@@ -33,13 +33,13 @@ class StoryTellingState(GameState):
             
     def __init__(self, game, story):
         super().__init__(game)
-        self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 35)
+        self.font = pygame.font.Font(os.path.join(Config.FONTS_DIR, 'Another_.ttf'), 35)
         # Carga la imagen de fondo
-        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, self.getBackgoundImage(story))).convert()
+        self.background_image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, self.getBackgoundImage(story))).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
         
-        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'intro_theme.mp3'))
-        self.typing_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'typing_sound.wav'))
+        self.background_music = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'intro_theme.mp3'))
+        self.typing_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'typing_sound.wav'))
         self.messages = self.getTextMessages(story)
         
         self.next_state = self.getNextState(story)

@@ -1,7 +1,7 @@
 import json
 import os
 import pygame
-from config import GRAPHICS_DIR, CELL_SIZE  
+from config import Config 
 from phases.Tile import Tile  
 from assets.staticObjects.StaticGameObjectFactory import StaticObjectFactory
 
@@ -10,7 +10,7 @@ class LevelManager:
         self.screen = screen
         self.cell_number_x = 0  
         self.cell_number_y = 0
-        self.cell_size = CELL_SIZE
+        self.cell_size = Config.CELL_SIZE
         self.width = 0
         self.height = 0
         self.layers = []  
@@ -20,7 +20,7 @@ class LevelManager:
         sprites_dict = {}
         for key, sprite_info in sprites_data.items():
             if isinstance(sprite_info, list):  # Si hay información de recorte (y posiblemente rotación)
-                sprite_path = os.path.join(GRAPHICS_DIR, sprite_info[0])
+                sprite_path = os.path.join(Config.GRAPHICS_DIR, sprite_info[0])
                 x, y, width, height = sprite_info[1:5]
                 # Comprueba si hay un valor de rotación; de lo contrario, usa 0
                 rotation = sprite_info[5] if len(sprite_info) > 5 else 0
@@ -34,7 +34,7 @@ class LevelManager:
                     sprite = cropped_sprite  # No se aplica rotación
                 sprites_dict[key] = sprite
             else:  # Carga la imagen completa si no hay recorte ni rotación
-                sprite_path = os.path.join(GRAPHICS_DIR, sprite_info)
+                sprite_path = os.path.join(Config.GRAPHICS_DIR, sprite_info)
                 sprite = pygame.image.load(sprite_path).convert_alpha()
                 sprites_dict[key] = sprite
         return sprites_dict
@@ -73,7 +73,7 @@ class LevelManager:
                 for col_idx, tile in enumerate(row):
                     if tile:
                         # Aplica el desplazamiento de la cámara aquí
-                        tile_position = (col_idx * CELL_SIZE - camera_offset.x, row_idx * CELL_SIZE - camera_offset.y)
+                        tile_position = (col_idx * Config.CELL_SIZE - camera_offset.x, row_idx * Config.CELL_SIZE - camera_offset.y)
                         tile.draw(screen, tile_position)
 
     def update(self):
@@ -82,7 +82,7 @@ class LevelManager:
 
     
     def load_object(self, obj_data):
-        sprite_path = os.path.join(GRAPHICS_DIR, obj_data["sprite"])
+        sprite_path = os.path.join(Config.GRAPHICS_DIR, obj_data["sprite"])
         full_sprite = pygame.image.load(sprite_path).convert_alpha()
 
         # Aplicar recorte si es necesario

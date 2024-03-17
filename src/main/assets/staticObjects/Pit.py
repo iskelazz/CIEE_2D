@@ -1,15 +1,12 @@
 from assets.staticObjects.StaticGameObject import StaticGameObject
 import pygame
 import os
-from config import SOUNDS_DIR
-
-cell_size = 40
-cell_number = 20
+from config import Config
 
 class Pit(StaticGameObject):
     def __init__(self, sprite, position):
         super().__init__(sprite, position)
-        self.fall_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'pit_fall.mp3'))
+        self.fall_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'pit_fall.mp3'))
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
     

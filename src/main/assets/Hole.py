@@ -2,16 +2,13 @@ import pygame
 import random
 import os
 from pygame.sprite import Sprite
-from config import GRAPHICS_DIR, CELL_SIZE
+from config import Config
 
-cell_size = 40
-cell_number = 20
-#Objeto para el cambio de nivel, Sprite temporal
 class Hole(Sprite):
 	def __init__(self, x,y):
 		super().__init__()
 		#cambiar sprite
-		self.image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'flame_left.png')).convert_alpha()
+		self.image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'flame_left.png')).convert_alpha()
 		self.rect = self.image.get_rect()
 		self.rect.x=x
 		self.rect.y=y

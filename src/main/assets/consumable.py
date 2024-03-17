@@ -2,15 +2,13 @@ import pygame
 
 import os
 from pygame.sprite import Sprite
-from config import GRAPHICS_DIR, CELL_SIZE
-
-cell_number = 20  # temporal
+from config import Config
 
 class Consumable(Sprite):
     def __init__(self, image_path):
         super().__init__()
-        original_image = pygame.image.load(os.path.join(GRAPHICS_DIR, image_path)).convert_alpha()
-        self.image = pygame.transform.scale(original_image, (CELL_SIZE, CELL_SIZE))
+        original_image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, image_path)).convert_alpha()
+        self.image = pygame.transform.scale(original_image, (Config.CELL_SIZE, Config.CELL_SIZE))
         self.rect = self.image.get_rect()
     
     

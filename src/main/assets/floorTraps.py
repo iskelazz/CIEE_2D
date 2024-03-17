@@ -1,8 +1,6 @@
 import pygame, os
 from pygame.sprite import Sprite
-from config import GRAPHICS_DIR
-from pygame.math import Vector2
-from resources.gestorRecursos import GestorRecursos
+from config import Config
 
 cell_size = 40
 cell_number = 20
@@ -22,7 +20,7 @@ class FloorTrap(Sprite):
         
     def cargar_sprite_sheets(self, name, width, height):
         
-        fullname = os.path.join(GRAPHICS_DIR, name)
+        fullname = os.path.join(Config.GRAPHICS_DIR, name)
         sprite_sheet= pygame.image.load(fullname).convert_alpha()
         
         sprites = []

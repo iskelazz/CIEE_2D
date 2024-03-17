@@ -3,22 +3,22 @@ from state.GameState import GameState
 import sys, os
 from Utils import Utils
 from resources.text.TextCollection import TextColection
-from config import GRAPHICS_DIR, FONTS_DIR, SOUNDS_DIR
+from config import Config
 
 class MenuState(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 48)
+        self.font = pygame.font.Font(os.path.join(Config.FONTS_DIR, 'Another_.ttf'), 48)
         self.options = TextColection.get_menu_options_text()
         self.current_option = 0
         self.color = (255, 255, 255)
         self.color_inactive = (100, 100, 100)
         # Carga la imagen de fondo
-        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'portada.png')).convert()
+        self.background_image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'portada.png')).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
-        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'menu_theme.mp3'))
-        self.menu_option_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'menu_option.wav'))
-        self.play_option_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'play_selected.wav'))
+        self.background_music = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'menu_theme.mp3'))
+        self.menu_option_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'menu_option.wav'))
+        self.play_option_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'play_selected.wav'))
         self.background_music.play(-1)
 
     def handle_events(self, events):

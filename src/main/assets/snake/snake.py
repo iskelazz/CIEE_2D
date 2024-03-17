@@ -2,10 +2,9 @@ import pygame
 import os
 import time
 from assets.snake.normalState import NormalState
-from assets.snake.pacmanState import PacmanState
 from pygame.math import Vector2
 from pygame.sprite import Sprite, Group
-from config import GRAPHICS_DIR, CELL_SIZE, SOUNDS_DIR
+from config import Config
 
 
 class SnakeSegment(Sprite):
@@ -14,11 +13,11 @@ class SnakeSegment(Sprite):
         self.number=number
         self.position = position
         self.segment_type = segment_type
-        self.image = pygame.Surface((CELL_SIZE, CELL_SIZE))
+        self.image = pygame.Surface((Config.CELL_SIZE, Config.CELL_SIZE))
         self.image.fill(pygame.Color('white'))  # Color por defecto para el cuerpo
-        self.rect = self.image.get_rect(topleft=(position.x * CELL_SIZE, position.y * CELL_SIZE))
+        self.rect = self.image.get_rect(topleft=(position.x * Config.CELL_SIZE, position.y * Config.CELL_SIZE))
     def update(self, position):
-        self.rect.topleft = (position.x * CELL_SIZE, position.y * CELL_SIZE)
+        self.rect.topleft = (position.x * Config.CELL_SIZE, position.y * Config.CELL_SIZE)
 
 class Snake:
     def __init__(self, pos_x, pos_y):
@@ -40,11 +39,11 @@ class Snake:
         self.speed = 7 # 7 movimientos por segundo
 
         #sonidos
-        self.red_apple_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eat_red_apple.wav'))
-        self.rotten_apple_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'eat_rotten_apple.wav'))
-        self.bat_hit_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_bat_hit.wav'))
-        self.bat_kill_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'enemy_kill.wav'))
-        self.wooden_trap_sound = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'wooden_trap.wav'))
+        self.red_apple_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'eat_red_apple.wav'))
+        self.rotten_apple_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'eat_rotten_apple.wav'))
+        self.bat_hit_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'enemy_bat_hit.wav'))
+        self.bat_kill_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'enemy_kill.wav'))
+        self.wooden_trap_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'wooden_trap.wav'))
         
     def set_state(self, new_state_cls):
         self.state.on_exit()  # Llama a on_exit del estado actual
@@ -64,15 +63,15 @@ class Snake:
 
         for mode in modes:
             for direction, dir_name in directions.items():
-                self.images[mode]["head"][direction] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/head_{dir_name}.png")).convert_alpha()
-                self.images[mode]["tail"][direction] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/tail_{dir_name}.png")).convert_alpha()
+                self.images[mode]["head"][direction] = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, f"{mode}_snake/head_{dir_name}.png")).convert_alpha()
+                self.images[mode]["tail"][direction] = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, f"{mode}_snake/tail_{dir_name}.png")).convert_alpha()
 
-            self.images[mode]["body_vertical"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_vertical.png")).convert_alpha()
-            self.images[mode]["body_horizontal"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_horizontal.png")).convert_alpha()
-            self.images[mode]["body_tr"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_tr.png")).convert_alpha()
-            self.images[mode]["body_tl"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_tl.png")).convert_alpha()
-            self.images[mode]["body_br"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_br.png")).convert_alpha()
-            self.images[mode]["body_bl"] = pygame.image.load(os.path.join(GRAPHICS_DIR, f"{mode}_snake/body_bl.png")).convert_alpha()
+            self.images[mode]["body_vertical"] = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, f"{mode}_snake/body_vertical.png")).convert_alpha()
+            self.images[mode]["body_horizontal"] = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, f"{mode}_snake/body_horizontal.png")).convert_alpha()
+            self.images[mode]["body_tr"] = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, f"{mode}_snake/body_tr.png")).convert_alpha()
+            self.images[mode]["body_tl"] = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, f"{mode}_snake/body_tl.png")).convert_alpha()
+            self.images[mode]["body_br"] = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, f"{mode}_snake/body_br.png")).convert_alpha()
+            self.images[mode]["body_bl"] = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, f"{mode}_snake/body_bl.png")).convert_alpha()
 
 
 

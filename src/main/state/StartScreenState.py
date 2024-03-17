@@ -2,16 +2,16 @@ import pygame
 from state.GameState import GameState
 import sys, os
 from Utils import Utils
-from config import GRAPHICS_DIR, FONTS_DIR
+from config import Config
 
 class StartScreenState(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.font = pygame.font.Font(os.path.join(FONTS_DIR, 'Another_.ttf'), 48)
+        self.font = pygame.font.Font(os.path.join(Config.FONTS_DIR, 'Another_.ttf'), 48)
         self.text = 'Presiona ENTER para empezar'
         self.color = (255, 255, 255)
         # Carga la imagen de fondo
-        self.background_image = pygame.image.load(os.path.join(GRAPHICS_DIR, 'portada.png')).convert()
+        self.background_image = pygame.image.load(os.path.join(Config.GRAPHICS_DIR, 'portada.png')).convert()
         self.background_image = pygame.transform.scale(self.background_image, (game.screen_width, game.screen_height))
 
     def handle_events(self, events):

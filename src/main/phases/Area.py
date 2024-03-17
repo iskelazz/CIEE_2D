@@ -1,7 +1,7 @@
 import pygame
-from config import CELL_SIZE 
+from config import Config 
 
 class Area:
     def __init__(self, tag, x, y, width, height):
         self.tag = tag
-        self.rect = pygame.Rect(x*CELL_SIZE, y*CELL_SIZE, width*CELL_SIZE, height*CELL_SIZE)
+        self.rect = pygame.Rect(x*Config.CELL_SIZE, y*Config.CELL_SIZE, width*Config.CELL_SIZE, height*Config.CELL_SIZE)

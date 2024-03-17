@@ -1,6 +1,6 @@
 import pygame
 from pygame.math import Vector2
-from config import SCREEN_HEIGHT, SCREEN_WIDTH
+from config import Config
 
 class Camera:
     def __init__(self, follow_strategy):
@@ -17,8 +17,8 @@ class FollowStrategy:
 class FollowSnake(FollowStrategy):
     def get_offset(self, snake, offset):
         # Coordenadas objetivo basadas en la posición de la cabeza de la serpiente
-        target_x = snake.segments.sprites()[0].rect.centerx - SCREEN_WIDTH / 2
-        target_y = snake.segments.sprites()[0].rect.centery - SCREEN_HEIGHT / 2
+        target_x = snake.segments.sprites()[0].rect.centerx - Config.SCREEN_WIDTH / 2
+        target_y = snake.segments.sprites()[0].rect.centery - Config.SCREEN_HEIGHT / 2
 
         # Interpolar entre la posición actual de la cámara y el objetivo
         # El factor de lerp determina qué tan "suave" o "rápido" es el movimiento de la cámara
@@ -36,11 +36,11 @@ class MoveByBlocks(FollowStrategy):
         snake_head_position = snake.segments.sprites()[0].rect.center
 
         # Calcular en qué "bloque" de la cámara está basado en la posición de la cabeza de la serpiente
-        block_x = int(snake_head_position[0] // SCREEN_WIDTH)
-        block_y = int(snake_head_position[1] // SCREEN_HEIGHT)
+        block_x = int(snake_head_position[0] // Config.SCREEN_WIDTH)
+        block_y = int(snake_head_position[1] // Config.SCREEN_HEIGHT)
 
         # Calcular el desplazamiento de la cámara para centrar ese bloque
-        camera_x = block_x * SCREEN_WIDTH
-        camera_y = block_y * SCREEN_HEIGHT
+        camera_x = block_x * Config.SCREEN_WIDTH
+        camera_y = block_y * Config.SCREEN_HEIGHT
 
         return Vector2(camera_x, camera_y)

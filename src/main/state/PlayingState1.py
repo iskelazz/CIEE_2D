@@ -3,22 +3,16 @@ import time
 from pygame.math import Vector2
 from state.PlayingState import PlayingState
 from assets.redapple import RedApple
-from assets.rottenApple import RottenApple
-from assets.snake.snake import Snake
-from phases.LevelManager import LevelManager
 from phases.Area import Area
 from phases.AreaManager import AreaManager
-from config import SOUNDS_DIR
+from config import Config
 from assets.floorTraps import WoodTrap
 from assets.sawTrap import SawTrap
 from camera import Camera, MoveByBlocks
 from assets.door import Door
 from assets.key import Key
-import random
-
-
 import os
-from config import LEVEL_DIR, CELL_SIZE
+
 """Se definen coordenadas del mapa(En celdas de tablero) que definen un area y una clase areaManager para evaluar de forma rapida el estado de diferentes objetos en ellas"""
 areas_dict = {
     "AREA1": Area("AREA1", 1, 1, 19, 19),
@@ -31,7 +25,7 @@ class PlayingState1(PlayingState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
-        self.load_level(os.path.join(LEVEL_DIR, 'level1.json'))
+        self.load_level(os.path.join(Config.LEVEL_DIR, 'level1.json'))
         
         #inicializar camara
         self.camera = Camera(MoveByBlocks())
@@ -47,11 +41,11 @@ class PlayingState1(PlayingState):
         self.saw_trap_group = self.init_saw_traps()
 
         #Puerta de salida de la fase
-        self.door=Door(75*CELL_SIZE,0*CELL_SIZE,False)
-        self.door2=Door(76*CELL_SIZE,0*CELL_SIZE,False)
-        self.door3=Door(77*CELL_SIZE,0*CELL_SIZE,False)
-        self.door4=Door(78*CELL_SIZE,0*CELL_SIZE,False)
-        self.key=Key(69 * CELL_SIZE,15 * CELL_SIZE,[self.door,self.door2,self.door3,self.door4])
+        self.door=Door(75*Config.CELL_SIZE,0*Config.CELL_SIZE,False)
+        self.door2=Door(76*Config.CELL_SIZE,0*Config.CELL_SIZE,False)
+        self.door3=Door(77*Config.CELL_SIZE,0*Config.CELL_SIZE,False)
+        self.door4=Door(78*Config.CELL_SIZE,0*Config.CELL_SIZE,False)
+        self.key=Key(69 * Config.CELL_SIZE,15 * Config.CELL_SIZE,[self.door,self.door2,self.door3,self.door4])
         self.key_group=pygame.sprite.Group(self.key)
         self.door_group=pygame.sprite.Group(self.door,self.door2,self.door3,self.door4)
 
@@ -59,12 +53,12 @@ class PlayingState1(PlayingState):
         #Lista con grupos de sprites
         self.group_list=(self.rotten_apple_group, self.apple_group, self.key_group, self.door_group, self.explosions_group, self.floor_trap_group, self.saw_trap_group)
         
-        self.level_size = (self.level_manager.cell_number_x * CELL_SIZE, self.level_manager.cell_number_y * CELL_SIZE)
+        self.level_size = (self.level_manager.cell_number_x * Config.CELL_SIZE, self.level_manager.cell_number_y * Config.CELL_SIZE)
         
         self.init_apples(area_manager)
 
         #Musica del nivel
-        self.background_music = pygame.mixer.Sound(os.path.join(SOUNDS_DIR, 'level_1_theme.mp3'))
+        self.background_music = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'level_1_theme.mp3'))
         self.background_music.play(-1)
 
     def init_wood_traps(self):

@@ -1,8 +1,8 @@
 import pygame
 import os
-from config import GRAPHICS_DIR
+from config import Config
  
-explosion_path = os.path.join(GRAPHICS_DIR, 'explosion_sprite')
+
 
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, position):
@@ -16,6 +16,7 @@ class Explosion(pygame.sprite.Sprite):
         self.current_frame = 0
 
     def load_images(self):
+        explosion_path = os.path.join(Config.GRAPHICS_DIR, 'explosion_sprite')
         for i in range(1, 6):  # Asume que tienes 5 imágenes
             self.images = [pygame.image.load(os.path.join(explosion_path, f'expl_0{i}.png')).convert_alpha() for i in range(1, 6)]
 

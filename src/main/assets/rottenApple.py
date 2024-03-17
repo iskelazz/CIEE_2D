@@ -1,11 +1,11 @@
 import os
-from config import GRAPHICS_DIR
+from config import Config
 from assets.apple import Apple 
 from phases.AreaManager import AreaManager
 
 class RottenApple(Apple):
     def __init__(self, staticPositions):
-        super().__init__(os.path.join(GRAPHICS_DIR, 'apple_rotten.png'), staticPositions)
+        super().__init__(os.path.join(Config.GRAPHICS_DIR, 'apple_rotten.png'), staticPositions)
     
     def handle_collision(self,segment,snake,game):
         if len(snake.body) <= 1 or game.score.score < 0:
