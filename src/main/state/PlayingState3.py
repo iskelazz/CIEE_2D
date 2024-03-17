@@ -9,6 +9,8 @@ from phases.Area import Area
 from phases.AreaManager import AreaManager
 from assets.gemstone import Gemstone
 from camera import Camera, FollowSnake
+from assets.door import Door
+from assets.key import Key
 
 from assets.eagle import Eagle
 
@@ -18,7 +20,11 @@ from config import Config
 areas_dict = {
     "AREA1": Area("AREA1", 1, 13, 16, 5),
     "AREA2": Area("AREA2", 1, 1, 39, 12),
-    "AREA3": Area("AREA3", 40, 1, 39, 12)
+    "AREA3": Area("AREA3", 40, 1, 39, 12),
+    "AREA4": Area("AREA4", 65, 14, 13, 24),
+    "AREA5": Area("AREA5", 51, 14, 8, 24),
+    "AREA6": Area("AREA6", 40, 14, 8, 24),
+    "AREA7": Area("AREA7", 15, 20, 24, 18),
     #añadir mas areas si es necesario
 }
 class PlayingState3(PlayingState):
@@ -35,17 +41,40 @@ class PlayingState3(PlayingState):
         area_manager.load_areas(areas_dict)
 
         self.gemstone = Gemstone(77,2)
+        self.gemstone2 = Gemstone(25,25)
         self.eagle=Eagle()
+        #Huevo 1
         self.egg=Egg(4,4)
+        #Huevo 2
+        self.egg2=Egg(46,26)
+        #Huevo 3
+        self.egg3=Egg(38,37)
+
         self.spike_trap_group=pygame.sprite.Group()
-        self.egg_group = pygame.sprite.Group(self.egg)
+        self.egg_group = pygame.sprite.Group(self.egg, self.egg2, self.egg3)
         self.enemy_group=pygame.sprite.Group()
         self.rotten_apple_group = pygame.sprite.Group()
         self.apple_group = pygame.sprite.Group()
-        self.gemstone_group = pygame.sprite.Group(self.gemstone)
-        self.explosions_group = pygame.sprite.Group()   
+        self.gemstone_group = pygame.sprite.Group(self.gemstone, self.gemstone2)
+        self.explosions_group = pygame.sprite.Group()
+
+        #Puerta 1 
+        self.door=Door(46*Config.CELL_SIZE,19*Config.CELL_SIZE,False)
+        self.key=Key(63 * Config.CELL_SIZE,38 * Config.CELL_SIZE,[self.door])
         
-        self.group_list=(self.apple_group,self.rotten_apple_group,self.gemstone_group,self.enemy_group,self.egg_group,self.spike_trap_group)
+        #Puerta 2
+        self.door2=Door(46*Config.CELL_SIZE,24*Config.CELL_SIZE,False)
+        self.key2=Key(53 * Config.CELL_SIZE,33 * Config.CELL_SIZE,[self.door2])
+        
+        #Puerta 3
+        self.door3=Door(56*Config.CELL_SIZE,19*Config.CELL_SIZE,False)
+        self.door4=Door(57*Config.CELL_SIZE,19*Config.CELL_SIZE,False)
+        self.key3 = Key(42 * Config.CELL_SIZE,37 * Config.CELL_SIZE,[self.door3, self.door4])
+        
+        self.key_group=pygame.sprite.Group(self.key, self.key2, self.key3)
+        self.door_group=pygame.sprite.Group(self.door,self.door2,self.door3,self.door4)   
+        
+        self.group_list=(self.apple_group,self.rotten_apple_group,self.gemstone_group,self.enemy_group,self.egg_group,self.spike_trap_group, self.key_group, self.door_group)
         self.level_size = (self.level_manager.cell_number_x * Config.CELL_SIZE, self.level_manager.cell_number_y * Config.CELL_SIZE)
         self.init_apples(area_manager)
 
@@ -59,6 +88,10 @@ class PlayingState3(PlayingState):
         AREA1 = area_manager.coords("AREA1")
         AREA2 = area_manager.coords("AREA2")
         AREA3 = area_manager.coords("AREA3")
+        AREA4 = area_manager.coords("AREA4")
+        AREA5 = area_manager.coords("AREA5")
+        AREA6 = area_manager.coords("AREA6")
+        AREA7 = area_manager.coords("AREA7")
 
         #Una fruta buena y una mala por area
         self.fruit_sorting(AREA1, 1, RedApple)
@@ -67,6 +100,14 @@ class PlayingState3(PlayingState):
         self.fruit_sorting(AREA2, 1, RottenApple)
         self.fruit_sorting(AREA3, 1, RedApple)
         self.fruit_sorting(AREA3, 1, RottenApple)
+        self.fruit_sorting(AREA4, 1, RedApple)
+        self.fruit_sorting(AREA4, 1, RottenApple)
+        self.fruit_sorting(AREA5, 1, RedApple)
+        self.fruit_sorting(AREA5, 1, RottenApple)
+        self.fruit_sorting(AREA6, 1, RedApple)
+        self.fruit_sorting(AREA6, 1, RottenApple)
+        self.fruit_sorting(AREA7, 1, RedApple)
+        self.fruit_sorting(AREA7, 1, RottenApple)
         
     def fruit_sorting(self, area, number, fruit_class):
         "Llama a la función para añadir manzanas tantas veces como este definido en inicializar_apples"
@@ -105,7 +146,7 @@ class PlayingState3(PlayingState):
         for group in self.group_list:
             for asset in group:
                 asset.draw(screen, self.camera.offset)
-        #self.eagle.draw(screen, self.camera.offset)
+        self.eagle.draw(screen, self.camera.offset)
     def load_level(self, json_path):
         self.level_manager = LevelManager(self.game.screen)
         self.level_manager.load_level_from_json(os.path.join(Config.LEVEL_DIR, json_path))
