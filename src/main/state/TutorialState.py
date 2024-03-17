@@ -11,7 +11,7 @@ class TutorialState(GameState):
         elif 'TUTO2' == stage:
             return 'tutorial_2.png'
         elif 'TUTO3' == stage:
-            return 'story_3_background.png'  
+            return 'tutorial_3.png'  
     
     def getNextState(self, stage):
         if 'TUTO1' == stage:
