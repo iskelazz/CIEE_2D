@@ -25,7 +25,7 @@
       ],
       "sprites": {
         "1": ["terrain_atlas_1280.png", 841, 200, 40, 40, 0],
-        "2": ["terrain_atlas_1280.png", 40, 916, 40, 40, 0],
+        "2": ["terrain_atlas_1280.png", 240, 1160, 40, 40, 0],
         "3": ["terrain_atlas_1280.png", 640, 360, 40, 40, 0]
       }
     }

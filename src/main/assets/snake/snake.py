@@ -43,7 +43,6 @@ class Snake:
         self.rotten_apple_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'eat_rotten_apple.wav'))
         self.bat_hit_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'enemy_bat_hit.wav'))
         self.bat_kill_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'enemy_kill.wav'))
-        self.wooden_trap_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'wooden_trap.wav'))
         
     def set_state(self, new_state_cls):
         self.state.on_exit()  # Llama a on_exit del estado actual

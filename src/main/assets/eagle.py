@@ -87,7 +87,6 @@ class Eagle(Enemy):
         
 
     def trap_attack(self,snake,trap_group):
-        snake.wooden_trap_sound.play()
         trampa=FireTrap(snake.body[0]+snake.direction*5)
         trap_group.add(trampa)
     

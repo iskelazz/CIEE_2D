@@ -9,13 +9,14 @@ class FloorTrap(Sprite):
     
     ANIMATION_DELAY = 9
     
-    def __init__(self, spriteSheet, position, widht, height):
+    def __init__(self, spriteSheet, position, widht, height,sound):
         super().__init__()
         self.sprites = self.cargar_sprite_sheets(spriteSheet, widht, height)
         self.image = self.sprites[0]
         self.rect = self.rect = pygame.Rect(position.x*cell_size, position.y*cell_size, cell_size, cell_size)
         self.mask = pygame.mask.from_surface(self.image)
         self.animation_count = 0
+        self.trap_sound = sound
        
         
     def cargar_sprite_sheets(self, name, width, height):
@@ -60,21 +61,25 @@ class FloorTrap(Sprite):
             if self.is_on():
                 snake.reduce_body()
                 game.score.trap_collision()
+                self.trap_sound.play()
             if len(snake.body) <= 1 or game.score.score < 0:
                 game.screen_manager.push_state('GAME_OVER')  
-   
+                self.trap_sound.play()
     
 class FireTrap(FloorTrap):
     def __init__(self, position):
-        super().__init__('Fire_Trap.png', position, 32, 40)
+        self.kill_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'fire_trap.wav'))  
+        super().__init__('Fire_Trap.png', position, 32, 40,self.kill_sound)
         
 class SpikeTrap(FloorTrap):
     def __init__(self, position):
-        super().__init__('Spike_Trap.png', position, 32, 32)
+        self.kill_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'spike_trap.wav'))  
+        super().__init__('Spike_Trap.png', position, 32, 32, self.kill_sound)
         
 class WoodTrap(FloorTrap):
     def __init__(self, position):
-        super().__init__('Wood_Trap.png', position, 32, 32)
+        self.kill_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'wooden_trap.wav'))  
+        super().__init__('Wood_Trap.png', position, 32, 32, self.kill_sound)
         
         
     
