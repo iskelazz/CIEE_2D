@@ -99,7 +99,9 @@ class Eagle(Enemy):
     def handle_collision(self,snake,game):
         if self.attacking==True:
             super().handle_collision(None,snake,game)  
-        else :game.screen_manager.change_state('STORY4')
+        else:
+            pygame.mixer.stop()
+            game.screen_manager.change_state('STORY4')
 
 class Feather(Enemy):
     def __init__(self,x,y,snake,speed=4):
