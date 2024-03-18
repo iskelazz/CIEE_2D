@@ -1,3 +1,5 @@
+import pygame
+import os
 from assets.snake.fastState import FastState
 from assets.consumable import Consumable 
 from config import Config
@@ -9,14 +11,15 @@ class Gemstone(Consumable):
 		#cambiar sprite
 		self.rect.x=x*Config.CELL_SIZE
 		self.rect.y=y*Config.CELL_SIZE
+		self.gemstone_sound = pygame.mixer.Sound(os.path.join(Config.SOUNDS_DIR, 'gemstone.wav'))
 
 	def draw(self, screen, camera_offset):
 		# Ajusta la posición de la gema por el desplazamiento de la cámara
-		
 		adjusted_position = (self.rect.x - camera_offset.x, 
                              self.rect.y - camera_offset.y)
 		screen.blit(self.image, adjusted_position)
 
 	def handle_collision(self,segment,snake,game):
 		self.kill()
+		self.gemstone_sound.play()
 		snake.set_state(FastState(snake))

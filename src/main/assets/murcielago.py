@@ -130,6 +130,7 @@ class Murcielago(Enemy):
     def handle_collision(self,segment,snake,game):
         if isinstance(snake.state, PacmanState):
             snake.bat_kill_sound.play()
+            self.bat_sound_selected.stop()
             game.score.eat_red_apple()
             self.kill()
             self.dead=True
