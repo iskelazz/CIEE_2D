@@ -31,7 +31,6 @@ class PlayingState3(PlayingState):
     def __init__(self, game):
         super().__init__(game)
         self.camera = Camera(FollowSnake())
-        self.game.score.init_level_score()
         # Cargar nivel
         self.load_level(os.path.join(Config.LEVEL_DIR, 'level3.json'))
 
@@ -198,8 +197,8 @@ class PlayingState3(PlayingState):
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
+        self.background_music.stop()
         self.game.screen_manager.change_state('STORY4')
-        self.game.score.save_score()
     
     def tag(self):
         return "PLAYING3"

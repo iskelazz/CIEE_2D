@@ -14,9 +14,8 @@ class PlayingState(GameState, ABC):
     def __init__(self, game):
         super().__init__(game)
 
-        #inicializacion de score
+        #incializamos score
         self.game.score.init_level_score()
-
         #Definimos grupos de la fruta aleatoria
         self.apple_group = pygame.sprite.Group() 
         self.rotten_apple_group = pygame.sprite.Group()  

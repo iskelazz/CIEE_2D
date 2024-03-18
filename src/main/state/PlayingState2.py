@@ -1,7 +1,7 @@
 import pygame
 import time
 from pygame.math import Vector2
-from state.GameState import GameState
+from state.PlayingState import PlayingState
 from assets.redapple import RedApple
 from assets.rottenApple import RottenApple
 from assets.key import Key
@@ -30,7 +30,7 @@ areas_dict = {
     "AREA4": Area("AREA4", 40, 1, 8, 19)
     #añadir mas areas si es necesario
 }
-class PlayingState2(GameState):
+class PlayingState2(PlayingState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
@@ -39,47 +39,59 @@ class PlayingState2(GameState):
         #inicializar camara
         self.camera = Camera(MoveByBlocks())
 
-        self.activated_areas = {}  # Diccionario para manejar el estado por área
-        self.completed_areas = set()  # Para registrar áreas que ya completaron la generación
-
+        # Division de la fase en areas
         area_manager = AreaManager()
-        self.game.score.init_level_score()
-        reference_score = self.game.score.score
         area_manager.load_areas(areas_dict)
-        self.snake = Snake(5,29)
+        
+        self.initialize_snake((5, 29)) #Creacion de la serpiente con la posicion de su cabeza pasada por parametro  
+        
+        #inicializacion murcielagos
         self.bat = Murcielago(3, 3, 8, 8, 8, 8, 2, False)
         self.bat2 = Murcielago(10, 10, 5, 2, 5, 2, 2, False)
         self.bat3 = Murcielago(8, 3, 0, 8, 0, 8, 2, False)
         self.bat4 = Murcielago(22, 18, 7, 4, 7, 4, 2, False)
         self.bat5 = Murcielago(24, 3, 0, 8, 0, 8, 2, False)
+        
+        #inicializacion sierra
         self.sawTrap = SawTrap(45, 5, 8, 'vertical')
+        
+        #inicializacion trampa de pinchos
         self.spikeTrap = SpikeTrap(Vector2(6, 4))
         self.spikeTrap2 = SpikeTrap(Vector2(6, 2))
         self.spikeTrap3 = SpikeTrap(Vector2(7, 4))
         self.spikeTrap4 = SpikeTrap(Vector2(5, 4))
         self.spikeTrap5 = SpikeTrap(Vector2(24, 35))
         self.spikeTrap6 = SpikeTrap(Vector2(29, 35))
+        
         self.rotten_apple_group = pygame.sprite.Group()  
         self.last_rotten_apple_time = time.time()
+        
+        #inicializacion consumibles
         self.gemstone = Gemstone(26,12)
         self.gemstone2 = Gemstone(45,18)
         self.gemstone_drop = False
         self.golden_apple = GoldenApple(37,29)
         self.pacmanFruit=PacmanFruit(37,3)
-  
 
-        self.pointsDoor1=PointsDoor(9*Config.CELL_SIZE,20*Config.CELL_SIZE,False,self.game.score,500+reference_score)
-        self.pointsDoor2=PointsDoor(10*Config.CELL_SIZE,20*Config.CELL_SIZE,False,self.game.score,500+reference_score)
+        #Puerta de puntos pantalla 1
+        self.pointsDoor1=PointsDoor(9*Config.CELL_SIZE,20*Config.CELL_SIZE,False,self.game.score,500)
+        self.pointsDoor2=PointsDoor(10*Config.CELL_SIZE,20*Config.CELL_SIZE,False,self.game.score,500)
+        
+        #Puerta llave pantalla 2
         self.door=Door(18*Config.CELL_SIZE,13*Config.CELL_SIZE,True)
         self.door2=Door(18*Config.CELL_SIZE,14*Config.CELL_SIZE,True)
         self.key=Key(6 * Config.CELL_SIZE,3 * Config.CELL_SIZE,[self.door,self.door2])
 
-        self.pointsDoor3=PointsDoor(44*Config.CELL_SIZE,17*Config.CELL_SIZE,True,self.game.score,3000+reference_score)
-        self.pointsDoor4=PointsDoor(44*Config.CELL_SIZE,18*Config.CELL_SIZE,True,self.game.score,3000+reference_score)
+        #Puerta de puntos pantalla 5
+        self.pointsDoor3=PointsDoor(44*Config.CELL_SIZE,17*Config.CELL_SIZE,True,self.game.score,3000)
+        self.pointsDoor4=PointsDoor(44*Config.CELL_SIZE,18*Config.CELL_SIZE,True,self.game.score,3000)
+        
+        #Puerta llave pantalla 5
         self.door3=Door(57*Config.CELL_SIZE,0*Config.CELL_SIZE,True)
         self.door4=Door(57*Config.CELL_SIZE,1*Config.CELL_SIZE,True)
         self.key2=Key(58 * Config.CELL_SIZE,18 * Config.CELL_SIZE,[self.door3,self.door4])
 
+        #Inicializacion de grupos
         self.pointsDoor_group=pygame.sprite.Group(self.pointsDoor1,self.pointsDoor2,self.pointsDoor3,self.pointsDoor4)
         self.explosions_group = pygame.sprite.Group()    
         self.key_group=pygame.sprite.Group(self.key, self.key2)
@@ -117,48 +129,6 @@ class PlayingState2(GameState):
         self.fruit_sorting(AREA3, 1, RedApple)
         self.fruit_sorting(AREA4, 1, RedApple)
         
-    def fruit_sorting(self, area, number, fruit_class):
-        "Llama a la función para añadir manzanas tantas veces como este definido en inicializar_apples"
-        for _ in range(number):  # Generar "number" manzanas por área
-                self.add_apple_in_area(area, fruit_class)
-
-    def add_apple_in_area(self, area, fruit_class):
-        "Crea la manzana de la clase pasada por parametro y la añade al grupo de manzanas"
-        apple = fruit_class(lambda: self.level_manager.precalculate_static_objects_positions())
-        apple.randomize(self.snake.body, area)
-        self.apple_group.add(apple)
-
-    def handle_events(self, events):
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.game.screen_manager.push_state('PAUSE')
-                else:
-                    # Actualiza la dirección basada en la tecla presionada
-                    self.snake.update_direction(event.key)
-    
-    def respawn_object_if_missing(self, object, group, timer, interval):
-        """
-        Comprueba si un objeto está en un grupo y, si no está, activa un timer.
-        Si el timer supera el intervalo especificado, vuelve a añadir el objeto al grupo.
-
-        :param object: El objeto a comprobar y potencialmente reaparecer.
-        :param group: El grupo de sprites al que pertenece el objeto.
-        :param timer: El temporizador actual para el objeto. None si el objeto no está en cooldown.
-        :param interval: El intervalo de tiempo (en milisegundos) para reaparecer el objeto.
-        :return: El estado actualizado del temporizador para el objeto.
-        """
-        current_time = pygame.time.get_ticks()  # Obtiene el tiempo actual
-        if object not in group:
-            if timer is None:
-                timer = current_time
-            elif current_time - timer > interval:
-                group.add(object)
-                timer = None
-        else:
-            timer = None  # Resetea el timer si el objeto ya está en el grupo
-        
-        return timer
 
     def respawn_key_items(self):
         """
@@ -236,10 +206,6 @@ class PlayingState2(GameState):
 
         for explosion in self.explosions_group:
             explosion.draw(screen, self.camera.offset)
-        
-    def load_level(self, json_path):
-        self.level_manager = LevelManager(self.game.screen)
-        self.level_manager.load_level_from_json(os.path.join(Config.LEVEL_DIR, json_path))
     
     def check_collisions(self):
         """Verifica y maneja las colisiones."""
@@ -263,38 +229,9 @@ class PlayingState2(GameState):
         self.level_manager.check_collisions(self.snake, self.game.screen_manager, self.explosions_group)
     
     def next_level(self):
-        self.game.score.save_score()
+        self.background_music.stop()
         self.game.screen_manager.change_state('STORY3')
         self.game.screen_manager.update()
-
-    def check_area_activation(self, current_time):
-        area_tag = AreaManager.get_instance().get_area_tag_by_point(
-            self.snake.segments.sprites()[0].rect.centerx,
-            self.snake.segments.sprites()[0].rect.centery
-        )
-        if area_tag and area_tag not in self.completed_areas:
-            self.activate_rotten_apples_generation(area_tag)
-
-    def activate_rotten_apples_generation(self, area_tag):
-        if area_tag not in self.activated_areas:
-            self.activated_areas[area_tag] = {
-                "last_generation_time": time.time(),
-                "to_generate": random.randint(1, 3),
-                "generated": 0
-            }
-
-    def generate_rotten_apple(self, current_time):
-        for area_tag, state in list(self.activated_areas.items()):
-            if state["generated"] < state["to_generate"]:
-                if current_time - state["last_generation_time"] >= 5:
-                    area = AreaManager.get_instance().coords(area_tag)
-                    self.add_apple_in_area(area, RottenApple)
-                    state["last_generation_time"] = current_time
-                    state["generated"] += 1
-                    if state["generated"] >= state["to_generate"]:
-                        # Si se ha alcanzado el número de generaciones para esta área, la elimina
-                        del self.activated_areas[area_tag]
-                        self.completed_areas.add(area_tag)
 
     def tag(self):
         return "PLAYING2"
