@@ -45,7 +45,7 @@ class TutorialState(GameState):
             elif event.type == pygame.KEYDOWN:
                  if event.key == pygame.K_RETURN:
                     self.game.__init__()
-                    self.background_music.stop()
+                    pygame.mixer.stop()
                     self.game.screen_manager.change_state(self.next_state)
     
     def draw(self, screen):

@@ -180,7 +180,7 @@ class PlayingState1(PlayingState):
     
     def next_level(self):
         """Metodo para gestionar la superacion exitosa del nivel"""
-        self.background_music.stop()
+        pygame.mixer.stop()
         self.game.screen_manager.change_state('STORY2')
         self.game.screen_manager.update()
 
