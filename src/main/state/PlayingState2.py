@@ -34,7 +34,7 @@ class PlayingState2(PlayingState):
     def __init__(self, game):
         super().__init__(game)
         # Cargar nivel
-        self.load_level(os.path.join(Config.LEVEL_DIR, 'level2_alt.json'))
+        self.load_level(os.path.join(Config.LEVEL_DIR, 'level2.json'))
 
         #inicializar camara
         self.camera = Camera(MoveByBlocks())

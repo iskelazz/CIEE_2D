@@ -10,7 +10,7 @@ class Config:
             cls.GRAPHICS_DIR = os.path.join(cls.BASE_DIR, 'main', 'resources', 'graphics')
             cls.SOUNDS_DIR = os.path.join(cls.BASE_DIR, 'main', 'resources', 'sounds')
             cls.FONTS_DIR = os.path.join(cls.BASE_DIR, 'main', 'resources', 'fonts')
-            cls.LEVEL_DIR = os.path.join(cls.BASE_DIR, 'main', 'phases')
+            cls.LEVEL_DIR = os.path.join(cls.BASE_DIR, 'main', 'resources', 'phases')
             cls.SCREEN_WIDTH = 800  
             cls.SCREEN_HEIGHT = 800
             cls.CELL_SIZE = 40
