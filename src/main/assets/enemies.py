@@ -11,7 +11,7 @@ class Enemy(Sprite):
     COLOR = (255, 0, 0)
     ANIMATION_DELAY = 4
     
-    def __init__(self, x, y,imageFile, coordFile, numImages,scale=None):
+    def __init__(self, x, y,imageFile, coordFile, numImages,scale=None,cooldown=0.2):
         super().__init__()
         self.x = x*cell_size
         self.y = y*cell_size
@@ -23,7 +23,7 @@ class Enemy(Sprite):
         data = GestorRecursos.CargarArchivoCoordenadas(coordFile)
         data = data.split()
         self.current_time=0
-        self.hit_cooldown=0.2
+        self.hit_cooldown=cooldown
         self.hit_timer=0
 
         self.animationNum = 0

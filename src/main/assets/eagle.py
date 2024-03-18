@@ -11,7 +11,7 @@ cell_number = 20
 class Eagle(Enemy):
     def __init__(self):
         
-        super().__init__(5, 30, 'eagle.png', 'eagleCoord.txt', [10, 6, 5],3)    
+        super().__init__(5, 30, 'eagle.png', 'eagleCoord.txt', [10, 6, 5],3, 0.1)    
         self.last_attack_time=0
         self.flying=False
         self.attacking=False
@@ -30,27 +30,32 @@ class Eagle(Enemy):
                 self.last_attack_time=current_time
                 #elige entre los tres posibles ataques dependiendo de la cantidad de huevos recogidos
                 attack=random.randint(0,snake.retrieved_eggs)
-                if attack==0:
+                if snake.retrieved_eggs==3:
+                    #cuando tiene todos los huevos usa los tres ataques a la vez
                     self.feather_attack(snake,enemy_group)
-                elif attack==1:
-                    self.trap_attack(snake,trap_group)
-                elif attack==2 :
-                    self.flying=True
-                    self.animationNum=1
-                    self.attacking=True
-                #cuando tiene todos los huevos usa los tres ataques a la vez
-                else:
-                    self.feather_attack(snake)
                     self.trap_attack(snake,trap_group)
                     if random.randint(1,3)==3:
                         self.flying=True
                         self.animationNum=1
                         self.attacking=True
-        #ataque volador
+                elif attack==0:
+                    #ataque De pluma
+
+                    self.feather_attack(snake,enemy_group)
+                elif attack==1:
+                    #ataque De trampa
+                    self.trap_attack(snake,trap_group)
+                elif attack==2 :
+                    #ataque volador
+                    self.flying=True
+                    self.animationNum=1
+                    self.attacking=True
+         
         else:
             #cambia de animacion y se pone a la altura de la serpiente
+
             if self.fly_prep_time>30:
-                if (snake.body[0][1]-1)*cell_size<self.rect.y and (snake.body[0][1]+1)*cell_size>self.rect.y:
+                if (snake.body[0][1]-0.5)*cell_size<self.rect.y and (snake.body[0][1]+0.5)*cell_size>self.rect.y:
                     yStep=0
                 else:
                     if (snake.body[0][1]-2)*cell_size>self.rect.y:
@@ -58,6 +63,7 @@ class Eagle(Enemy):
                     else: yStep=-25         
                 self.fly_prep_time-=1
                 self.move(0,yStep)
+                
             #se mantiene a esa altura un momento, para dar margen
             elif self.fly_prep_time>0:
                 self.fly_prep_time-=1
@@ -65,8 +71,8 @@ class Eagle(Enemy):
             else :
                 self.animationNum=2
                 self.move(20,0)
-                if self.rect.x>80:
-                    self.fly_prep_time=30
+                if self.rect.x/cell_size>80:
+                    self.fly_prep_time=60
                     self.animationNum=0
                     self.rect.x=5*cell_size
                     self.rect.y=30*cell_size
@@ -94,7 +100,7 @@ class Eagle(Enemy):
     def handle_collision(self,snake,game):
         if self.attacking==True:
             super().handle_collision(None,snake,game)  
-        else :game.screen_manager.change_state('START')
+        else :game.screen_manager.change_state('STORY4')
 
 class Feather(Enemy):
     def __init__(self,x,y,snake,speed=4):

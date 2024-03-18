@@ -264,7 +264,7 @@ class PlayingState2(GameState):
     
     def next_level(self):
         self.game.score.save_score()
-        self.game.screen_manager.change_state('PLAYING3')
+        self.game.screen_manager.change_state('STORY3')
         self.game.screen_manager.update()
 
     def check_area_activation(self, current_time):
